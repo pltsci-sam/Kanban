@@ -1,0 +1,43 @@
+---
+import { getAuthConfig, validateBasicAuth } from '../middleware/basic-auth';
+
+const config = getAuthConfig();
+const authHeader = Astro.request.headers.get('authorization');
+
+if (!validateBasicAuth(authHeader, config)) {
+  return new Response('Unauthorized', {
+    status: 401,
+    headers: { 'WWW-Authenticate': 'Basic realm="Kanban Ops"' },
+  });
+}
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kanban Ops Dashboard</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 20px; background: #1a1a2e; color: #eee; }
+    h1 { font-size: 1.5em; }
+    .status { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px; }
+    .status-card { background: #16213e; border: 1px solid #0f3460; border-radius: 8px; padding: 16px; min-width: 200px; }
+    .status-card h3 { margin: 0 0 8px 0; font-size: 1em; }
+    .status-card .value { font-size: 2em; font-weight: bold; color: #e94560; }
+    #ws-status { font-size: 0.85em; opacity: 0.6; }
+  </style>
+</head>
+<body>
+  <h1>Kanban Ops Dashboard</h1>
+  <div id="ws-status">Connecting...</div>
+  <div class="status" id="status-container">
+    <div class="status-card"><h3>Pipeline</h3><div class="value" id="pipeline-count">--</div></div>
+    <div class="status-card"><h3>Blocked</h3><div class="value" id="blocked-count">--</div></div>
+    <div class="status-card"><h3>Agents</h3><div class="value" id="agent-count">--</div></div>
+  </div>
+  <script>
+    // WebSocket connection will be established by F036
+    document.getElementById('ws-status').textContent = 'Ready (WebSocket pending F036)';
+  </script>
+</body>
+</html>
