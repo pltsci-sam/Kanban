@@ -1,0 +1,998 @@
+{
+  "project": "kanban-dashboard",
+  "version": "1.0.0",
+  "created": "2026-02-20",
+  "description": "Unified SDLC state visualization and human-agent collaboration surface. File-based kanban board (.kanban/ directories) with VS Code extension, Claude Code skill, adapter enrichment, and CMS ops dashboard.",
+  "features": [
+    {
+      "id": "F001",
+      "name": "project-scaffolding",
+      "description": "Initialize monorepo-style project structure with packages/kanban-core (shared TypeScript library), packages/kanban-vscode (VS Code extension), and root package.json with workspaces. Set up tsconfig, eslint, vitest. Create directory structure for .kanban/ file format.",
+      "status": "pending",
+      "priority": 1,
+      "phase": "P1",
+      "dependencies": [],
+      "acceptance": [
+        "package.json exists at project root with workspaces config",
+        "packages/kanban-core/package.json exists with TypeScript dependencies",
+        "packages/kanban-core/tsconfig.json compiles without errors",
+        "packages/kanban-vscode/package.json exists with vscode engine",
+        "vitest.config.ts exists and runs (even with 0 tests)"
+      ],
+      "files": [
+        "package.json",
+        "tsconfig.json",
+        "vitest.config.ts",
+        "packages/kanban-core/package.json",
+        "packages/kanban-core/tsconfig.json",
+        "packages/kanban-core/src/index.ts",
+        "packages/kanban-vscode/package.json",
+        "packages/kanban-vscode/tsconfig.json"
+      ]
+    },
+    {
+      "id": "F002",
+      "name": "core-data-models",
+      "description": "Implement all TypeScript interfaces from API contracts section 1: Board, Card, ColumnDefinition, LabelDefinition, BoardSettings, Blocker, Note, CardPriority, CardSource, NoteType, EnrichedCard, CardEnrichment, ProjectsConfig, ProjectConfig, AdapterType. These are the canonical in-memory types all consumers share.",
+      "status": "pending",
+      "priority": 2,
+      "phase": "P1",
+      "dependencies": ["F001"],
+      "acceptance": [
+        "All interfaces from api-contracts.md section 1 are exported from packages/kanban-core/src/models/",
+        "TypeScript compiles without errors",
+        "Board, Card, Blocker, Note, EnrichedCard, ProjectsConfig types are importable"
+      ],
+      "files": [
+        "packages/kanban-core/src/models/board.ts",
+        "packages/kanban-core/src/models/card.ts",
+        "packages/kanban-core/src/models/enrichment.ts",
+        "packages/kanban-core/src/models/projects.ts",
+        "packages/kanban-core/src/models/index.ts"
+      ]
+    },
+    {
+      "id": "F003",
+      "name": "yaml-markdown-parser",
+      "description": "Implement parsers for board.yaml (YAML to Board type) and card .md files (YAML frontmatter + markdown body to Card type). Parse card notes from markdown body sections following the ### timestamp — author [type] heading convention. Use js-yaml for YAML and gray-matter for frontmatter.",
+      "status": "pending",
+      "priority": 3,
+      "phase": "P1",
+      "dependencies": ["F002"],
+      "acceptance": [
+        "parseBoardYaml(content) returns typed Board object",
+        "parseCardMarkdown(content) returns typed Card object with parsed notes",
+        "serializeBoardYaml(board) produces valid YAML matching spec format",
+        "serializeCardMarkdown(card) produces valid frontmatter+body matching spec format",
+        "Malformed YAML throws BoardValidationError or CardParseError with descriptive message"
+      ],
+      "files": [
+        "packages/kanban-core/src/parsers/board-parser.ts",
+        "packages/kanban-core/src/parsers/card-parser.ts",
+        "packages/kanban-core/src/parsers/index.ts",
+        "packages/kanban-core/src/errors.ts"
+      ]
+    },
+    {
+      "id": "F004",
+      "name": "card-id-generator",
+      "description": "Implement 6-character lowercase alphanumeric card ID generation matching pattern ^[a-z0-9]{6}$. Use crypto.randomBytes for randomness. Check collision against existing card files in cards/ and archive/ directories. Max 5 retry attempts. Also implement blocker ID generation (blk-[a-z0-9]{4}).",
+      "status": "pending",
+      "priority": 4,
+      "phase": "P1",
+      "dependencies": ["F001"],
+      "acceptance": [
+        "generateCardId(boardDir) returns string matching ^[a-z0-9]{6}$",
+        "generateBlockerId() returns string matching ^blk-[a-z0-9]{4}$",
+        "Generated IDs do not collide with existing files in cards/ or archive/",
+        "Throws CardIdGenerationError after 5 consecutive collisions"
+      ],
+      "files": [
+        "packages/kanban-core/src/id-generator.ts"
+      ]
+    },
+    {
+      "id": "F005",
+      "name": "atomic-file-writer",
+      "description": "Implement write-then-rename atomic file writer per NFR-002. Write to {file}.tmp, fsync, rename to {file}. Ensure .tmp files are in the same directory for POSIX rename atomicity. Provide writeFileAtomic(path, content) utility.",
+      "status": "pending",
+      "priority": 5,
+      "phase": "P1",
+      "dependencies": ["F001"],
+      "acceptance": [
+        "writeFileAtomic(path, content) writes content atomically",
+        "Temp file is in same directory as target",
+        "fsync is called before rename",
+        "No partial file states on crash (verified by design)"
+      ],
+      "files": [
+        "packages/kanban-core/src/fs/atomic-writer.ts"
+      ]
+    },
+    {
+      "id": "F006",
+      "name": "board-reader",
+      "description": "Implement BoardReader interface from API contracts section 2.1. readBoard(boardDir) parses board.yaml and all card files. readCard(boardDir, cardId) reads a single card. Returns BoardState with cards array and errors array for malformed cards. Validates card.column against board columns, card.labels against board labels.",
+      "status": "pending",
+      "priority": 6,
+      "phase": "P1",
+      "dependencies": ["F003", "F004"],
+      "acceptance": [
+        "readBoard(boardDir) returns BoardState with parsed board and all cards",
+        "readCard(boardDir, cardId) returns Card or null",
+        "Malformed card files are collected in errors array, not thrown",
+        "BoardNotFoundError thrown if board.yaml missing",
+        "BoardValidationError thrown if board.yaml invalid"
+      ],
+      "files": [
+        "packages/kanban-core/src/services/board-reader.ts"
+      ]
+    },
+    {
+      "id": "F007",
+      "name": "card-writer",
+      "description": "Implement CardWriter interface from API contracts section 2.2. createCard, updateCard, moveCard, appendNote, deleteCard, archiveCard. All writes use atomic write-then-rename. moveCard updates both card frontmatter and board.yaml cardOrder. appendNote formats notes with ### timestamp — author [type] heading.",
+      "status": "pending",
+      "priority": 7,
+      "phase": "P1",
+      "dependencies": ["F003", "F004", "F005", "F006"],
+      "acceptance": [
+        "createCard writes .kanban/cards/{id}.md and updates board.yaml cardOrder",
+        "updateCard merges partial updates into card frontmatter",
+        "moveCard updates card.column and moves ID in board.yaml cardOrder",
+        "appendNote adds formatted note section to card markdown body",
+        "archiveCard moves file from cards/ to archive/ and removes from cardOrder",
+        "All writes are atomic (write-then-rename)"
+      ],
+      "files": [
+        "packages/kanban-core/src/services/card-writer.ts"
+      ]
+    },
+    {
+      "id": "F008",
+      "name": "board-initializer",
+      "description": "Implement BoardInitializer from API contracts section 2.3. initialize(repoRoot) creates .kanban/ directory with default SDLC board.yaml (7 columns per BR-001: Backlog, Spec Creation, Spec Review, Building, Testing, Human Review, Done), empty cards/ directory, and empty archive/ directory.",
+      "status": "pending",
+      "priority": 8,
+      "phase": "P1",
+      "dependencies": ["F003", "F005"],
+      "acceptance": [
+        "initialize(repoRoot) creates .kanban/ directory structure",
+        "board.yaml has 7 SDLC columns with correct names and WIP limits",
+        "board.yaml has default labels (bug, feature, infra, docs, urgent, blocked)",
+        "board.yaml has default settings (autoArchiveDays: 30, defaultColumn: Backlog)",
+        "cards/ and archive/ directories are created",
+        "BoardExistsError thrown if .kanban/ already exists"
+      ],
+      "files": [
+        "packages/kanban-core/src/services/board-initializer.ts"
+      ]
+    },
+    {
+      "id": "F009",
+      "name": "board-validator",
+      "description": "Implement board integrity validation per kanban validate command (API contracts section 3.8). Validate board.yaml schema, card frontmatter schemas, cross-reference cardOrder with card files, detect orphan cards, validate specRef/ralphFeature path patterns (SEC-B-003).",
+      "status": "pending",
+      "priority": 9,
+      "phase": "P1",
+      "dependencies": ["F006"],
+      "acceptance": [
+        "validate(boardDir) returns array of ValidationError/ValidationWarning",
+        "Detects cardOrder references to non-existent card files",
+        "Detects card files not in any cardOrder list (orphans)",
+        "Detects card.column values not matching any board column",
+        "Validates specRef against ^[a-z0-9][a-z0-9\\-\\/]*$ and rejects '..'",
+        "Validates ralphFeature against ^[a-z0-9][a-z0-9\\-_]*$"
+      ],
+      "files": [
+        "packages/kanban-core/src/services/board-validator.ts"
+      ]
+    },
+    {
+      "id": "F010",
+      "name": "core-unit-tests",
+      "description": "Unit tests for all core library modules: parsers (board-parser, card-parser), id-generator, atomic-writer, board-reader, card-writer, board-initializer, board-validator. Test happy paths, error conditions, and edge cases. Use vitest with filesystem fixtures.",
+      "status": "pending",
+      "priority": 10,
+      "phase": "P1",
+      "dependencies": ["F006", "F007", "F008", "F009"],
+      "acceptance": [
+        "All core modules have test files in packages/kanban-core/src/__tests__/",
+        "Parser tests cover valid YAML, malformed YAML, missing fields",
+        "Card writer tests verify atomic writes and board.yaml updates",
+        "Board validator tests cover all validation rules",
+        "All tests pass with vitest"
+      ],
+      "files": [
+        "packages/kanban-core/src/__tests__/board-parser.test.ts",
+        "packages/kanban-core/src/__tests__/card-parser.test.ts",
+        "packages/kanban-core/src/__tests__/id-generator.test.ts",
+        "packages/kanban-core/src/__tests__/board-reader.test.ts",
+        "packages/kanban-core/src/__tests__/card-writer.test.ts",
+        "packages/kanban-core/src/__tests__/board-initializer.test.ts",
+        "packages/kanban-core/src/__tests__/board-validator.test.ts"
+      ]
+    },
+    {
+      "id": "F011",
+      "name": "adapter-registry",
+      "description": "Implement KanbanAdapter<T> base interface and AdapterRegistry from API contracts section 7. Registry runs all configured adapters and returns Map<cardId, CardEnrichment>. Adapters are best-effort (errors collected, not thrown). Adapter errors produce AdapterError objects logged but not surfaced as failures.",
+      "status": "pending",
+      "priority": 11,
+      "phase": "P2",
+      "dependencies": ["F002"],
+      "acceptance": [
+        "KanbanAdapter interface exported with isAvailable() and enrich() methods",
+        "AdapterRegistry.enrichCards() runs all configured adapters",
+        "Adapter errors are collected in AdapterResult.errors, not thrown",
+        "Cards without matching references get no enrichment (no error)"
+      ],
+      "files": [
+        "packages/kanban-core/src/adapters/adapter-interface.ts",
+        "packages/kanban-core/src/adapters/adapter-registry.ts",
+        "packages/kanban-core/src/adapters/index.ts"
+      ]
+    },
+    {
+      "id": "F012",
+      "name": "ralph-adapter",
+      "description": "Implement RalphAdapter from API contracts section 7.2. Reads .ralph/features.json, matches card.ralphFeature to feature keys, returns RalphEnrichment (buildProgress, phase, filesModified count). isAvailable checks if .ralph/features.json exists.",
+      "status": "pending",
+      "priority": 12,
+      "phase": "P2",
+      "dependencies": ["F011"],
+      "acceptance": [
+        "RalphAdapter.isAvailable() returns true when .ralph/features.json exists",
+        "RalphAdapter.enrich() maps card.ralphFeature to features.json entries",
+        "Returns buildProgress (0-100), phase string, filesModified count",
+        "Returns empty map when features.json missing or malformed"
+      ],
+      "files": [
+        "packages/kanban-core/src/adapters/ralph-adapter.ts"
+      ]
+    },
+    {
+      "id": "F013",
+      "name": "specops-adapter",
+      "description": "Implement SpecopsAdapter from API contracts section 7.3. Reads .specops/state.json, matches card.specRef to state keys, returns SpecopsEnrichment (specPhase, completedPhases, lastActivity).",
+      "status": "pending",
+      "priority": 13,
+      "phase": "P2",
+      "dependencies": ["F011"],
+      "acceptance": [
+        "SpecopsAdapter.isAvailable() returns true when .specops/state.json exists",
+        "SpecopsAdapter.enrich() maps card.specRef to state.json entries",
+        "Returns specPhase, completedPhases array, lastActivity timestamp",
+        "Returns empty map when state.json missing or malformed"
+      ],
+      "files": [
+        "packages/kanban-core/src/adapters/specops-adapter.ts"
+      ]
+    },
+    {
+      "id": "F014",
+      "name": "spec-artifact-adapter",
+      "description": "Implement SpecArtifactAdapter from API contracts section 7.4. Reads specs/{specRef}/open-questions.md and decisions.md, counts ## headings, checks existence of requirements.md and schemas.md. Returns SpecArtifactEnrichment.",
+      "status": "pending",
+      "priority": 14,
+      "phase": "P2",
+      "dependencies": ["F011"],
+      "acceptance": [
+        "SpecArtifactAdapter.isAvailable() returns true when specs/ directory exists",
+        "Counts ## headings in open-questions.md as openQuestionCount",
+        "Counts ## headings in decisions.md as decisionCount",
+        "Checks existence of requirements.md and schemas.md as booleans",
+        "Handles missing spec directories gracefully (no enrichment, no error)"
+      ],
+      "files": [
+        "packages/kanban-core/src/adapters/spec-artifact-adapter.ts"
+      ]
+    },
+    {
+      "id": "F015",
+      "name": "adapter-tests",
+      "description": "Unit tests for adapter registry and all three adapters. Test with fixture data matching .ralph/features.json, .specops/state.json, and specs/ directory structures.",
+      "status": "pending",
+      "priority": 15,
+      "phase": "P2",
+      "dependencies": ["F012", "F013", "F014"],
+      "acceptance": [
+        "Adapter registry test verifies multi-adapter enrichment",
+        "Ralph adapter test with sample features.json fixture",
+        "SPECOPS adapter test with sample state.json fixture",
+        "SpecArtifact adapter test with sample specs/ directory",
+        "All adapter tests pass"
+      ],
+      "files": [
+        "packages/kanban-core/src/__tests__/adapter-registry.test.ts",
+        "packages/kanban-core/src/__tests__/ralph-adapter.test.ts",
+        "packages/kanban-core/src/__tests__/specops-adapter.test.ts",
+        "packages/kanban-core/src/__tests__/spec-artifact-adapter.test.ts"
+      ]
+    },
+    {
+      "id": "F016",
+      "name": "claude-code-skill-scaffolding",
+      "description": "Create Claude Code kanban skill with SKILL.md defining all 8 commands (init, add, list, show, move, done, archive, validate). The skill operates via file I/O using kanban-core library functions. Define the skill interface, argument parsing, and output formatting.",
+      "status": "pending",
+      "priority": 16,
+      "phase": "P3",
+      "dependencies": ["F007", "F008", "F009"],
+      "acceptance": [
+        ".claude/skills/kanban/SKILL.md exists with all 8 command definitions",
+        "Skill defines kanban init, add, list, show, move, done, archive, validate",
+        "Each command has documented usage, options, and output format",
+        "Skill references kanban-core for all file operations"
+      ],
+      "files": [
+        ".claude/skills/kanban/SKILL.md"
+      ]
+    },
+    {
+      "id": "F017",
+      "name": "kanban-init-command",
+      "description": "Implement kanban init command. Creates .kanban/ directory with default SDLC board. Uses BoardInitializer from kanban-core. Supports --name option for board display name. Outputs confirmation with column count.",
+      "status": "pending",
+      "priority": 17,
+      "phase": "P3",
+      "dependencies": ["F008", "F016"],
+      "acceptance": [
+        "kanban init creates .kanban/ with default board.yaml and empty cards/archive/",
+        "kanban init --name 'My Board' sets board name",
+        "Error if .kanban/ already exists",
+        "Output matches spec format: 'Initialized kanban board: {name}'"
+      ],
+      "files": [
+        "packages/kanban-core/src/commands/init.ts"
+      ]
+    },
+    {
+      "id": "F018",
+      "name": "kanban-add-command",
+      "description": "Implement kanban add command per API contracts section 3.2. Creates card with title, optional --col, --priority, --label, --assignee, --due, --desc, --spec-ref, --ralph-feature. Generates card ID, writes card file, updates board.yaml.",
+      "status": "pending",
+      "priority": 18,
+      "phase": "P3",
+      "dependencies": ["F007", "F016"],
+      "acceptance": [
+        "kanban add 'My Card' creates card in default column",
+        "All options (--col, --priority, --label, etc.) apply to card frontmatter",
+        "Card has source: manual",
+        "Output format: Created card [{id}] \"{title}\" with column/priority/labels"
+      ],
+      "files": [
+        "packages/kanban-core/src/commands/add.ts"
+      ]
+    },
+    {
+      "id": "F019",
+      "name": "kanban-list-show-commands",
+      "description": "Implement kanban list and kanban show commands per API contracts sections 3.5 and 3.6. List supports --col, --blocked, --priority, --label, --assignee, --format (table/json) filters. Show displays full card details with notes and adapter enrichment.",
+      "status": "pending",
+      "priority": 19,
+      "phase": "P3",
+      "dependencies": ["F006", "F011", "F016"],
+      "acceptance": [
+        "kanban list displays all cards grouped by column",
+        "kanban list --col Building filters to Building column only",
+        "kanban list --blocked shows only cards with non-empty blockers",
+        "kanban list --format json outputs JSON",
+        "kanban show {id} displays full card details including notes and enrichment"
+      ],
+      "files": [
+        "packages/kanban-core/src/commands/list.ts",
+        "packages/kanban-core/src/commands/show.ts"
+      ]
+    },
+    {
+      "id": "F020",
+      "name": "kanban-move-done-commands",
+      "description": "Implement kanban move and kanban done commands per API contracts sections 3.3 and 3.4. Move updates card frontmatter column and board.yaml cardOrder. Done is shortcut for moving to the done column.",
+      "status": "pending",
+      "priority": 20,
+      "phase": "P3",
+      "dependencies": ["F007", "F016"],
+      "acceptance": [
+        "kanban move {id} {column} moves card between columns",
+        "Card file column field and board.yaml cardOrder both updated",
+        "kanban done {id} moves card to the column with done: true",
+        "Output format matches spec"
+      ],
+      "files": [
+        "packages/kanban-core/src/commands/move.ts"
+      ]
+    },
+    {
+      "id": "F021",
+      "name": "kanban-archive-validate-commands",
+      "description": "Implement kanban archive and kanban validate commands per API contracts sections 3.7 and 3.8. Archive moves old Done cards to archive/ respecting pin and autoArchiveDays. Validate checks full board integrity.",
+      "status": "pending",
+      "priority": 21,
+      "phase": "P3",
+      "dependencies": ["F007", "F009", "F016"],
+      "acceptance": [
+        "kanban archive moves cards in Done older than N days to archive/",
+        "Pinned cards are never archived",
+        "kanban archive --dry-run shows what would be archived without writing",
+        "kanban validate reports all validation errors and warnings",
+        "Exit code 0 for valid, 1 for errors"
+      ],
+      "files": [
+        "packages/kanban-core/src/commands/archive.ts",
+        "packages/kanban-core/src/commands/validate.ts"
+      ]
+    },
+    {
+      "id": "F022",
+      "name": "vscode-extension-scaffolding",
+      "description": "Scaffold VS Code extension: package.json with extension manifest (contributes: views, commands, menus), activation events, extension.ts entry point, webview infrastructure. Register kanban board view container and commands (kanban.openBoard, kanban.addCard, kanban.initBoard).",
+      "status": "pending",
+      "priority": 22,
+      "phase": "P4",
+      "dependencies": ["F001"],
+      "acceptance": [
+        "packages/kanban-vscode/package.json has VS Code extension manifest",
+        "Extension activates on workspaceContains:.kanban/board.yaml",
+        "extension.ts registers commands and view providers",
+        "Extension compiles with vsce without errors"
+      ],
+      "files": [
+        "packages/kanban-vscode/package.json",
+        "packages/kanban-vscode/src/extension.ts",
+        "packages/kanban-vscode/src/constants.ts"
+      ]
+    },
+    {
+      "id": "F023",
+      "name": "board-webview-panel",
+      "description": "Implement board webview panel that renders SDLC columns from board.yaml. Webview receives board state as JSON from extension host. Renders column headers with names, WIP limits, and card counts. Uses VS Code webview API with CSP-compliant HTML/CSS/JS.",
+      "status": "pending",
+      "priority": 23,
+      "phase": "P4",
+      "dependencies": ["F006", "F022"],
+      "acceptance": [
+        "Board panel opens via kanban.openBoard command",
+        "7 SDLC columns rendered with correct names and order",
+        "Column headers show WIP limit (e.g., '2/3') when configured",
+        "Webview communicates with extension host via postMessage",
+        "CSS uses VS Code theme variables for consistent appearance"
+      ],
+      "files": [
+        "packages/kanban-vscode/src/views/board-panel.ts",
+        "packages/kanban-vscode/src/views/webview/board.html",
+        "packages/kanban-vscode/src/views/webview/board.css",
+        "packages/kanban-vscode/src/views/webview/board.js"
+      ]
+    },
+    {
+      "id": "F024",
+      "name": "card-rendering",
+      "description": "Implement card component rendering within board columns. Cards display title, priority badge (with icon prefix per KB-035), labels (with icon prefix), assignee, blocked indicator (warning triangle icon + pulsing border per KB-004/KB-035). Enrichment data (build progress, open questions) shown when available.",
+      "status": "pending",
+      "priority": 24,
+      "phase": "P4",
+      "dependencies": ["F011", "F023"],
+      "acceptance": [
+        "Cards render title, priority badge with icon, and labels with icon prefix",
+        "Blocked cards show warning triangle icon + distinct border (AC-009, AC-077)",
+        "Labels use dot/icon prefix alongside color (AC-078)",
+        "WIP exceeded shows exclamation icon alongside warning text (AC-079)",
+        "Enrichment data (build %, question count) shown when adapter data available",
+        "Cards without enrichment render cleanly with core fields only (AC-006)"
+      ],
+      "files": [
+        "packages/kanban-vscode/src/views/webview/components/card.js",
+        "packages/kanban-vscode/src/views/webview/components/card.css"
+      ]
+    },
+    {
+      "id": "F025",
+      "name": "board-states",
+      "description": "Implement board loading skeleton (KB-028), empty state with Initialize Board button (AF-001.1), and error state for malformed board.yaml (EF-001.1). Loading skeleton shows column outlines and placeholder card shapes. Error state shows validation message and 'Open in editor' button. Warning indicator for skipped cards (EF-001.2).",
+      "status": "pending",
+      "priority": 25,
+      "phase": "P4",
+      "dependencies": ["F023"],
+      "acceptance": [
+        "Loading skeleton appears immediately on board open (AC-068)",
+        "Empty state shows 'Initialize Board' button when no .kanban/ exists (AC-004)",
+        "Initialize Board creates default SDLC board and re-renders (AC-005)",
+        "Error state shows validation error and 'Open board.yaml in editor' button (AC-007)",
+        "Warning indicator shows count of skipped malformed cards (AC-008)"
+      ],
+      "files": [
+        "packages/kanban-vscode/src/views/webview/components/skeleton.js",
+        "packages/kanban-vscode/src/views/webview/components/empty-state.js",
+        "packages/kanban-vscode/src/views/webview/components/error-state.js"
+      ]
+    },
+    {
+      "id": "F026",
+      "name": "file-watcher",
+      "description": "Implement VS Code file system watcher for .kanban/ directory. Detect changes to board.yaml and cards/*.md files. Debounce rapid changes. Trigger board re-render on file change events. Supports external writes from agents and CLI.",
+      "status": "pending",
+      "priority": 26,
+      "phase": "P4",
+      "dependencies": ["F023"],
+      "acceptance": [
+        "File watcher detects changes to board.yaml",
+        "File watcher detects new/modified/deleted card files in cards/",
+        "Board re-renders within reasonable time after file change",
+        "Rapid changes are debounced (not re-rendered per change)",
+        "Watcher disposed on extension deactivate"
+      ],
+      "files": [
+        "packages/kanban-vscode/src/services/file-watcher.ts"
+      ]
+    },
+    {
+      "id": "F027",
+      "name": "card-detail-view",
+      "description": "Implement card detail webview panel that opens when clicking a card. Shows all card fields (title, column, priority, labels, assignee, dates, source), description, and chronological notes. Notes formatted with timestamp, author, type badge, and markdown content.",
+      "status": "pending",
+      "priority": 27,
+      "phase": "P5",
+      "dependencies": ["F024"],
+      "acceptance": [
+        "Clicking a card opens the detail panel (AC-010)",
+        "Detail view shows all frontmatter fields",
+        "Description section displays card body markdown",
+        "Notes section shows all notes in chronological order",
+        "Each note shows timestamp, author, type badge, and content"
+      ],
+      "files": [
+        "packages/kanban-vscode/src/views/card-detail-panel.ts",
+        "packages/kanban-vscode/src/views/webview/card-detail.html",
+        "packages/kanban-vscode/src/views/webview/card-detail.js",
+        "packages/kanban-vscode/src/views/webview/card-detail.css"
+      ]
+    },
+    {
+      "id": "F028",
+      "name": "card-creation-form",
+      "description": "Implement card creation form with fields: title (required, max 200 chars with counter), description, priority dropdown, label multi-select, assignee. Form validation prevents empty title submission (KB-031). Add Card button on column headers opens form targeting that column.",
+      "status": "pending",
+      "priority": 28,
+      "phase": "P5",
+      "dependencies": ["F007", "F027"],
+      "acceptance": [
+        "Add Card button visible on column headers (AC-036)",
+        "Form has title, description, priority, labels fields (AC-037)",
+        "Empty title blocks submission with inline error (AC-071)",
+        "Character counter shows x/200 and turns red near limit",
+        "Submit creates card file and updates board.yaml",
+        "Board re-renders with new card visible"
+      ],
+      "files": [
+        "packages/kanban-vscode/src/views/webview/components/card-create-form.js",
+        "packages/kanban-vscode/src/views/webview/components/card-create-form.css"
+      ]
+    },
+    {
+      "id": "F029",
+      "name": "drag-and-drop",
+      "description": "Implement drag-and-drop for cards between columns (KB-024) and within columns for reordering (KB-025). On drop between columns: update card.column frontmatter and board.yaml cardOrder. On drop within column: update board.yaml cardOrder array position.",
+      "status": "pending",
+      "priority": 29,
+      "phase": "P5",
+      "dependencies": ["F007", "F024"],
+      "acceptance": [
+        "Dragging card between columns updates card file and board.yaml (AC-041)",
+        "Dragging card within column reorders board.yaml cardOrder (AC-042)",
+        "Drop target highlights during drag",
+        "Card updated timestamp refreshed on column change",
+        "Board re-renders smoothly after drop"
+      ],
+      "files": [
+        "packages/kanban-vscode/src/views/webview/components/drag-drop.js"
+      ]
+    },
+    {
+      "id": "F030",
+      "name": "undo-toast",
+      "description": "Implement 5-second undo toast after drag-and-drop moves (KB-030). Toast shows 'Moved {id} to {column} - Undo' with clickable undo link. Clicking Undo reverts card to previous column. Toast auto-dismisses after 5 seconds making the move permanent.",
+      "status": "pending",
+      "priority": 30,
+      "phase": "P5",
+      "dependencies": ["F029"],
+      "acceptance": [
+        "Toast appears after every drag-and-drop column move (AC-070)",
+        "Toast shows card ID, target column, and Undo link",
+        "Clicking Undo reverts card file and board.yaml to previous state",
+        "Toast auto-dismisses after 5 seconds",
+        "Only one toast visible at a time (new move replaces old toast)"
+      ],
+      "files": [
+        "packages/kanban-vscode/src/views/webview/components/undo-toast.js",
+        "packages/kanban-vscode/src/views/webview/components/undo-toast.css"
+      ]
+    },
+    {
+      "id": "F031",
+      "name": "blocker-section",
+      "description": "Implement blocker section in card detail view (KB-005, KB-006, KB-032). Shows agent's blocker question, response text area, and Unblock button. Unblock button disabled when response empty. On unblock: remove blocker from frontmatter, append unblock note, refresh timestamp.",
+      "status": "pending",
+      "priority": 31,
+      "phase": "P5",
+      "dependencies": ["F007", "F027"],
+      "acceptance": [
+        "Blocker section shows agent question and text area (AC-010)",
+        "Unblock button disabled when text area empty (AC-072)",
+        "Hint text shown when empty: 'Enter your response to unblock this card'",
+        "Clicking Unblock removes blocker from frontmatter and appends note (AC-011)",
+        "Board re-renders with blocked indicator removed"
+      ],
+      "files": [
+        "packages/kanban-vscode/src/views/webview/components/blocker-section.js",
+        "packages/kanban-vscode/src/views/webview/components/blocker-section.css"
+      ]
+    },
+    {
+      "id": "F032",
+      "name": "search-and-filter",
+      "description": "Implement search bar and filter controls for the board (KB-033). Search filters cards by title in real-time. Filter controls for column, priority, label, and blocked status. Active filters shown as removable chips. Non-matching cards dimmed or hidden.",
+      "status": "pending",
+      "priority": 32,
+      "phase": "P5",
+      "dependencies": ["F024"],
+      "acceptance": [
+        "Search bar filters cards by title text, case-insensitive (AC-073)",
+        "Filtering is real-time as user types",
+        "Filter dropdown supports column, priority, label, blocked status (AC-074)",
+        "Multiple filters combine (intersection)",
+        "Active filters shown as removable chips",
+        "Clearing search restores all cards"
+      ],
+      "files": [
+        "packages/kanban-vscode/src/views/webview/components/search-filter.js",
+        "packages/kanban-vscode/src/views/webview/components/search-filter.css"
+      ]
+    },
+    {
+      "id": "F033",
+      "name": "keyboard-navigation",
+      "description": "Implement keyboard card movement (KB-034, WCAG 2.1.1). Tab to focus cards. Alt+Left/Right moves card to adjacent column. Alt+Up/Down reorders within column. Screen reader announces moves. No mouse required for any card operation.",
+      "status": "pending",
+      "priority": 33,
+      "phase": "P5",
+      "dependencies": ["F029"],
+      "acceptance": [
+        "Tab focuses cards sequentially (AC-075)",
+        "Alt+Right moves focused card to next column (AC-075)",
+        "Alt+Left moves focused card to previous column",
+        "Alt+Up/Down reorders within column (AC-076)",
+        "Screen reader announces 'Card {id} moved to {column}'",
+        "Undo toast appears after keyboard moves"
+      ],
+      "files": [
+        "packages/kanban-vscode/src/views/webview/components/keyboard-nav.js"
+      ]
+    },
+    {
+      "id": "F034",
+      "name": "dashboard-view",
+      "description": "Implement cross-repo dashboard webview panel (UC-005). Reads projects.yaml, aggregates status across configured repos. Shows per-project health cards with completion %, current phase, last activity, progress bar. Handles missing repos as 'offline'.",
+      "status": "pending",
+      "priority": 34,
+      "phase": "P6",
+      "dependencies": ["F006", "F022"],
+      "acceptance": [
+        "Dashboard reads projects.yaml and shows project cards (AC-025)",
+        "Per-project card shows completion %, phase, last activity (AC-026)",
+        "Progress bar visually represents completion percentage",
+        "Missing repos show 'offline' status (AC-027)",
+        "Dashboard scales to 10 repos without degradation (AC-063)"
+      ],
+      "files": [
+        "packages/kanban-vscode/src/views/dashboard-panel.ts",
+        "packages/kanban-vscode/src/views/webview/dashboard.html",
+        "packages/kanban-vscode/src/views/webview/dashboard.js",
+        "packages/kanban-vscode/src/views/webview/dashboard.css",
+        "packages/kanban-core/src/services/projects-reader.ts"
+      ]
+    },
+    {
+      "id": "F035",
+      "name": "cms-ops-route",
+      "description": "Add /ops route to the CMS Astro application for the live operations dashboard. Implement basic auth middleware per KB-020 using KANBAN_CMS_USERNAME and KANBAN_CMS_PASSWORD env vars. Password bcrypt-hashed at startup. 401 for unauthenticated requests.",
+      "status": "pending",
+      "priority": 35,
+      "phase": "P7",
+      "dependencies": ["F002"],
+      "acceptance": [
+        "GET /ops serves dashboard page when authenticated (AC-033)",
+        "401 returned for missing/invalid credentials (AC-032)",
+        "Password compared using bcrypt with constant-time comparison",
+        "Server refuses to start if KANBAN_CMS_PASSWORD not set",
+        "Username configurable via KANBAN_CMS_USERNAME (default: ops)"
+      ],
+      "files": [
+        "packages/kanban-cms/src/pages/ops.astro",
+        "packages/kanban-cms/src/middleware/basic-auth.ts"
+      ]
+    },
+    {
+      "id": "F036",
+      "name": "cms-websocket-client",
+      "description": "Implement WebSocket client for CMS dashboard connecting to AgentDispatch /dashboard/ws. Handle initial snapshot, event processing, auto-reconnect with exponential backoff (1s, 2s, 4s, 8s, max 10s), ping/pong heartbeat. Process DashboardEvent envelope format.",
+      "status": "pending",
+      "priority": 36,
+      "phase": "P7",
+      "dependencies": ["F035"],
+      "acceptance": [
+        "WebSocket connects to /dashboard/ws with basic auth (AC-028)",
+        "Processes initial DashboardSnapshot on connect",
+        "Processes all 6 event types (task.state_change, agent.tool_call, etc.)",
+        "Auto-reconnects with exponential backoff on disconnect (AC-035)",
+        "Displays 'Connecting...' during initial handshake (AC-069)"
+      ],
+      "files": [
+        "packages/kanban-cms/src/lib/websocket-client.ts",
+        "packages/kanban-cms/src/lib/event-handlers.ts"
+      ]
+    },
+    {
+      "id": "F037",
+      "name": "cms-pipeline-overview",
+      "description": "Implement pipeline overview panel for CMS dashboard (KB-018). Shows card counts per SDLC column as a horizontal bar. Updates in real-time as task.state_change events arrive. Animates card transitions between columns.",
+      "status": "pending",
+      "priority": 37,
+      "phase": "P7",
+      "dependencies": ["F036"],
+      "acceptance": [
+        "Pipeline bar shows counts for all 7 SDLC columns (AC-030)",
+        "Counts update in real-time from WebSocket events",
+        "Card transitions animate between columns",
+        "Bar uses column colors/icons consistent with board view"
+      ],
+      "files": [
+        "packages/kanban-cms/src/components/PipelineOverview.astro",
+        "packages/kanban-cms/src/components/PipelineOverview.ts"
+      ]
+    },
+    {
+      "id": "F038",
+      "name": "cms-agent-panels",
+      "description": "Implement active agent panels for CMS dashboard (KB-017). Each active agent gets a panel showing name, type, associated card, scrolling tool call feed, and thinking stream. Panels created on agent.session_start, collapsed on agent.session_complete. Tool calls show timestamp, tool name, truncated input.",
+      "status": "pending",
+      "priority": 38,
+      "phase": "P7",
+      "dependencies": ["F036"],
+      "acceptance": [
+        "Agent panels created on session_start events (AC-029)",
+        "Tool calls displayed with timestamp, name, input summary",
+        "Spinning indicator during active tool calls",
+        "Panels show 'No active agents' when none running (AC-034)",
+        "Panels collapse to summary 60s after session_complete"
+      ],
+      "files": [
+        "packages/kanban-cms/src/components/AgentPanel.astro",
+        "packages/kanban-cms/src/components/AgentPanel.ts"
+      ]
+    },
+    {
+      "id": "F039",
+      "name": "cms-thinking-stream",
+      "description": "Implement SSE client for agent thinking streams at /agents/{id}/thinking. Open SSE connection per active agent. Display streaming thinking text in collapsible section below tool calls. Handle isComplete flag for thought boundaries.",
+      "status": "pending",
+      "priority": 39,
+      "phase": "P7",
+      "dependencies": ["F038"],
+      "acceptance": [
+        "SSE connection opened per active agent",
+        "Thinking text streams into collapsible section",
+        "isComplete=true finalizes current thought bubble",
+        "SSE auto-reconnects per spec (3s retry)",
+        "SSE connection closed on agent.session_complete"
+      ],
+      "files": [
+        "packages/kanban-cms/src/lib/sse-client.ts",
+        "packages/kanban-cms/src/components/ThinkingStream.ts"
+      ]
+    },
+    {
+      "id": "F040",
+      "name": "cms-blocked-items-and-completions",
+      "description": "Implement blocked items section (prominent, top of dashboard) and recent completions feed. Blocked items show card title, agent name, blocker question with pulsing indicator. Completions feed shows last 20 completed cards. Both update in real-time. Blocked items are view-only (no unblock button per KB-019).",
+      "status": "pending",
+      "priority": 40,
+      "phase": "P7",
+      "dependencies": ["F036"],
+      "acceptance": [
+        "Blocked items section prominently displayed (AC-066)",
+        "Shows card title, agent name, blocker question with pulsing indicator",
+        "No unblock button or response form (read-only per AC-031, AC-066)",
+        "Message directs user to resolve via VS Code/Slack/Vivian",
+        "Recent completions feed capped at 20 items",
+        "Both sections update in real-time from WebSocket events"
+      ],
+      "files": [
+        "packages/kanban-cms/src/components/BlockedItems.astro",
+        "packages/kanban-cms/src/components/BlockedItems.ts",
+        "packages/kanban-cms/src/components/RecentCompletions.astro",
+        "packages/kanban-cms/src/components/RecentCompletions.ts"
+      ]
+    },
+    {
+      "id": "F041",
+      "name": "cms-connection-state",
+      "description": "Implement connection state management for CMS dashboard. Show 'Connecting to AgentDispatch...' on initial load, 'AgentDispatch offline' banner on disconnect with retry timer, seamless reconnect without page reload. Static state preserved during disconnect.",
+      "status": "pending",
+      "priority": 41,
+      "phase": "P7",
+      "dependencies": ["F036"],
+      "acceptance": [
+        "Connecting state shown during initial WebSocket handshake (AC-069)",
+        "Offline banner appears within 5s of disconnect (AC-054)",
+        "Retry timer displayed showing next reconnect attempt",
+        "Reconnect resumes streaming without page reload (AC-054)",
+        "Static state from last snapshot preserved during disconnect (AC-035)"
+      ],
+      "files": [
+        "packages/kanban-cms/src/components/ConnectionStatus.astro",
+        "packages/kanban-cms/src/components/ConnectionStatus.ts"
+      ]
+    },
+    {
+      "id": "F042",
+      "name": "agentdispatch-kanban-reader",
+      "description": "Implement AgentDispatch heartbeat board reader. During HeartbeatService tick, read .kanban/board.yaml and all card files for each configured repo. Identify actionable cards: unassigned Backlog cards, newly unblocked cards. Dispatch work to available agents.",
+      "status": "pending",
+      "priority": 42,
+      "phase": "P8",
+      "dependencies": ["F006"],
+      "acceptance": [
+        "Heartbeat reads board state from all configured repo paths",
+        "Identifies cards in Backlog with no assignee",
+        "Detects cards with empty blockers that were previously blocked",
+        "Returns null when .kanban/ does not exist for a repo",
+        "Handles malformed boards gracefully (skip repo, log warning)"
+      ],
+      "files": [
+        "packages/kanban-core/src/integrations/agentdispatch-reader.ts"
+      ]
+    },
+    {
+      "id": "F043",
+      "name": "agentdispatch-card-operations",
+      "description": "Implement AgentDispatch card creation, movement, blocker management, and milestone notes. Card creation from heartbeat detection. Movement with milestone notes. Blocker add/remove with multi-channel notification triggers. All operations follow atomic write protocol and git commit conventions.",
+      "status": "pending",
+      "priority": 43,
+      "phase": "P8",
+      "dependencies": ["F007", "F042"],
+      "acceptance": [
+        "createCard writes card file + board.yaml + git commit (AC-014, AC-016)",
+        "moveCard updates card + board.yaml + appends milestone note + git commit (AC-020, AC-021, AC-024)",
+        "addBlocker adds to frontmatter + appends note + triggers Slack notification (AC-022)",
+        "removeBlocker clears blocker + appends unblock note (AC-011)",
+        "Git commits follow kanban({action}): {id} {title} format"
+      ],
+      "files": [
+        "packages/kanban-core/src/integrations/agentdispatch-writer.ts",
+        "packages/kanban-core/src/integrations/git-commit.ts"
+      ]
+    },
+    {
+      "id": "F044",
+      "name": "vivian-integration",
+      "description": "Implement Vivian card creation from meeting action items per API contracts section 6. VivianCardWriter creates cards with source: vivian and meeting metadata. Includes repo disambiguation. Read-only blocker announcement support.",
+      "status": "pending",
+      "priority": 44,
+      "phase": "P8",
+      "dependencies": ["F007"],
+      "acceptance": [
+        "createCardFromActionItem writes card with source: vivian and meeting title (AC-044, AC-045)",
+        "Card always created in Backlog column",
+        "Creation note appended: 'Created from meeting: {title} ({date})'",
+        "Board.yaml cardOrder updated with new card ID",
+        "Blocker announcement reads card data without writing (read-only)"
+      ],
+      "files": [
+        "packages/kanban-core/src/integrations/vivian-writer.ts"
+      ]
+    },
+    {
+      "id": "F045",
+      "name": "projects-yaml-config",
+      "description": "Create projects.yaml configuration file at the Kanban project root. Define all AIFactory ecosystem repos with paths, adapters, and CMS URLs. Implement projects.yaml reader with path validation (SEC-B-003) and graceful handling of missing repos.",
+      "status": "pending",
+      "priority": 45,
+      "phase": "P8",
+      "dependencies": ["F002"],
+      "acceptance": [
+        "projects.yaml exists at Kanban project root",
+        "Lists AIFactory repos: AgentDispatch, Vivian, SPECOPS, ChartFlow, CMS, PSCanvas",
+        "Each entry has name, path, adapters, enabled, cmsUrl",
+        "Path validation rejects '..' sequences and non-absolute paths",
+        "Reader returns 'offline' status for missing repo paths"
+      ],
+      "files": [
+        "projects.yaml",
+        "packages/kanban-core/src/services/projects-reader.ts"
+      ]
+    },
+    {
+      "id": "F046",
+      "name": "integration-tests",
+      "description": "Integration tests covering full SDLC flow (AC-047): card creation, movement through all columns, blocker lifecycle, auto-archive. Test concurrent writes (AC-051). Test adapter enrichment pipeline end-to-end. Test CLI commands against filesystem fixtures.",
+      "status": "pending",
+      "priority": 46,
+      "phase": "P9",
+      "dependencies": ["F021", "F043"],
+      "acceptance": [
+        "Full SDLC flow test: create card, move through 7 columns, verify notes at each phase",
+        "Blocker lifecycle test: block, notify, unblock, resume (AC-055)",
+        "Concurrent write test: two agents writing different cards simultaneously (AC-051)",
+        "Auto-archive test: cards older than N days in Done are archived (AC-057, AC-058)",
+        "All integration tests pass"
+      ],
+      "files": [
+        "packages/kanban-core/src/__tests__/integration/sdlc-flow.test.ts",
+        "packages/kanban-core/src/__tests__/integration/blocker-lifecycle.test.ts",
+        "packages/kanban-core/src/__tests__/integration/concurrent-writes.test.ts",
+        "packages/kanban-core/src/__tests__/integration/auto-archive.test.ts"
+      ]
+    }
+  ],
+  "phases": [
+    {
+      "id": "P1",
+      "name": "Core Data Layer",
+      "description": "Shared TypeScript library: data models, parsers, file I/O, board reader/writer, validator. Foundation for all consumers.",
+      "features": ["F001", "F002", "F003", "F004", "F005", "F006", "F007", "F008", "F009", "F010"]
+    },
+    {
+      "id": "P2",
+      "name": "Adapter Layer",
+      "description": "Enrichment adapters: Ralph, SPECOPS, SpecArtifact. Read-only data sources for display-time card enrichment.",
+      "features": ["F011", "F012", "F013", "F014", "F015"]
+    },
+    {
+      "id": "P3",
+      "name": "Claude Code Skill",
+      "description": "CLI interface for kanban operations: init, add, list, show, move, done, archive, validate.",
+      "features": ["F016", "F017", "F018", "F019", "F020", "F021"]
+    },
+    {
+      "id": "P4",
+      "name": "VS Code Extension Foundation",
+      "description": "Extension scaffolding, board webview panel, card rendering, board states, file watcher.",
+      "features": ["F022", "F023", "F024", "F025", "F026"]
+    },
+    {
+      "id": "P5",
+      "name": "VS Code Extension Interactions",
+      "description": "Card detail view, creation form, drag-and-drop, undo, blocker flow, search/filter, keyboard navigation.",
+      "features": ["F027", "F028", "F029", "F030", "F031", "F032", "F033"]
+    },
+    {
+      "id": "P6",
+      "name": "VS Code Extension Dashboard",
+      "description": "Cross-repo dashboard panel with projects.yaml, per-project health, offline handling.",
+      "features": ["F034"]
+    },
+    {
+      "id": "P7",
+      "name": "CMS Ops Dashboard",
+      "description": "Real-time CMS operations dashboard: basic auth, WebSocket/SSE, pipeline overview, agent panels, blocked items.",
+      "features": ["F035", "F036", "F037", "F038", "F039", "F040", "F041"]
+    },
+    {
+      "id": "P8",
+      "name": "System Integrations",
+      "description": "AgentDispatch heartbeat reader/writer, Vivian meeting integration, projects.yaml config, git commit conventions.",
+      "features": ["F042", "F043", "F044", "F045"]
+    },
+    {
+      "id": "P9",
+      "name": "Integration Testing",
+      "description": "End-to-end tests: full SDLC flow, blocker lifecycle, concurrent writes, auto-archive.",
+      "features": ["F046"]
+    }
+  ],
+  "config": {
+    "maxParallelAgents": 2,
+    "autoCommit": true,
+    "syncBackOnComplete": true
+  }
+}

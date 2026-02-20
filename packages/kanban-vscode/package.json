@@ -1,0 +1,26 @@
+{
+  "name": "kanban-vscode",
+  "displayName": "Kanban Dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "publisher": "aifactory",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [
+    "workspaceContains:.kanban/board.yaml"
+  ],
+  "main": "./dist/extension.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@kanban/core": "*"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.96.0",
+    "typescript": "^5.7.0"
+  }
+}

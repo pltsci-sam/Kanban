@@ -1,0 +1,18 @@
+{
+  "name": "kanban-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "packages/kanban-core",
+    "packages/kanban-vscode"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}
