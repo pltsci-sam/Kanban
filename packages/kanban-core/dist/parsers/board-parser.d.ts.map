@@ -1,0 +1,1 @@
+{"version":3,"file":"board-parser.d.ts","sourceRoot":"","sources":["../../src/parsers/board-parser.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,KAAK,EAAE,MAAM,oBAAoB,CAAC;AAGhD,wBAAgB,cAAc,CAAC,OAAO,EAAE,MAAM,GAAG,KAAK,CAyCrD;AAED,wBAAgB,kBAAkB,CAAC,KAAK,EAAE,KAAK,GAAG,MAAM,CAOvD"}

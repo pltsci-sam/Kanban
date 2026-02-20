@@ -4,6 +4,7 @@
   "description": "File-based SDLC kanban board for the AIFactory ecosystem",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "publisher": "aifactory",
   "engines": {
     "vscode": "^1.96.0"
