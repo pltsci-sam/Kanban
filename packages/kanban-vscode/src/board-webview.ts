@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { readBoard, BoardNotFoundError, initializeBoard } from '@kanban/core';
-import type { Board, Card } from '@kanban/core';
+import { readBoard, BoardNotFoundError, initializeBoard, createCard } from '@kanban/core';
+import type { Board, Card, CardCreateInput } from '@kanban/core';
 import { CardDetailPanel } from './views/card-detail-panel.js';
 
 export interface BoardMessage {
@@ -82,8 +82,10 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
           CardDetailPanel.open(this.boardDir, message.payload, this.extensionUri);
         }
         break;
-      case 'moveCard':
       case 'addCard':
+        await this.handleAddCard(message.payload as { column: string; title: string; description?: string; priority?: string });
+        break;
+      case 'moveCard':
         // Handled by later P5 features
         break;
     }
@@ -93,6 +95,26 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
     if (!this.boardDir) return;
     try {
       await initializeBoard(this.boardDir);
+      await this.refresh();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.view?.webview.postMessage({ type: 'error', payload: message });
+    }
+  }
+
+  private async handleAddCard(payload: { column: string; title: string; description?: string; priority?: string }): Promise<void> {
+    if (!this.boardDir) return;
+    try {
+      const { join } = await import('node:path');
+      const kanbanDir = join(this.boardDir, '.kanban');
+      const input: CardCreateInput = {
+        title: payload.title,
+        column: payload.column,
+        priority: (payload.priority || 'medium') as 'critical' | 'high' | 'medium' | 'low',
+        description: payload.description || '',
+        source: 'manual',
+      };
+      await createCard(kanbanDir, input);
       await this.refresh();
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
@@ -157,6 +179,18 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
     .error-state-icon { font-size: 2em; color: #e74c3c; }
     .error-state-msg { opacity: 0.8; font-size: 0.9em; text-align: center; max-width: 300px; }
     .warning-bar { background: rgba(230,126,34,0.15); color: #e67e22; padding: 4px 8px; margin-bottom: 8px; border-radius: 3px; font-size: 0.85em; display: flex; align-items: center; gap: 4px; }
+    .column-header { display: flex; justify-content: space-between; align-items: center; }
+    .add-card-btn { background: none; border: none; color: var(--vscode-foreground); opacity: 0.5; cursor: pointer; font-size: 1.1em; padding: 0 4px; line-height: 1; }
+    .add-card-btn:hover { opacity: 1; }
+    .card-form { background: var(--vscode-editor-background); border: 1px solid var(--vscode-focusBorder); border-radius: 3px; padding: 8px; margin-bottom: 6px; }
+    .card-form input, .card-form textarea, .card-form select { width: 100%; box-sizing: border-box; font-family: inherit; font-size: 0.85em; background: var(--vscode-input-background); color: var(--vscode-input-foreground); border: 1px solid var(--vscode-input-border); border-radius: 2px; padding: 4px 6px; margin-bottom: 4px; }
+    .card-form textarea { resize: vertical; min-height: 48px; }
+    .char-counter { font-size: 0.75em; text-align: right; opacity: 0.5; }
+    .char-counter.warning { color: #e67e22; opacity: 1; }
+    .char-counter.exceeded { color: #e74c3c; opacity: 1; }
+    .form-error { color: #e74c3c; font-size: 0.8em; margin-bottom: 4px; }
+    .form-actions { display: flex; gap: 4px; justify-content: flex-end; margin-top: 4px; }
+    .form-label { font-size: 0.8em; opacity: 0.7; margin-bottom: 2px; }
   </style>
 </head>
 <body>
@@ -201,7 +235,7 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
         const wipIcon = wipExceeded ? '\u26a0 ' : '';
         const wipText = col.wipLimit ? ' <span class="wip' + wipClass + '">' + wipIcon + '(' + ids.length + '/' + col.wipLimit + ')</span>' : '';
         html += '<div class="column" data-column="' + escapeHtml(col.name) + '">';
-        html += '<div class="column-header">' + escapeHtml(col.name) + wipText + '</div>';
+        html += '<div class="column-header"><span>' + escapeHtml(col.name) + wipText + '</span><button class="add-card-btn" data-add-column="' + escapeHtml(col.name) + '" title="Add card">+</button></div>';
         if (ids.length === 0) {
           html += '<div class="empty">No cards</div>';
         }
@@ -241,6 +275,65 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
           vscode.postMessage({ type: 'openCard', payload: el.dataset.id });
         });
       });
+
+      boardEl.querySelectorAll('.add-card-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          showCardForm(btn.dataset.addColumn, btn.closest('.column'));
+        });
+      });
+    }
+
+    let currentBoardData = null;
+    function showCardForm(columnName, columnEl) {
+      if (columnEl.querySelector('.card-form')) return;
+      const form = document.createElement('div');
+      form.className = 'card-form';
+      form.innerHTML =
+        '<div class="form-label">Title</div>' +
+        '<input type="text" id="cf-title" maxlength="200" placeholder="Card title...">' +
+        '<div class="char-counter" id="cf-counter">0/200</div>' +
+        '<div class="form-error" id="cf-error" style="display:none"></div>' +
+        '<div class="form-label">Description</div>' +
+        '<textarea id="cf-desc" placeholder="Optional description..."></textarea>' +
+        '<div class="form-label">Priority</div>' +
+        '<select id="cf-priority"><option value="medium">medium</option><option value="critical">critical</option><option value="high">high</option><option value="low">low</option></select>' +
+        '<div class="form-actions">' +
+        '<button class="btn btn-secondary" id="cf-cancel">Cancel</button>' +
+        '<button class="btn btn-primary" id="cf-submit">Add Card</button>' +
+        '</div>';
+      columnEl.querySelector('.column-header').after(form);
+
+      const titleInput = form.querySelector('#cf-title');
+      const counter = form.querySelector('#cf-counter');
+      titleInput.addEventListener('input', () => {
+        const len = titleInput.value.length;
+        counter.textContent = len + '/200';
+        counter.className = 'char-counter' + (len >= 200 ? ' exceeded' : len >= 180 ? ' warning' : '');
+      });
+
+      form.querySelector('#cf-cancel').addEventListener('click', () => form.remove());
+      form.querySelector('#cf-submit').addEventListener('click', () => {
+        const title = titleInput.value.trim();
+        if (!title) {
+          const errEl = form.querySelector('#cf-error');
+          errEl.textContent = 'Title is required';
+          errEl.style.display = 'block';
+          return;
+        }
+        vscode.postMessage({
+          type: 'addCard',
+          payload: {
+            column: columnName,
+            title: title,
+            description: form.querySelector('#cf-desc').value.trim(),
+            priority: form.querySelector('#cf-priority').value
+          }
+        });
+        form.remove();
+      });
+
+      titleInput.focus();
     }
 
     function renderEnrichment(e) {
