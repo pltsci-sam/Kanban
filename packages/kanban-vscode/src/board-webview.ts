@@ -204,6 +204,10 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
     .form-error { color: #e74c3c; font-size: 0.8em; margin-bottom: 4px; }
     .form-actions { display: flex; gap: 4px; justify-content: flex-end; margin-top: 4px; }
     .form-label { font-size: 0.8em; opacity: 0.7; margin-bottom: 2px; }
+    .undo-toast { position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%); background: var(--vscode-editorWidget-background); border: 1px solid var(--vscode-editorWidget-border); border-radius: 4px; padding: 8px 14px; font-size: 0.85em; display: flex; align-items: center; gap: 8px; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); animation: toast-in 0.2s ease-out; }
+    @keyframes toast-in { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+    .undo-toast .undo-link { color: var(--vscode-textLink-foreground); cursor: pointer; text-decoration: underline; }
+    .undo-toast .undo-link:hover { color: var(--vscode-textLink-activeForeground); }
     .card[draggable="true"] { cursor: grab; }
     .card.dragging { opacity: 0.4; }
     .column.drag-over { outline: 2px dashed var(--vscode-focusBorder); outline-offset: -2px; }
@@ -211,6 +215,7 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
   </style>
 </head>
 <body>
+  <div id="toast-container"></div>
   <div id="errors"></div>
   <div id="board" class="board">
     <div class="skeleton">
@@ -370,14 +375,33 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
       return '<div class="enrichment">' + parts.join('') + '</div>';
     }
 
+    let toastTimer = null;
+    function showUndoToast(cardId, fromColumn, targetColumn) {
+      const container = document.getElementById('toast-container');
+      if (toastTimer) clearTimeout(toastTimer);
+      container.innerHTML =
+        '<div class="undo-toast">' +
+        'Moved [' + escapeHtml(cardId) + '] to ' + escapeHtml(targetColumn) +
+        ' <span class="undo-link" id="undo-btn">Undo</span>' +
+        '</div>';
+      document.getElementById('undo-btn').addEventListener('click', () => {
+        vscode.postMessage({ type: 'moveCard', payload: { cardId: cardId, targetColumn: fromColumn } });
+        container.innerHTML = '';
+        if (toastTimer) clearTimeout(toastTimer);
+      });
+      toastTimer = setTimeout(() => { container.innerHTML = ''; toastTimer = null; }, 5000);
+    }
+
     function initDragDrop() {
       const boardEl = document.getElementById('board');
       let draggedId = null;
+      let draggedFromColumn = null;
 
       boardEl.addEventListener('dragstart', (e) => {
         const card = e.target.closest('.card');
         if (!card) return;
         draggedId = card.dataset.id;
+        draggedFromColumn = card.closest('.column')?.dataset.column || null;
         card.classList.add('dragging');
         e.dataTransfer.effectAllowed = 'move';
       });
@@ -421,6 +445,9 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
             position = i;
             break;
           }
+        }
+        if (draggedFromColumn && draggedFromColumn !== targetColumn) {
+          showUndoToast(draggedId, draggedFromColumn, targetColumn);
         }
         vscode.postMessage({ type: 'moveCard', payload: { cardId: draggedId, targetColumn: targetColumn, position: position } });
       });
