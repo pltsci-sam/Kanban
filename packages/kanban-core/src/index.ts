@@ -9,3 +9,4 @@ export {
   generateBlockerId,
   CardIdGenerationError,
 } from './id-generator.js';
+export { writeFileAtomic } from './atomic-writer.js';
