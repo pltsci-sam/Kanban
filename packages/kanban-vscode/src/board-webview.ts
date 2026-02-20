@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { readBoard, BoardNotFoundError, initializeBoard, createCard } from '@kanban/core';
+import { readBoard, BoardNotFoundError, initializeBoard, createCard, moveCard as coreMoveCard } from '@kanban/core';
 import type { Board, Card, CardCreateInput } from '@kanban/core';
 import { CardDetailPanel } from './views/card-detail-panel.js';
 
@@ -86,7 +86,7 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
         await this.handleAddCard(message.payload as { column: string; title: string; description?: string; priority?: string });
         break;
       case 'moveCard':
-        // Handled by later P5 features
+        await this.handleMoveCard(message.payload as { cardId: string; targetColumn: string; position?: number });
         break;
     }
   }
@@ -95,6 +95,19 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
     if (!this.boardDir) return;
     try {
       await initializeBoard(this.boardDir);
+      await this.refresh();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.view?.webview.postMessage({ type: 'error', payload: message });
+    }
+  }
+
+  private async handleMoveCard(payload: { cardId: string; targetColumn: string; position?: number }): Promise<void> {
+    if (!this.boardDir) return;
+    try {
+      const { join } = await import('node:path');
+      const kanbanDir = join(this.boardDir, '.kanban');
+      await coreMoveCard(kanbanDir, payload.cardId, payload.targetColumn, payload.position);
       await this.refresh();
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
@@ -191,6 +204,10 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
     .form-error { color: #e74c3c; font-size: 0.8em; margin-bottom: 4px; }
     .form-actions { display: flex; gap: 4px; justify-content: flex-end; margin-top: 4px; }
     .form-label { font-size: 0.8em; opacity: 0.7; margin-bottom: 2px; }
+    .card[draggable="true"] { cursor: grab; }
+    .card.dragging { opacity: 0.4; }
+    .column.drag-over { outline: 2px dashed var(--vscode-focusBorder); outline-offset: -2px; }
+    .drop-indicator { height: 3px; background: var(--vscode-focusBorder); border-radius: 2px; margin: 2px 0; }
   </style>
 </head>
 <body>
@@ -244,7 +261,7 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
           if (!card) continue;
           const isBlocked = card.blockers && card.blockers.length > 0;
           const blockedClass = isBlocked ? ' blocked' : '';
-          html += '<div class="card' + blockedClass + '" data-id="' + card.id + '">';
+          html += '<div class="card' + blockedClass + '" data-id="' + card.id + '" draggable="true">';
           html += '<div class="card-title-row">';
           const pIcon = priorityIcons[card.priority] || '\u2022';
           html += '<span class="card-priority-badge ' + card.priority + '"><span class="card-priority-icon">' + pIcon + '</span>' + card.priority + '</span>';
@@ -282,6 +299,8 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
           showCardForm(btn.dataset.addColumn, btn.closest('.column'));
         });
       });
+
+      initDragDrop();
     }
 
     let currentBoardData = null;
@@ -349,6 +368,62 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
       }
       if (parts.length === 0) return '';
       return '<div class="enrichment">' + parts.join('') + '</div>';
+    }
+
+    function initDragDrop() {
+      const boardEl = document.getElementById('board');
+      let draggedId = null;
+
+      boardEl.addEventListener('dragstart', (e) => {
+        const card = e.target.closest('.card');
+        if (!card) return;
+        draggedId = card.dataset.id;
+        card.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+
+      boardEl.addEventListener('dragend', (e) => {
+        const card = e.target.closest('.card');
+        if (card) card.classList.remove('dragging');
+        boardEl.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+        boardEl.querySelectorAll('.drop-indicator').forEach(el => el.remove());
+        draggedId = null;
+      });
+
+      boardEl.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        const col = e.target.closest('.column');
+        if (!col) return;
+        boardEl.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+        col.classList.add('drag-over');
+      });
+
+      boardEl.addEventListener('dragleave', (e) => {
+        const col = e.target.closest('.column');
+        if (col && !col.contains(e.relatedTarget)) {
+          col.classList.remove('drag-over');
+        }
+      });
+
+      boardEl.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (!draggedId) return;
+        const col = e.target.closest('.column');
+        if (!col) return;
+        col.classList.remove('drag-over');
+        const targetColumn = col.dataset.column;
+        const cards = Array.from(col.querySelectorAll('.card'));
+        let position = cards.length;
+        for (let i = 0; i < cards.length; i++) {
+          const rect = cards[i].getBoundingClientRect();
+          if (e.clientY < rect.top + rect.height / 2) {
+            position = i;
+            break;
+          }
+        }
+        vscode.postMessage({ type: 'moveCard', payload: { cardId: draggedId, targetColumn: targetColumn, position: position } });
+      });
     }
 
     function showEmptyState() {
