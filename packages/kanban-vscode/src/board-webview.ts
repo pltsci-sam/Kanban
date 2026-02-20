@@ -220,9 +220,12 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
     .filter-chip-remove { cursor: pointer; opacity: 0.7; }
     .filter-chip-remove:hover { opacity: 1; }
     .card.filtered-out { display: none; }
+    .card:focus { outline: 2px solid var(--vscode-focusBorder); outline-offset: 1px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
   </style>
 </head>
 <body>
+  <div id="sr-announce" class="sr-only" aria-live="assertive" role="status"></div>
   <div id="toast-container"></div>
   <div class="search-bar">
     <input type="text" class="search-input" id="search-input" placeholder="Search cards...">
@@ -281,7 +284,7 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
           if (!card) continue;
           const isBlocked = card.blockers && card.blockers.length > 0;
           const blockedClass = isBlocked ? ' blocked' : '';
-          html += '<div class="card' + blockedClass + '" data-id="' + card.id + '" draggable="true">';
+          html += '<div class="card' + blockedClass + '" data-id="' + card.id + '" draggable="true" tabindex="0" role="listitem" aria-label="' + escapeHtml(card.title) + ', ' + card.priority + ' priority">';
           html += '<div class="card-title-row">';
           const pIcon = priorityIcons[card.priority] || '\u2022';
           html += '<span class="card-priority-badge ' + card.priority + '"><span class="card-priority-icon">' + pIcon + '</span>' + card.priority + '</span>';
@@ -510,6 +513,52 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
       filterBlocked.addEventListener('change', applyFilters);
     }
     initSearchFilter();
+
+    function announce(msg) {
+      const el = document.getElementById('sr-announce');
+      el.textContent = msg;
+      setTimeout(() => { el.textContent = ''; }, 1000);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      const card = document.activeElement?.closest('.card');
+      if (!card || !e.altKey) return;
+      const col = card.closest('.column');
+      if (!col) return;
+      const cardId = card.dataset.id;
+      const columns = Array.from(document.querySelectorAll('.column'));
+      const colIdx = columns.indexOf(col);
+
+      if (e.key === 'ArrowRight' && colIdx < columns.length - 1) {
+        e.preventDefault();
+        const targetCol = columns[colIdx + 1].dataset.column;
+        vscode.postMessage({ type: 'moveCard', payload: { cardId, targetColumn: targetCol } });
+        showUndoToast(cardId, col.dataset.column, targetCol);
+        announce('Card ' + cardId + ' moved to ' + targetCol);
+      } else if (e.key === 'ArrowLeft' && colIdx > 0) {
+        e.preventDefault();
+        const targetCol = columns[colIdx - 1].dataset.column;
+        vscode.postMessage({ type: 'moveCard', payload: { cardId, targetColumn: targetCol } });
+        showUndoToast(cardId, col.dataset.column, targetCol);
+        announce('Card ' + cardId + ' moved to ' + targetCol);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const cards = Array.from(col.querySelectorAll('.card'));
+        const idx = cards.indexOf(card);
+        if (idx > 0) {
+          vscode.postMessage({ type: 'moveCard', payload: { cardId, targetColumn: col.dataset.column, position: idx - 1 } });
+          announce('Card ' + cardId + ' moved up');
+        }
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const cards = Array.from(col.querySelectorAll('.card'));
+        const idx = cards.indexOf(card);
+        if (idx < cards.length - 1) {
+          vscode.postMessage({ type: 'moveCard', payload: { cardId, targetColumn: col.dataset.column, position: idx + 1 } });
+          announce('Card ' + cardId + ' moved down');
+        }
+      }
+    });
 
     function showEmptyState() {
       document.getElementById('errors').innerHTML = '';
