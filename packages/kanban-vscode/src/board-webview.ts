@@ -212,10 +212,24 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
     .card.dragging { opacity: 0.4; }
     .column.drag-over { outline: 2px dashed var(--vscode-focusBorder); outline-offset: -2px; }
     .drop-indicator { height: 3px; background: var(--vscode-focusBorder); border-radius: 2px; margin: 2px 0; }
+    .search-bar { display: flex; gap: 6px; margin-bottom: 8px; align-items: center; }
+    .search-input { flex: 1; background: var(--vscode-input-background); color: var(--vscode-input-foreground); border: 1px solid var(--vscode-input-border); border-radius: 3px; padding: 4px 8px; font-family: inherit; font-size: 0.85em; }
+    .filter-select { background: var(--vscode-dropdown-background); color: var(--vscode-dropdown-foreground); border: 1px solid var(--vscode-dropdown-border); border-radius: 3px; padding: 3px 6px; font-family: inherit; font-size: 0.8em; }
+    .active-filters { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+    .filter-chip { display: inline-flex; align-items: center; gap: 3px; background: var(--vscode-badge-background); color: var(--vscode-badge-foreground); padding: 2px 6px; border-radius: 10px; font-size: 0.75em; }
+    .filter-chip-remove { cursor: pointer; opacity: 0.7; }
+    .filter-chip-remove:hover { opacity: 1; }
+    .card.filtered-out { display: none; }
   </style>
 </head>
 <body>
   <div id="toast-container"></div>
+  <div class="search-bar">
+    <input type="text" class="search-input" id="search-input" placeholder="Search cards...">
+    <select class="filter-select" id="filter-priority"><option value="">Priority</option><option value="critical">critical</option><option value="high">high</option><option value="medium">medium</option><option value="low">low</option></select>
+    <select class="filter-select" id="filter-blocked"><option value="">Blocked</option><option value="yes">Blocked</option><option value="no">Not blocked</option></select>
+  </div>
+  <div class="active-filters" id="active-filters"></div>
   <div id="errors"></div>
   <div id="board" class="board">
     <div class="skeleton">
@@ -245,7 +259,8 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
       const columns = data.board.columns;
       const cardOrder = data.board.cardOrder || {};
       const cardsById = {};
-      (data.cards || []).forEach(c => { cardsById[c.id] = c; });
+      boardCardsData = data.cards || [];
+      boardCardsData.forEach(c => { cardsById[c.id] = c; });
 
       const priorityIcons = { critical: '\u26a0', high: '\u2191', medium: '\u2022', low: '\u2193' };
 
@@ -452,6 +467,49 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
         vscode.postMessage({ type: 'moveCard', payload: { cardId: draggedId, targetColumn: targetColumn, position: position } });
       });
     }
+
+    let boardCardsData = [];
+    function initSearchFilter() {
+      const searchInput = document.getElementById('search-input');
+      const filterPriority = document.getElementById('filter-priority');
+      const filterBlocked = document.getElementById('filter-blocked');
+
+      const applyFilters = () => {
+        const query = searchInput.value.trim().toLowerCase();
+        const priority = filterPriority.value;
+        const blocked = filterBlocked.value;
+        const chips = [];
+
+        document.querySelectorAll('.card').forEach(el => {
+          const id = el.dataset.id;
+          const card = boardCardsData.find(c => c.id === id);
+          if (!card) return;
+          let visible = true;
+          if (query && !card.title.toLowerCase().includes(query)) visible = false;
+          if (priority && card.priority !== priority) visible = false;
+          if (blocked === 'yes' && !(card.blockers && card.blockers.length > 0)) visible = false;
+          if (blocked === 'no' && card.blockers && card.blockers.length > 0) visible = false;
+          el.classList.toggle('filtered-out', !visible);
+        });
+
+        if (query) chips.push({ label: 'Search: ' + query, clear: () => { searchInput.value = ''; applyFilters(); } });
+        if (priority) chips.push({ label: 'Priority: ' + priority, clear: () => { filterPriority.value = ''; applyFilters(); } });
+        if (blocked) chips.push({ label: blocked === 'yes' ? 'Blocked' : 'Not blocked', clear: () => { filterBlocked.value = ''; applyFilters(); } });
+
+        const chipsEl = document.getElementById('active-filters');
+        chipsEl.innerHTML = chips.map((c, i) =>
+          '<span class="filter-chip">' + escapeHtml(c.label) + ' <span class="filter-chip-remove" data-chip="' + i + '">\u2715</span></span>'
+        ).join('');
+        chipsEl.querySelectorAll('.filter-chip-remove').forEach(el => {
+          el.addEventListener('click', () => { chips[parseInt(el.dataset.chip)].clear(); });
+        });
+      };
+
+      searchInput.addEventListener('input', applyFilters);
+      filterPriority.addEventListener('change', applyFilters);
+      filterBlocked.addEventListener('change', applyFilters);
+    }
+    initSearchFilter();
 
     function showEmptyState() {
       document.getElementById('errors').innerHTML = '';
