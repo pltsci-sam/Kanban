@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { readBoard, BoardNotFoundError, initializeBoard } from '@kanban/core';
 import type { Board, Card } from '@kanban/core';
+import { CardDetailPanel } from './views/card-detail-panel.js';
 
 export interface BoardMessage {
   type: 'update' | 'moveCard' | 'openCard' | 'addCard' | 'refresh' | 'initBoard' | 'openBoardYaml';
@@ -76,10 +77,14 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
       case 'openBoardYaml':
         await this.handleOpenBoardYaml();
         break;
-      case 'moveCard':
       case 'openCard':
+        if (this.boardDir && typeof message.payload === 'string') {
+          CardDetailPanel.open(this.boardDir, message.payload, this.extensionUri);
+        }
+        break;
+      case 'moveCard':
       case 'addCard':
-        // Handled by P5 features
+        // Handled by later P5 features
         break;
     }
   }
