@@ -1,6 +1,7 @@
 {
   "name": "kanban-vscode",
   "displayName": "Kanban Dashboard",
+  "description": "File-based SDLC kanban board for the AIFactory ecosystem",
   "version": "0.1.0",
   "private": true,
   "publisher": "aifactory",
@@ -12,6 +13,32 @@
     "workspaceContains:.kanban/board.yaml"
   ],
   "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      { "command": "kanban.openBoard", "title": "Kanban: Open Board" },
+      { "command": "kanban.initBoard", "title": "Kanban: Initialize Board" },
+      { "command": "kanban.addCard", "title": "Kanban: Add Card" },
+      { "command": "kanban.refreshBoard", "title": "Kanban: Refresh Board" }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "kanban",
+          "title": "Kanban",
+          "icon": "$(project)"
+        }
+      ]
+    },
+    "views": {
+      "kanban": [
+        {
+          "type": "webview",
+          "id": "kanban.boardView",
+          "name": "Board"
+        }
+      ]
+    }
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch"
