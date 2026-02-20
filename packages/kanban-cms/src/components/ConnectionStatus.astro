@@ -1,0 +1,21 @@
+---
+// ConnectionStatus Astro wrapper — client-side only, renders via JS
+---
+<div id="connection-status"></div>
+
+<script>
+  import { renderConnectionStatus, connectionStatusStyles } from './ConnectionStatus';
+
+  // Inject styles once
+  const style = document.createElement('style');
+  style.textContent = connectionStatusStyles();
+  document.head.appendChild(style);
+
+  const container = document.getElementById('connection-status');
+
+  export function updateConnectionBanner(state: string, nextRetryIn?: number) {
+    if (container) {
+      container.innerHTML = renderConnectionStatus(state as any, nextRetryIn);
+    }
+  }
+</script>
