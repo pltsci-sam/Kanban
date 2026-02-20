@@ -10,3 +10,9 @@ export {
   CardIdGenerationError,
 } from './id-generator.js';
 export { writeFileAtomic } from './atomic-writer.js';
+export {
+  readBoard,
+  readCard,
+  BoardNotFoundError,
+} from './board-reader.js';
+export type { BoardState, CardError } from './board-reader.js';
