@@ -1,0 +1,348 @@
+{
+  "models": {
+    "Board": {
+      "fields": {
+        "name": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "version": {
+          "type": "integer",
+          "value": 1
+        },
+        "columns": {
+          "type": "ColumnDefinition[]"
+        },
+        "labels": {
+          "type": "LabelDefinition[]"
+        },
+        "cardOrder": {
+          "type": "map<string,string[]>"
+        },
+        "settings": {
+          "type": "BoardSettings"
+        },
+        "isLoading": {
+          "type": "boolean",
+          "default": true
+        },
+        "searchQuery": {
+          "type": "string",
+          "default": ""
+        },
+        "parseErrors": {
+          "type": "CardParseError[]",
+          "default": []
+        },
+        "validationError": {
+          "type": "string",
+          "nullable": true
+        }
+      }
+    },
+    "Card": {
+      "fields": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]{6}$"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "column": {
+          "type": "string"
+        },
+        "priority": {
+          "type": "enum",
+          "values": [
+            "critical",
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "labels": {
+          "type": "string[]",
+          "default": []
+        },
+        "assignee": {
+          "type": "string",
+          "nullable": true
+        },
+        "created": {
+          "type": "datetime"
+        },
+        "updated": {
+          "type": "datetime"
+        },
+        "due": {
+          "type": "date",
+          "nullable": true
+        },
+        "source": {
+          "type": "enum",
+          "values": [
+            "manual",
+            "agentdispatch",
+            "vivian",
+            "slack"
+          ]
+        },
+        "pin": {
+          "type": "boolean",
+          "default": false
+        },
+        "blockers": {
+          "type": "Blocker[]",
+          "default": []
+        },
+        "specRef": {
+          "type": "string",
+          "nullable": true
+        },
+        "ralphFeature": {
+          "type": "string",
+          "nullable": true
+        },
+        "meeting": {
+          "type": "string",
+          "nullable": true
+        },
+        "description": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "Note[]"
+        },
+        "enrichment": {
+          "type": "CardEnrichment",
+          "nullable": true
+        }
+      }
+    },
+    "Blocker": {
+      "fields": {
+        "id": {
+          "type": "string",
+          "pattern": "^blk-[a-z0-9]{4}$"
+        },
+        "question": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "author": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "created": {
+          "type": "datetime"
+        }
+      }
+    },
+    "Note": {
+      "fields": {
+        "timestamp": {
+          "type": "datetime"
+        },
+        "author": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "content": {
+          "type": "string"
+        },
+        "type": {
+          "type": "enum",
+          "values": [
+            "comment",
+            "milestone",
+            "blocker",
+            "unblock"
+          ],
+          "nullable": true
+        }
+      }
+    },
+    "ColumnDefinition": {
+      "fields": {
+        "name": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "wipLimit": {
+          "type": "integer",
+          "nullable": true,
+          "min": 1
+        },
+        "done": {
+          "type": "boolean",
+          "default": false
+        },
+        "description": {
+          "type": "string",
+          "nullable": true
+        }
+      }
+    },
+    "LabelDefinition": {
+      "fields": {
+        "name": {
+          "type": "string",
+          "maxLength": 30
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        }
+      }
+    },
+    "ProjectConfig": {
+      "fields": {
+        "name": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "path": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string",
+          "nullable": true
+        },
+        "adapters": {
+          "type": "string[]"
+        },
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "cmsUrl": {
+          "type": "string",
+          "nullable": true
+        },
+        "isOffline": {
+          "type": "boolean",
+          "default": false
+        },
+        "completionPct": {
+          "type": "number",
+          "computed": true
+        },
+        "blockedCount": {
+          "type": "integer",
+          "computed": true
+        },
+        "lastActivity": {
+          "type": "datetime",
+          "nullable": true
+        }
+      }
+    },
+    "CardEnrichment": {
+      "fields": {
+        "ralph": {
+          "type": "RalphEnrichment",
+          "nullable": true
+        },
+        "specops": {
+          "type": "SpecopsEnrichment",
+          "nullable": true
+        },
+        "specArtifact": {
+          "type": "SpecArtifactEnrichment",
+          "nullable": true
+        }
+      }
+    },
+    "RalphEnrichment": {
+      "fields": {
+        "buildProgress": {
+          "type": "number",
+          "min": 0,
+          "max": 100
+        },
+        "phase": {
+          "type": "string"
+        },
+        "filesModified": {
+          "type": "integer"
+        }
+      }
+    },
+    "DashboardSnapshot": {
+      "fields": {
+        "pipeline": {
+          "type": "map<string,number>"
+        },
+        "activeAgents": {
+          "type": "ActiveAgentSummary[]"
+        },
+        "blockedCards": {
+          "type": "BlockedCardSummary[]"
+        },
+        "recentCompletions": {
+          "type": "CompletionSummary[]"
+        }
+      }
+    },
+    "ActiveAgentSummary": {
+      "fields": {
+        "agentId": {
+          "type": "string"
+        },
+        "agentName": {
+          "type": "string"
+        },
+        "agentType": {
+          "type": "string"
+        },
+        "cardId": {
+          "type": "string",
+          "nullable": true
+        },
+        "cardTitle": {
+          "type": "string",
+          "nullable": true
+        },
+        "repo": {
+          "type": "string"
+        },
+        "startedAt": {
+          "type": "datetime"
+        },
+        "toolCallCount": {
+          "type": "integer"
+        },
+        "toolCalls": {
+          "type": "AgentToolCallEvent[]"
+        }
+      }
+    },
+    "WebSocketState": {
+      "fields": {
+        "connectionState": {
+          "type": "enum",
+          "values": [
+            "disconnected",
+            "connecting",
+            "connected",
+            "reconnecting"
+          ]
+        },
+        "retryCount": {
+          "type": "integer",
+          "default": 0
+        },
+        "lastConnectedAt": {
+          "type": "datetime",
+          "nullable": true
+        }
+      }
+    }
+  }
+}

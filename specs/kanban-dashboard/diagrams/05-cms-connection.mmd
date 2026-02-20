@@ -1,0 +1,15 @@
+stateDiagram-v2
+    [*] --> Disconnected
+
+    Disconnected --> Connecting: page_load
+    Disconnected --> Connecting: manual_retry
+
+    Connecting --> Connected: ws_open
+    Connecting --> Disconnected: ws_error
+
+    Connected --> Reconnecting: ws_close
+    Connected --> Reconnecting: ws_error
+    Connected --> Disconnected: page_unload
+
+    Reconnecting --> Connected: ws_open
+    Reconnecting --> Disconnected: max_retries_exceeded

@@ -1,0 +1,72 @@
+{
+  "screenId": "screen_card-detail",
+  "states": {
+    "loading": {
+      "on": {
+        "cardLoaded": "viewing"
+      },
+      "entry": [
+        "readCardFile",
+        "runAdapterEnrichment"
+      ]
+    },
+    "viewing": {
+      "on": {
+        "hasBlocker": "blocked",
+        "closeTapped": "closing"
+      }
+    },
+    "blocked": {
+      "on": {
+        "responseEntered": "responseReady",
+        "closeTapped": "closing"
+      },
+      "entry": [
+        "showBlockerSection",
+        "disableUnblockBtn"
+      ]
+    },
+    "responseReady": {
+      "on": {
+        "unblockTapped": "unblocking",
+        "responseCleared": "blocked"
+      },
+      "entry": [
+        "enableUnblockBtn"
+      ]
+    },
+    "unblocking": {
+      "on": {
+        "unblockComplete": "closing"
+      },
+      "entry": [
+        "removeBlockerFromFrontmatter",
+        "appendUnblockNote",
+        "refreshUpdatedTimestamp",
+        "writeCardFile"
+      ]
+    },
+    "closing": {
+      "on": {
+        "closed": "done"
+      }
+    }
+  },
+  "api": [
+    {
+      "method": "FILE_READ",
+      "path": ".kanban/cards/{cardId}.md",
+      "response": {
+        "card": "Card"
+      }
+    },
+    {
+      "method": "FILE_WRITE",
+      "path": ".kanban/cards/{cardId}.md",
+      "description": "Atomic write after unblock — updates frontmatter blockers and appends note"
+    }
+  ],
+  "onMount": [
+    "startLoading"
+  ]
+}

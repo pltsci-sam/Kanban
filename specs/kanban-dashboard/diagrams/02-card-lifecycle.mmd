@@ -1,0 +1,26 @@
+stateDiagram-v2
+    [*] --> Backlog: card_created
+
+    Backlog --> SpecCreation: agent_starts_spec
+    Backlog --> Building: human_skip_to_build
+
+    SpecCreation --> SpecReview: spec_complete
+    SpecCreation --> Backlog: spec_abandoned
+
+    SpecReview --> Building: review_approved
+    SpecReview --> SpecCreation: review_rejected
+
+    Building --> Testing: build_complete
+    Building --> SpecCreation: rework_spec
+
+    Testing --> HumanReview: tests_passed
+    Testing --> Building: tests_failed
+
+    HumanReview --> Done: human_approved
+    HumanReview --> Building: human_rejected
+    HumanReview --> SpecCreation: human_rework_spec
+
+    Done --> Archived: auto_archive
+    Done --> Backlog: reopen
+
+    Archived --> [*]

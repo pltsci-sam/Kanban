@@ -1,0 +1,81 @@
+{
+  "screenId": "screen_card-create-form",
+  "states": {
+    "idle": {
+      "on": {
+        "titleEntered": "validating"
+      },
+      "entry": [
+        "disableSubmitBtn",
+        "clearErrors"
+      ]
+    },
+    "validating": {
+      "on": {
+        "titleValid": "ready",
+        "titleEmpty": "idle",
+        "titleTooLong": "invalid"
+      },
+      "entry": [
+        "validateTitle"
+      ]
+    },
+    "invalid": {
+      "on": {
+        "titleCorrected": "validating"
+      },
+      "entry": [
+        "showTitleError",
+        "disableSubmitBtn"
+      ]
+    },
+    "ready": {
+      "on": {
+        "submitTapped": "submitting",
+        "cancelTapped": "cancelled",
+        "titleCleared": "idle"
+      },
+      "entry": [
+        "enableSubmitBtn",
+        "clearErrors"
+      ]
+    },
+    "submitting": {
+      "on": {
+        "submitComplete": "success",
+        "submitError": "ready"
+      },
+      "entry": [
+        "generateCardId",
+        "writeCardFile",
+        "updateBoardYaml"
+      ]
+    },
+    "success": {
+      "on": {
+        "boardRendered": "done"
+      }
+    },
+    "cancelled": {
+      "on": {}
+    },
+    "done": {
+      "on": {}
+    }
+  },
+  "api": [
+    {
+      "method": "FILE_WRITE",
+      "path": ".kanban/cards/{id}.md",
+      "description": "Create card file with source: manual"
+    },
+    {
+      "method": "FILE_WRITE",
+      "path": ".kanban/board.yaml",
+      "description": "Append card ID to target column cardOrder"
+    }
+  ],
+  "onMount": [
+    "initForm"
+  ]
+}

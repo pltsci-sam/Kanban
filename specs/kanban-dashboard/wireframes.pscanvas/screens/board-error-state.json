@@ -1,0 +1,233 @@
+{
+  "id": "02c00217",
+  "type": "Screen",
+  "name": "Board Error State",
+  "layout": {
+    "sizing": {
+      "width": {
+        "type": "fixed",
+        "value": 1280
+      },
+      "height": {
+        "type": "fixed",
+        "value": 800
+      }
+    }
+  },
+  "style": {},
+  "children": [
+    {
+      "id": "error_root",
+      "type": "Column",
+      "name": "Error Root",
+      "layout": {
+        "padding": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "gap": 0,
+        "crossAxisAlignment": "stretch"
+      },
+      "style": {
+        "background": "#080c0b",
+        "width": 1280,
+        "height": 800
+      },
+      "children": [
+        {
+          "id": "error_topbar",
+          "type": "Row",
+          "name": "Error Topbar",
+          "layout": {
+            "padding": [
+              0,
+              16,
+              0,
+              16
+            ],
+            "crossAxisAlignment": "center"
+          },
+          "style": {
+            "background": "#0a0f0e",
+            "height": 56,
+            "borderBottom": "1px solid #1a2e2a"
+          },
+          "children": [
+            {
+              "id": "error_topbar_title",
+              "type": "Text",
+              "name": "Error Topbar Title",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "text": "Kanban — Board Error",
+                "fontSize": 16,
+                "fontWeight": "600",
+                "color": "#ffffff"
+              }
+            }
+          ]
+        },
+        {
+          "id": "error_center",
+          "type": "Column",
+          "name": "Error Center",
+          "layout": {
+            "crossAxisAlignment": "center",
+            "mainAxisAlignment": "center",
+            "gap": 20,
+            "padding": [
+              0,
+              0,
+              80,
+              0
+            ]
+          },
+          "style": {
+            "flex": 1
+          },
+          "children": [
+            {
+              "id": "error_icon_container",
+              "type": "Box",
+              "name": "Error Icon Container",
+              "layout": {
+                "crossAxisAlignment": "center",
+                "mainAxisAlignment": "center"
+              },
+              "style": {
+                "width": 80,
+                "height": 80,
+                "borderRadius": 9999,
+                "background": "#450a0a",
+                "border": {"width": 1, "color": "#ef4444"}
+              },
+              "children": [
+                {
+                  "id": "error_icon_inner",
+                  "type": "Icon",
+                  "name": "Error Icon",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "name": "error",
+                    "size": 36,
+                    "color": "#ef4444"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "error_title",
+              "type": "Text",
+              "name": "Error Title",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "text": "Board Configuration Invalid",
+                "fontSize": 22,
+                "fontWeight": "600",
+                "color": "#ffffff",
+                "textAlign": "center"
+              }
+            },
+            {
+              "id": "error_message_box",
+              "type": "Column",
+              "name": "Error Message Box",
+              "layout": {
+                "padding": [
+                  12,
+                  16,
+                  12,
+                  16
+                ],
+                "gap": 6
+              },
+              "style": {
+                "background": "#450a0a",
+                "borderRadius": 8,
+                "border": {"width": 1, "color": "#ef4444"},
+                "maxWidth": 560
+              },
+              "children": [
+                {
+                  "id": "error_message_label",
+                  "type": "Text",
+                  "name": "Error Label",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "text": "Validation Error",
+                    "fontSize": 11,
+                    "fontWeight": "700",
+                    "color": "#ef4444",
+                    "letterSpacing": "1px"
+                  }
+                },
+                {
+                  "id": "error_message_text",
+                  "type": "Text",
+                  "name": "Error Message Text",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "text": "board.yaml: Missing required field ‘columns’ at line 3",
+                    "fontSize": 13,
+                    "color": "#fca5a5",
+                    "fontFamily": "monospace"
+                  },
+                  "metadata": {
+                    "bindings": [
+                      {
+                        "field": "board.validationError",
+                        "direction": "read"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "id": "open_editor_btn",
+              "type": "Button",
+              "name": "Open In Editor Button",
+              "layout": {},
+              "style": {
+                "borderColor": "#ef4444",
+                "color": "#ef4444",
+                "borderRadius": 8
+              },
+              "children": [],
+              "props": {
+                "label": "Open board.yaml in Editor",
+                "variant": "outlined",
+                "height": 44
+              },
+              "metadata": {
+                "handlers": [
+                  {
+                    "event": "tap",
+                    "action": "openFileInEditor(.kanban/board.yaml)"
+                  }
+                ],
+                "accessibility": {
+                  "role": "button",
+                  "label": "Open board.yaml in VS Code editor"
+                },
+                "specRef": "requirements.md#EF-001.1"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

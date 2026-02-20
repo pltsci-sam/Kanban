@@ -1,0 +1,73 @@
+{
+  "screenId": "screen_cms-ops",
+  "states": {
+    "disconnected": {
+      "on": {
+        "pageLoad": "connecting",
+        "manualRetry": "connecting"
+      },
+      "entry": [
+        "showOfflineBanner"
+      ]
+    },
+    "connecting": {
+      "on": {
+        "wsOpen": "connected",
+        "wsError": "disconnected"
+      },
+      "entry": [
+        "showConnectingOverlay",
+        "openWebSocket"
+      ]
+    },
+    "connected": {
+      "on": {
+        "wsClose": "reconnecting",
+        "wsError": "reconnecting",
+        "pageUnload": "disconnected",
+        "taskStateChange": "connected",
+        "agentToolCall": "connected",
+        "agentSessionStart": "connected",
+        "agentSessionComplete": "connected",
+        "agentBlocked": "connected"
+      },
+      "entry": [
+        "hideConnectingOverlay",
+        "showGreenIndicator",
+        "requestSnapshot",
+        "openAgentSSEConnections"
+      ]
+    },
+    "reconnecting": {
+      "on": {
+        "wsOpen": "connected",
+        "maxRetriesExceeded": "disconnected"
+      },
+      "entry": [
+        "showYellowIndicator",
+        "startExponentialBackoff"
+      ]
+    }
+  },
+  "api": [
+    {
+      "method": "WS_CONNECT",
+      "path": "/dashboard/ws",
+      "auth": "basicAuth",
+      "response": {
+        "snapshot": "DashboardSnapshot"
+      }
+    },
+    {
+      "method": "SSE_CONNECT",
+      "path": "/agents/{agentId}/thinking",
+      "auth": "basicAuth",
+      "response": {
+        "thinking": "AgentThinkingEvent"
+      }
+    }
+  ],
+  "onMount": [
+    "connectWebSocket"
+  ]
+}

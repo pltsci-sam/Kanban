@@ -1,0 +1,784 @@
+{
+  "id": "6b1aa4c6",
+  "type": "Screen",
+  "name": "Dashboard View",
+  "layout": {
+    "sizing": {
+      "width": {
+        "type": "fixed",
+        "value": 1280
+      },
+      "height": {
+        "type": "fixed",
+        "value": 800
+      }
+    }
+  },
+  "style": {},
+  "children": [
+    {
+      "id": "dash_root",
+      "type": "Column",
+      "name": "Dashboard Root",
+      "layout": {
+        "padding": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "gap": 0
+      },
+      "style": {
+        "background": "#080c0b",
+        "width": 1280,
+        "height": 800
+      },
+      "children": [
+        {
+          "id": "dash_topbar",
+          "type": "Row",
+          "name": "Dashboard Top Bar",
+          "layout": {
+            "padding": [
+              0,
+              16,
+              0,
+              16
+            ],
+            "gap": 12,
+            "crossAxisAlignment": "center",
+            "mainAxisAlignment": "spaceBetween"
+          },
+          "style": {
+            "background": "#0a0f0e",
+            "height": 56,
+            "borderBottom": "1px solid #1a2e2a"
+          },
+          "children": [
+            {
+              "id": "dash_title",
+              "type": "Text",
+              "name": "Dashboard Title",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "text": "Kanban Dashboard — Cross-Repo Overview",
+                "fontSize": 16,
+                "fontWeight": "600",
+                "color": "#ffffff"
+              }
+            },
+            {
+              "id": "dash_tab_row",
+              "type": "Row",
+              "name": "Dashboard Tab Row",
+              "layout": {
+                "gap": 8,
+                "crossAxisAlignment": "center"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "dash_board_tab",
+                  "type": "Button",
+                  "name": "Board Tab",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "label": "Board",
+                    "variant": "ghost",
+                    "fontSize": 13,
+                    "color": "#a1a1aa"
+                  },
+                  "metadata": {
+                    "handlers": [
+                      {
+                        "event": "tap",
+                        "action": "navigate(board-view)"
+                      }
+                    ],
+                    "accessibility": {
+                      "role": "tab",
+                      "label": "Kanban board view"
+                    }
+                  }
+                },
+                {
+                  "id": "dash_dashboard_tab",
+                  "type": "Button",
+                  "name": "Dashboard Tab (Active)",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "label": "Dashboard",
+                    "variant": "ghost",
+                    "fontSize": 13,
+                    "color": "#0d9488"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "dash_content",
+          "type": "Column",
+          "name": "Dashboard Content",
+          "layout": {
+            "padding": [
+              24,
+              24,
+              24,
+              24
+            ],
+            "gap": 20
+          },
+          "style": {
+            "flex": 1,
+            "overflowY": "auto"
+          },
+          "children": [
+            {
+              "id": "dash_section_header",
+              "type": "Row",
+              "name": "Section Header",
+              "layout": {
+                "gap": 8,
+                "crossAxisAlignment": "center",
+                "mainAxisAlignment": "spaceBetween"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "dash_section_title",
+                  "type": "Text",
+                  "name": "Section Title",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "text": "AIFactory Projects",
+                    "fontSize": 14,
+                    "fontWeight": "600",
+                    "color": "#ffffff"
+                  }
+                },
+                {
+                  "id": "dash_last_refresh",
+                  "type": "Text",
+                  "name": "Last Refresh",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "text": "Last updated: just now",
+                    "fontSize": 11,
+                    "color": "#52525b"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "project_cards_grid",
+              "type": "Wrap",
+              "name": "Project Cards Grid",
+              "layout": {
+                "gap": 16
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "proj_card_agentdispatch",
+                  "type": "Column",
+                  "name": "AgentDispatch Project Card",
+                  "layout": {
+                    "padding": [
+                      16,
+                      16,
+                      16,
+                      16
+                    ],
+                    "gap": 10
+                  },
+                  "style": {
+                    "width": 280,
+                    "background": "#111816",
+                    "borderRadius": 12,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": [
+                    {
+                      "id": "proj1_header",
+                      "type": "Row",
+                      "name": "Proj1 Header",
+                      "layout": {
+                        "gap": 8,
+                        "crossAxisAlignment": "center",
+                        "mainAxisAlignment": "spaceBetween"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "proj1_name",
+                          "type": "Text",
+                          "name": "Proj1 Name",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "AgentDispatch",
+                            "fontSize": 14,
+                            "fontWeight": "600",
+                            "color": "#ffffff"
+                          }
+                        },
+                        {
+                          "id": "proj1_status_dot",
+                          "type": "Row",
+                          "name": "Proj1 Status Dot",
+                          "layout": {
+                            "gap": 4,
+                            "crossAxisAlignment": "center"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "proj1_online_dot",
+                              "type": "Box",
+                              "name": "Online Dot",
+                              "layout": {},
+                              "style": {
+                                "width": 8,
+                                "height": 8,
+                                "borderRadius": 9999,
+                                "background": "#22c55e"
+                              },
+                              "children": []
+                            },
+                            {
+                              "id": "proj1_online_text",
+                              "type": "Text",
+                              "name": "Online Text",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "online",
+                                "fontSize": 10,
+                                "color": "#22c55e"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "proj1_desc",
+                      "type": "Text",
+                      "name": "Proj1 Description",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Autonomous SDLC orchestrator",
+                        "fontSize": 11,
+                        "color": "#71717a"
+                      }
+                    },
+                    {
+                      "id": "proj1_progress_row",
+                      "type": "Row",
+                      "name": "Proj1 Progress Row",
+                      "layout": {
+                        "gap": 8,
+                        "crossAxisAlignment": "center"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "proj1_progress_bar_bg",
+                          "type": "Box",
+                          "name": "Proj1 Progress BG",
+                          "layout": {},
+                          "style": {
+                            "flex": 1,
+                            "height": 6,
+                            "background": "#1a2e2a",
+                            "borderRadius": 9999
+                          },
+                          "children": [
+                            {
+                              "id": "proj1_progress_bar_fill",
+                              "type": "Box",
+                              "name": "Proj1 Progress Fill",
+                              "layout": {},
+                              "style": {
+                                "width": "50%",
+                                "height": 6,
+                                "background": "#0d9488",
+                                "borderRadius": 9999
+                              },
+                              "children": [],
+                              "metadata": {
+                                "bindings": [
+                                  {
+                                    "field": "project.completionPct",
+                                    "direction": "read"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "id": "proj1_pct_text",
+                          "type": "Text",
+                          "name": "Proj1 Completion Pct",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "50%",
+                            "fontSize": 12,
+                            "fontWeight": "600",
+                            "color": "#0d9488"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "proj1_stats_row",
+                      "type": "Row",
+                      "name": "Proj1 Stats Row",
+                      "layout": {
+                        "gap": 12
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "proj1_total_cards",
+                          "type": "Text",
+                          "name": "Total Cards",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "10 cards",
+                            "fontSize": 11,
+                            "color": "#71717a"
+                          }
+                        },
+                        {
+                          "id": "proj1_phase",
+                          "type": "Text",
+                          "name": "Current Phase",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "Building",
+                            "fontSize": 11,
+                            "color": "#a1a1aa"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "proj1_blocked_row",
+                      "type": "Row",
+                      "name": "Proj1 Blocked Row",
+                      "layout": {
+                        "gap": 4,
+                        "crossAxisAlignment": "center",
+                        "padding": [
+                          6,
+                          8,
+                          6,
+                          8
+                        ]
+                      },
+                      "style": {
+                        "background": "#1a1008",
+                        "borderRadius": 6,
+                        "border": {"width": 1, "color": "#92400e"}
+                      },
+                      "children": [
+                        {
+                          "id": "proj1_blocked_icon",
+                          "type": "Icon",
+                          "name": "Proj1 Blocked Icon",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "name": "warning",
+                            "size": 11,
+                            "color": "#f59e0b"
+                          }
+                        },
+                        {
+                          "id": "proj1_blocked_text",
+                          "type": "Text",
+                          "name": "Proj1 Blocked Text",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "2 blocked cards",
+                            "fontSize": 11,
+                            "color": "#f59e0b"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "proj1_last_activity",
+                      "type": "Text",
+                      "name": "Proj1 Last Activity",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Last activity: 5 min ago",
+                        "fontSize": 10,
+                        "color": "#52525b"
+                      }
+                    }
+                  ],
+                  "metadata": {
+                    "bindings": [
+                      {
+                        "field": "project.name",
+                        "direction": "read"
+                      },
+                      {
+                        "field": "project.completionPct",
+                        "direction": "read"
+                      },
+                      {
+                        "field": "project.blockedCount",
+                        "direction": "read"
+                      }
+                    ],
+                    "handlers": [
+                      {
+                        "event": "tap",
+                        "action": "openProjectBoard(AgentDispatch)"
+                      }
+                    ],
+                    "accessibility": {
+                      "role": "button",
+                      "label": "AgentDispatch project card — 50% complete, 2 blocked cards, online"
+                    }
+                  }
+                },
+                {
+                  "id": "proj_card_specops",
+                  "type": "Column",
+                  "name": "SPECOPS Project Card",
+                  "layout": {
+                    "padding": [
+                      16,
+                      16,
+                      16,
+                      16
+                    ],
+                    "gap": 10
+                  },
+                  "style": {
+                    "width": 280,
+                    "background": "#111816",
+                    "borderRadius": 12,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": [
+                    {
+                      "id": "proj2_header",
+                      "type": "Row",
+                      "name": "Proj2 Header",
+                      "layout": {
+                        "gap": 8,
+                        "crossAxisAlignment": "center",
+                        "mainAxisAlignment": "spaceBetween"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "proj2_name",
+                          "type": "Text",
+                          "name": "Proj2 Name",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "SPECOPS",
+                            "fontSize": 14,
+                            "fontWeight": "600",
+                            "color": "#ffffff"
+                          }
+                        },
+                        {
+                          "id": "proj2_online_row",
+                          "type": "Row",
+                          "name": "Proj2 Online",
+                          "layout": {
+                            "gap": 4,
+                            "crossAxisAlignment": "center"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "proj2_dot",
+                              "type": "Box",
+                              "name": "Proj2 Dot",
+                              "layout": {},
+                              "style": {
+                                "width": 8,
+                                "height": 8,
+                                "borderRadius": 9999,
+                                "background": "#22c55e"
+                              },
+                              "children": []
+                            },
+                            {
+                              "id": "proj2_status",
+                              "type": "Text",
+                              "name": "Proj2 Status",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "online",
+                                "fontSize": 10,
+                                "color": "#22c55e"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "proj2_desc",
+                      "type": "Text",
+                      "name": "Proj2 Description",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Specification operations pipeline",
+                        "fontSize": 11,
+                        "color": "#71717a"
+                      }
+                    },
+                    {
+                      "id": "proj2_progress_row",
+                      "type": "Row",
+                      "name": "Proj2 Progress Row",
+                      "layout": {
+                        "gap": 8,
+                        "crossAxisAlignment": "center"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "proj2_bar_bg",
+                          "type": "Box",
+                          "name": "Proj2 Bar BG",
+                          "layout": {},
+                          "style": {
+                            "flex": 1,
+                            "height": 6,
+                            "background": "#1a2e2a",
+                            "borderRadius": 9999
+                          },
+                          "children": [
+                            {
+                              "id": "proj2_bar_fill",
+                              "type": "Box",
+                              "name": "Proj2 Bar Fill",
+                              "layout": {},
+                              "style": {
+                                "width": "80%",
+                                "height": 6,
+                                "background": "#22c55e",
+                                "borderRadius": 9999
+                              },
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": "proj2_pct",
+                          "type": "Text",
+                          "name": "Proj2 Pct",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "80%",
+                            "fontSize": 12,
+                            "fontWeight": "600",
+                            "color": "#22c55e"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "proj2_last_activity",
+                      "type": "Text",
+                      "name": "Proj2 Last Activity",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Last activity: 1h ago",
+                        "fontSize": 10,
+                        "color": "#52525b"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "proj_card_offline",
+                  "type": "Column",
+                  "name": "Offline Project Card",
+                  "layout": {
+                    "padding": [
+                      16,
+                      16,
+                      16,
+                      16
+                    ],
+                    "gap": 10
+                  },
+                  "style": {
+                    "width": 280,
+                    "background": "#0a0e0d",
+                    "borderRadius": 12,
+                    "border": {"width": 1, "color": "#1a2e2a"},
+                    "opacity": 0.6
+                  },
+                  "children": [
+                    {
+                      "id": "proj3_header",
+                      "type": "Row",
+                      "name": "Proj3 Header",
+                      "layout": {
+                        "gap": 8,
+                        "crossAxisAlignment": "center",
+                        "mainAxisAlignment": "spaceBetween"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "proj3_name",
+                          "type": "Text",
+                          "name": "Proj3 Name",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "ChartFlow",
+                            "fontSize": 14,
+                            "fontWeight": "600",
+                            "color": "#71717a"
+                          }
+                        },
+                        {
+                          "id": "proj3_offline_row",
+                          "type": "Row",
+                          "name": "Proj3 Offline",
+                          "layout": {
+                            "gap": 4,
+                            "crossAxisAlignment": "center"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "proj3_offline_icon",
+                              "type": "Icon",
+                              "name": "Offline Cloud Icon",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "name": "cloud_off",
+                                "size": 11,
+                                "color": "#71717a"
+                              }
+                            },
+                            {
+                              "id": "proj3_offline_text",
+                              "type": "Text",
+                              "name": "Proj3 Offline Text",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "offline",
+                                "fontSize": 10,
+                                "color": "#71717a"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "proj3_offline_msg",
+                      "type": "Text",
+                      "name": "Proj3 Offline Message",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Path not found: /Users/sam/src/ChartFlow",
+                        "fontSize": 11,
+                        "color": "#52525b",
+                        "fontStyle": "italic"
+                      }
+                    },
+                    {
+                      "id": "proj3_last_seen",
+                      "type": "Text",
+                      "name": "Proj3 Last Seen",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Last seen: 3 days ago",
+                        "fontSize": 10,
+                        "color": "#3f3f46"
+                      }
+                    }
+                  ],
+                  "metadata": {
+                    "visibility": {
+                      "when": "project.isOffline"
+                    },
+                    "accessibility": {
+                      "role": "status",
+                      "label": "ChartFlow project is offline — path not found"
+                    }
+                  }
+                }
+              ],
+              "metadata": {
+                "bindings": [
+                  {
+                    "field": "projects",
+                    "direction": "read"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

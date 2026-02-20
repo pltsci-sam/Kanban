@@ -1,0 +1,23 @@
+flowchart LR
+    subgraph Source["CARD FILE"]
+        Card["cards/a1b2c3.md<br/>specRef: auth-system<br/>ralphFeature: F003"]
+    end
+
+    subgraph Adapters["ADAPTER LAYER"]
+        RA["RalphAdapter<br/>Read .ralph/features.json<br/>→ build progress, phase"]
+        SA["SpecopsAdapter<br/>Read specs/auth-system/<br/>→ spec phase, completed phases"]
+        AA["SpecArtifactAdapter<br/>Read spec artifacts<br/>→ requirement count, AC count"]
+    end
+
+    subgraph Enriched["ENRICHED CARD VIEW"]
+        E1["Build Progress: 75%"]
+        E2["Spec Phase: api-design"]
+        E3["Requirements: 12 / ACs: 34"]
+    end
+
+    Card --> RA
+    Card --> SA
+    Card --> AA
+    RA --> E1
+    SA --> E2
+    AA --> E3

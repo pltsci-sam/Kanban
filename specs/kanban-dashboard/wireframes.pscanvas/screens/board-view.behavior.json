@@ -1,0 +1,123 @@
+{
+  "screenId": "screen_board-view",
+  "states": {
+    "loading": {
+      "on": {
+        "boardLoaded": "populated",
+        "boardNotFound": "empty",
+        "boardInvalid": "error"
+      },
+      "entry": [
+        "showLoadingSkeleton",
+        "readBoardYaml",
+        "readAllCards",
+        "runAdapterEnrichment"
+      ]
+    },
+    "populated": {
+      "on": {
+        "searchInput": "filtering",
+        "cardDragged": "dragging",
+        "fileChanged": "loading"
+      },
+      "entry": [
+        "hideLoadingSkeleton",
+        "renderColumns",
+        "renderCards"
+      ]
+    },
+    "filtering": {
+      "on": {
+        "clearSearch": "populated"
+      },
+      "entry": [
+        "applySearchFilter",
+        "applyFilterChips"
+      ]
+    },
+    "dragging": {
+      "on": {
+        "dropOnColumn": "movingCard",
+        "dropCancelled": "populated"
+      }
+    },
+    "movingCard": {
+      "on": {
+        "moveComplete": "showingUndo",
+        "moveError": "populated"
+      },
+      "entry": [
+        "updateCardFrontmatter",
+        "updateBoardYaml"
+      ]
+    },
+    "showingUndo": {
+      "on": {
+        "undoTapped": "revertingMove",
+        "undoExpired": "populated"
+      },
+      "entry": [
+        "showUndoToast",
+        "startUndoTimer(5000)"
+      ]
+    },
+    "revertingMove": {
+      "on": {
+        "revertComplete": "populated"
+      },
+      "entry": [
+        "revertCardMove",
+        "hideUndoToast"
+      ]
+    },
+    "empty": {
+      "on": {
+        "initializeTapped": "initializing"
+      }
+    },
+    "initializing": {
+      "on": {
+        "initialized": "loading"
+      }
+    },
+    "error": {
+      "on": {
+        "fileFixed": "loading"
+      }
+    }
+  },
+  "api": [
+    {
+      "method": "FILE_READ",
+      "path": ".kanban/board.yaml",
+      "response": {
+        "board": "Board"
+      }
+    },
+    {
+      "method": "FILE_READ",
+      "path": ".kanban/cards/*.md",
+      "response": {
+        "cards": "Card[]"
+      }
+    },
+    {
+      "method": "FILE_WATCH",
+      "path": ".kanban/",
+      "event": "fileChanged"
+    },
+    {
+      "method": "FILE_WRITE",
+      "path": ".kanban/cards/{id}.md",
+      "description": "Atomic card frontmatter update on drag-drop"
+    },
+    {
+      "method": "FILE_WRITE",
+      "path": ".kanban/board.yaml",
+      "description": "Atomic cardOrder update on drag-drop"
+    }
+  ],
+  "onMount": [
+    "startLoading"
+  ]
+}

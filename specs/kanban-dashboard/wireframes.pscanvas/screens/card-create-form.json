@@ -1,0 +1,740 @@
+{
+  "id": "92e1c6fc",
+  "type": "Screen",
+  "name": "Card Create Form",
+  "layout": {
+    "sizing": {
+      "width": {
+        "type": "fixed",
+        "value": 1280
+      },
+      "height": {
+        "type": "fixed",
+        "value": 800
+      }
+    }
+  },
+  "style": {},
+  "children": [
+    {
+      "id": "form_root",
+      "type": "Stack",
+      "name": "Form Root",
+      "layout": {},
+      "style": {
+        "background": "#080c0b",
+        "width": 1280,
+        "height": 800
+      },
+      "children": [
+        {
+          "id": "form_board_bg",
+          "type": "Box",
+          "name": "Form Board Background",
+          "layout": {},
+          "style": {
+            "width": 1280,
+            "height": 800,
+            "background": "rgba(8,12,11,0.85)"
+          },
+          "children": []
+        },
+        {
+          "id": "form_modal",
+          "type": "Column",
+          "name": "Card Create Modal",
+          "layout": {
+            "padding": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "gap": 0
+          },
+          "style": {
+            "position": "absolute",
+            "top": "50%",
+            "left": "50%",
+            "transform": "translate(-50%,-50%)",
+            "width": 540,
+            "background": "#111816",
+            "borderRadius": 12,
+            "border": {"width": 1, "color": "#1a2e2a"},
+            "boxShadow": "0 24px 64px rgba(0,0,0,0.6)"
+          },
+          "children": [
+            {
+              "id": "form_modal_header",
+              "type": "Row",
+              "name": "Form Modal Header",
+              "layout": {
+                "padding": [
+                  16,
+                  20,
+                  16,
+                  20
+                ],
+                "gap": 8,
+                "crossAxisAlignment": "center",
+                "mainAxisAlignment": "spaceBetween"
+              },
+              "style": {
+                "borderBottom": "1px solid #1a2e2a"
+              },
+              "children": [
+                {
+                  "id": "form_modal_title",
+                  "type": "Text",
+                  "name": "Form Modal Title",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "text": "Create Card",
+                    "fontSize": 16,
+                    "fontWeight": "600",
+                    "color": "#ffffff"
+                  }
+                },
+                {
+                  "id": "form_target_col_badge",
+                  "type": "Row",
+                  "name": "Target Column Badge",
+                  "layout": {
+                    "gap": 4,
+                    "crossAxisAlignment": "center",
+                    "padding": [
+                      3,
+                      8,
+                      3,
+                      8
+                    ]
+                  },
+                  "style": {
+                    "background": "#042f2e",
+                    "borderRadius": 4
+                  },
+                  "children": [
+                    {
+                      "id": "form_target_col_text",
+                      "type": "Text",
+                      "name": "Target Column Text",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Backlog",
+                        "fontSize": 11,
+                        "color": "#14b8a6"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "form_close_btn",
+                  "type": "Button",
+                  "name": "Form Close Button",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "label": "",
+                    "icon": "close",
+                    "variant": "ghost",
+                    "size": 32
+                  },
+                  "metadata": {
+                    "handlers": [
+                      {
+                        "event": "tap",
+                        "action": "navigate(board-view)"
+                      }
+                    ],
+                    "accessibility": {
+                      "role": "button",
+                      "label": "Close form"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "form_body",
+              "type": "Column",
+              "name": "Form Body",
+              "layout": {
+                "padding": [
+                  20,
+                  20,
+                  20,
+                  20
+                ],
+                "gap": 16
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "title_field_group",
+                  "type": "Column",
+                  "name": "Title Field Group",
+                  "layout": {
+                    "gap": 6
+                  },
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "title_label_row",
+                      "type": "Row",
+                      "name": "Title Label Row",
+                      "layout": {
+                        "gap": 4,
+                        "crossAxisAlignment": "center",
+                        "mainAxisAlignment": "spaceBetween"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "title_label_left",
+                          "type": "Row",
+                          "name": "Title Label Left",
+                          "layout": {
+                            "gap": 4,
+                            "crossAxisAlignment": "center"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "title_field_label",
+                              "type": "Text",
+                              "name": "Title Field Label",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "Title",
+                                "fontSize": 12,
+                                "fontWeight": "500",
+                                "color": "#d4d4d8"
+                              }
+                            },
+                            {
+                              "id": "title_required_indicator",
+                              "type": "Text",
+                              "name": "Required Indicator",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "*",
+                                "fontSize": 12,
+                                "color": "#ef4444"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "id": "title_char_counter",
+                          "type": "Text",
+                          "name": "Title Character Counter",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "0 / 200",
+                            "fontSize": 10,
+                            "color": "#52525b"
+                          },
+                          "metadata": {
+                            "bindings": [
+                              {
+                                "field": "formData.title.length",
+                                "direction": "read"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "title_input",
+                      "type": "TextInput",
+                      "name": "Title Input",
+                      "layout": {},
+                      "style": {
+                        "background": "#0a0e0d",
+                        "border": {"width": 1, "color": "#ef4444"},
+                        "borderRadius": 8,
+                        "height": 40,
+                        "fontSize": 13,
+                        "color": "#ffffff",
+                        "paddingLeft": 12
+                      },
+                      "children": [],
+                      "props": {
+                        "placeholder": "Card title...",
+                        "width": 500
+                      },
+                      "metadata": {
+                        "bindings": [
+                          {
+                            "field": "formData.title",
+                            "direction": "two-way"
+                          }
+                        ],
+                        "handlers": [
+                          {
+                            "event": "change",
+                            "action": "updateTitle(value)"
+                          }
+                        ],
+                        "accessibility": {
+                          "role": "textbox",
+                          "label": "Card title — required, maximum 200 characters"
+                        },
+                        "validation": {
+                          "required": true,
+                          "maxLength": 200,
+                          "message": "Title is required"
+                        }
+                      }
+                    },
+                    {
+                      "id": "title_error_text",
+                      "type": "Row",
+                      "name": "Title Error Text",
+                      "layout": {
+                        "gap": 4,
+                        "crossAxisAlignment": "center"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "title_error_icon",
+                          "type": "Icon",
+                          "name": "Title Error Icon",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "name": "error",
+                            "size": 12,
+                            "color": "#ef4444"
+                          }
+                        },
+                        {
+                          "id": "title_error_msg",
+                          "type": "Text",
+                          "name": "Title Error Message",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "Title is required",
+                            "fontSize": 11,
+                            "color": "#ef4444"
+                          }
+                        }
+                      ],
+                      "metadata": {
+                        "visibility": {
+                          "when": "formErrors.title != null"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "priority_field_group",
+                  "type": "Column",
+                  "name": "Priority Field Group",
+                  "layout": {
+                    "gap": 6
+                  },
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "priority_field_label",
+                      "type": "Text",
+                      "name": "Priority Field Label",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Priority",
+                        "fontSize": 12,
+                        "fontWeight": "500",
+                        "color": "#d4d4d8"
+                      }
+                    },
+                    {
+                      "id": "priority_dropdown",
+                      "type": "Row",
+                      "name": "Priority Dropdown",
+                      "layout": {
+                        "padding": [
+                          0,
+                          12,
+                          0,
+                          12
+                        ],
+                        "gap": 8,
+                        "crossAxisAlignment": "center",
+                        "mainAxisAlignment": "spaceBetween"
+                      },
+                      "style": {
+                        "background": "#0a0e0d",
+                        "border": {"width": 1, "color": "#1a2e2a"},
+                        "borderRadius": 8,
+                        "height": 40,
+                        "width": 240,
+                        "cursor": "pointer"
+                      },
+                      "children": [
+                        {
+                          "id": "priority_dropdown_left",
+                          "type": "Row",
+                          "name": "Priority Dropdown Left",
+                          "layout": {
+                            "gap": 6,
+                            "crossAxisAlignment": "center"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "priority_dropdown_icon",
+                              "type": "Icon",
+                              "name": "Priority Dropdown Icon",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "name": "arrow_forward",
+                                "size": 12,
+                                "color": "#a1a1aa"
+                              }
+                            },
+                            {
+                              "id": "priority_dropdown_text",
+                              "type": "Text",
+                              "name": "Priority Dropdown Value",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "Medium",
+                                "fontSize": 13,
+                                "color": "#d4d4d8"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "id": "priority_dropdown_arrow",
+                          "type": "Icon",
+                          "name": "Dropdown Arrow",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "name": "expand_more",
+                            "size": 16,
+                            "color": "#52525b"
+                          }
+                        }
+                      ],
+                      "metadata": {
+                        "bindings": [
+                          {
+                            "field": "formData.priority",
+                            "direction": "two-way"
+                          }
+                        ],
+                        "handlers": [
+                          {
+                            "event": "tap",
+                            "action": "openPriorityPicker()"
+                          }
+                        ],
+                        "accessibility": {
+                          "role": "combobox",
+                          "label": "Card priority — critical, high, medium, or low"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "labels_field_group",
+                  "type": "Column",
+                  "name": "Labels Field Group",
+                  "layout": {
+                    "gap": 6
+                  },
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "labels_field_label",
+                      "type": "Text",
+                      "name": "Labels Field Label",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Labels",
+                        "fontSize": 12,
+                        "fontWeight": "500",
+                        "color": "#d4d4d8"
+                      }
+                    },
+                    {
+                      "id": "labels_multiselect",
+                      "type": "Row",
+                      "name": "Labels Multiselect",
+                      "layout": {
+                        "padding": [
+                          8,
+                          12,
+                          8,
+                          12
+                        ],
+                        "gap": 6,
+                        "flexWrap": "wrap"
+                      },
+                      "style": {
+                        "background": "#0a0e0d",
+                        "border": {"width": 1, "color": "#1a2e2a"},
+                        "borderRadius": 8,
+                        "minHeight": 40,
+                        "width": 500
+                      },
+                      "children": [
+                        {
+                          "id": "label_chip_feature",
+                          "type": "Row",
+                          "name": "Feature Chip",
+                          "layout": {
+                            "gap": 4,
+                            "crossAxisAlignment": "center",
+                            "padding": [
+                              3,
+                              8,
+                              3,
+                              8
+                            ]
+                          },
+                          "style": {
+                            "background": "#1e3a5f",
+                            "borderRadius": 9999
+                          },
+                          "children": [
+                            {
+                              "id": "label_chip_feature_text",
+                              "type": "Text",
+                              "name": "Feature Chip Text",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "feature",
+                                "fontSize": 11,
+                                "color": "#93c5fd"
+                              }
+                            },
+                            {
+                              "id": "label_chip_feature_remove",
+                              "type": "Icon",
+                              "name": "Remove Chip",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "name": "close",
+                                "size": 10,
+                                "color": "#93c5fd"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "id": "labels_add_hint",
+                          "type": "Text",
+                          "name": "Labels Add Hint",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "+ Add label...",
+                            "fontSize": 11,
+                            "color": "#52525b"
+                          }
+                        }
+                      ],
+                      "metadata": {
+                        "bindings": [
+                          {
+                            "field": "formData.labels",
+                            "direction": "two-way"
+                          }
+                        ],
+                        "handlers": [
+                          {
+                            "event": "tap",
+                            "action": "openLabelPicker()"
+                          }
+                        ],
+                        "accessibility": {
+                          "role": "listbox",
+                          "label": "Card labels — select one or more"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "desc_field_group",
+                  "type": "Column",
+                  "name": "Description Field Group",
+                  "layout": {
+                    "gap": 6
+                  },
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "desc_field_label",
+                      "type": "Text",
+                      "name": "Description Field Label",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Description",
+                        "fontSize": 12,
+                        "fontWeight": "500",
+                        "color": "#d4d4d8"
+                      }
+                    },
+                    {
+                      "id": "desc_textarea",
+                      "type": "TextInput",
+                      "name": "Description Textarea",
+                      "layout": {},
+                      "style": {
+                        "background": "#0a0e0d",
+                        "border": {"width": 1, "color": "#1a2e2a"},
+                        "borderRadius": 8,
+                        "fontSize": 13,
+                        "color": "#d4d4d8",
+                        "width": 500
+                      },
+                      "children": [],
+                      "props": {
+                        "placeholder": "Optional card description (supports Markdown)...",
+                        "multiline": true,
+                        "rows": 3
+                      },
+                      "metadata": {
+                        "bindings": [
+                          {
+                            "field": "formData.description",
+                            "direction": "two-way"
+                          }
+                        ],
+                        "accessibility": {
+                          "role": "textbox",
+                          "label": "Card description — optional, supports Markdown"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "form_actions",
+              "type": "Row",
+              "name": "Form Actions",
+              "layout": {
+                "padding": [
+                  16,
+                  20,
+                  16,
+                  20
+                ],
+                "gap": 8,
+                "mainAxisAlignment": "end"
+              },
+              "style": {
+                "borderTop": "1px solid #1a2e2a"
+              },
+              "children": [
+                {
+                  "id": "form_cancel_btn",
+                  "type": "Button",
+                  "name": "Cancel Button",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "label": "Cancel",
+                    "variant": "outlined",
+                    "height": 40
+                  },
+                  "metadata": {
+                    "handlers": [
+                      {
+                        "event": "tap",
+                        "action": "navigate(board-view)"
+                      }
+                    ],
+                    "accessibility": {
+                      "role": "button",
+                      "label": "Cancel card creation and return to board"
+                    }
+                  }
+                },
+                {
+                  "id": "form_submit_btn",
+                  "type": "Button",
+                  "name": "Submit Button (Disabled)",
+                  "layout": {},
+                  "style": {
+                    "background": "#374151",
+                    "color": "#6b7280",
+                    "borderRadius": 8,
+                    "cursor": "not-allowed"
+                  },
+                  "children": [],
+                  "props": {
+                    "label": "Create Card",
+                    "variant": "filled",
+                    "height": 40,
+                    "disabled": true
+                  },
+                  "metadata": {
+                    "bindings": [
+                      {
+                        "field": "formData.title",
+                        "direction": "read"
+                      }
+                    ],
+                    "handlers": [
+                      {
+                        "event": "tap",
+                        "action": "submitCreateCard(formData)"
+                      }
+                    ],
+                    "accessibility": {
+                      "role": "button",
+                      "label": "Create card — disabled until title is entered"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

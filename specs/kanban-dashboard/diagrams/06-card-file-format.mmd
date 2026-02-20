@@ -1,0 +1,27 @@
+graph TD
+    subgraph CardFile[".kanban/cards/a1b2c3.md"]
+        subgraph FM["YAML Frontmatter"]
+            ID["id: a1b2c3"]
+            Title["title: Implement auth"]
+            Col["column: Building"]
+            Pri["priority: high"]
+            Labels["labels: [security, backend]"]
+            Src["source: agentdispatch"]
+            Blockers["blockers: []"]
+            SpecRef["specRef: auth-system"]
+        end
+        subgraph Body["Markdown Body"]
+            Desc["## Description<br/>Implement OAuth2 flow..."]
+            Note1["### 2026-02-18T10:30 — agentdispatch [milestone]<br/>Spec phase complete"]
+            Note2["### 2026-02-19T14:00 — specops-builder [milestone]<br/>Build complete: 12 files"]
+            Note3["### 2026-02-19T16:00 — human [comment]<br/>Looks good, approved"]
+        end
+    end
+
+    subgraph BoardFile[".kanban/board.yaml"]
+        BName["name: AIFactory Kanban"]
+        BCols["columns:<br/>- Backlog<br/>- Spec Creation<br/>- Spec Review<br/>- Building<br/>- Testing<br/>- Human Review<br/>- Done"]
+        BOrder["cardOrder:<br/>  Backlog: [x9y8z7]<br/>  Building: [a1b2c3]<br/>  Done: [m4n5o6]"]
+    end
+
+    BoardFile -.->|"cardOrder references"| ID

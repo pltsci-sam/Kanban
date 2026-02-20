@@ -1,0 +1,38 @@
+sequenceDiagram
+    participant Browser as CMS Browser
+    participant HTTP as GET /ops
+    participant WS as WebSocket /dashboard/ws
+    participant SSE as SSE /agents/:id/thinking
+    participant AD as AgentDispatch
+
+    Browser->>HTTP: GET /ops (Authorization: Basic ...)
+    HTTP-->>Browser: 200 OK (HTML dashboard)
+
+    Browser->>WS: Upgrade (Authorization header)
+    WS-->>Browser: 101 Switching Protocols
+
+    AD->>WS: DashboardSnapshot (initial state)
+    Note over Browser: Render pipeline counts, agent panels
+
+    loop Real-time Events
+        AD->>WS: task.state_change (card moved)
+        Note over Browser: Update pipeline bar
+        AD->>WS: agent.session_start (new agent)
+        Note over Browser: Add agent panel
+        AD->>WS: agent.tool_call (agent action)
+        Note over Browser: Append to agent feed
+        AD->>WS: agent.blocked (blocker created)
+        Note over Browser: Show in Blocked Items panel
+    end
+
+    Browser->>SSE: GET /agents/agent-1/thinking
+    loop Thinking Stream
+        AD->>SSE: thinking chunk
+        Note over Browser: Render thinking in expandable panel
+    end
+
+    WS--xBrowser: Connection lost
+    Note over Browser: Yellow "Reconnecting" indicator
+    Browser->>WS: Reconnect (exponential backoff)
+    WS-->>Browser: 101 Reconnected
+    AD->>WS: DashboardSnapshot (catch-up state)

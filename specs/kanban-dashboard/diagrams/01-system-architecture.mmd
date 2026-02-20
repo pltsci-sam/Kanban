@@ -1,0 +1,51 @@
+graph TB
+    subgraph Human["HUMAN LAYER"]
+        VSCode["VS Code Extension<br/>Board View + Card Detail"]
+        CLI["Claude Code Skill<br/>CLI Interface"]
+        CMS["CMS Ops Dashboard<br/>Browser — Read Only"]
+        Vivian["Vivian<br/>Voice Interface"]
+        Slack["Slack<br/>Notifications"]
+    end
+
+    subgraph Storage["FILE SYSTEM — Source of Truth"]
+        BoardYaml[".kanban/board.yaml<br/>Columns · Card Order · Labels"]
+        Cards[".kanban/cards/*.md<br/>YAML Frontmatter + Markdown"]
+        Archive[".kanban/archive/*.md<br/>Completed Cards"]
+        Projects["projects.yaml<br/>Multi-Repo Config"]
+    end
+
+    subgraph Agents["AGENT LAYER"]
+        AD["AgentDispatch<br/>Orchestrator"]
+        SPECOPS["SPECOPS Agents<br/>Spec · Build · Verify"]
+        Adapters["Adapters<br/>Ralph · Specops · SpecArtifact"]
+    end
+
+    subgraph Infra["CMS INFRASTRUCTURE"]
+        WS["WebSocket /dashboard/ws"]
+        SSE["SSE /agents/:id/thinking"]
+        HTTP["HTTP GET /ops"]
+    end
+
+    VSCode -->|"Read/Write"| BoardYaml
+    VSCode -->|"Read/Write"| Cards
+    CLI -->|"Read/Write"| BoardYaml
+    CLI -->|"Read/Write"| Cards
+    Vivian -->|"Write"| Cards
+
+    AD -->|"Heartbeat Poll"| BoardYaml
+    AD -->|"Read/Write"| Cards
+    AD -->|"Auto-Archive"| Archive
+    SPECOPS -->|"Read/Write"| Cards
+
+    AD --> WS
+    AD --> SSE
+    AD --> HTTP
+
+    CMS --> WS
+    CMS --> SSE
+    CMS -->|"Basic Auth"| HTTP
+
+    AD -->|"Dispatches"| SPECOPS
+    AD -->|"Posts Blockers"| Slack
+    Adapters -->|"Enriches"| Cards
+    VSCode -->|"Cross-Repo"| Projects

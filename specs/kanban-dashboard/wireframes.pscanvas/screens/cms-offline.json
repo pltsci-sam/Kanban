@@ -1,0 +1,433 @@
+{
+  "id": "e78d9c60",
+  "type": "Screen",
+  "name": "CMS Offline",
+  "layout": {
+    "sizing": {
+      "width": {
+        "type": "fixed",
+        "value": 1440
+      },
+      "height": {
+        "type": "fixed",
+        "value": 900
+      }
+    }
+  },
+  "style": {},
+  "children": [
+    {
+      "id": "offline_root",
+      "type": "Column",
+      "name": "Offline Root",
+      "layout": {
+        "padding": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "gap": 0
+      },
+      "style": {
+        "background": "#080c0b",
+        "width": 1440,
+        "height": 900
+      },
+      "children": [
+        {
+          "id": "offline_topbar",
+          "type": "Row",
+          "name": "Offline Topbar",
+          "layout": {
+            "padding": [
+              0,
+              20,
+              0,
+              20
+            ],
+            "gap": 12,
+            "crossAxisAlignment": "center",
+            "mainAxisAlignment": "spaceBetween"
+          },
+          "style": {
+            "background": "#0a0f0e",
+            "height": 56,
+            "borderBottom": "1px solid #1a2e2a"
+          },
+          "children": [
+            {
+              "id": "offline_logo",
+              "type": "Text",
+              "name": "Offline Logo",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "text": "AIFactory CMS",
+                "fontSize": 16,
+                "fontWeight": "700",
+                "color": "#ffffff"
+              }
+            },
+            {
+              "id": "offline_conn_badge",
+              "type": "Row",
+              "name": "Offline Connection Badge",
+              "layout": {
+                "gap": 6,
+                "crossAxisAlignment": "center",
+                "padding": [
+                  4,
+                  12,
+                  4,
+                  12
+                ]
+              },
+              "style": {
+                "background": "#451a03",
+                "borderRadius": 9999,
+                "border": {"width": 1, "color": "#92400e"}
+              },
+              "children": [
+                {
+                  "id": "offline_conn_icon",
+                  "type": "Icon",
+                  "name": "Offline Conn Icon",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "name": "cloud_off",
+                    "size": 11,
+                    "color": "#f59e0b"
+                  }
+                },
+                {
+                  "id": "offline_conn_text",
+                  "type": "Text",
+                  "name": "Offline Conn Text",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "text": "Reconnecting...",
+                    "fontSize": 11,
+                    "color": "#f59e0b"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "offline_banner",
+          "type": "Row",
+          "name": "Offline Banner",
+          "layout": {
+            "padding": [
+              12,
+              20,
+              12,
+              20
+            ],
+            "gap": 12,
+            "crossAxisAlignment": "center",
+            "mainAxisAlignment": "spaceBetween"
+          },
+          "style": {
+            "background": "#451a03",
+            "borderBottom": "1px solid #92400e"
+          },
+          "children": [
+            {
+              "id": "offline_banner_left",
+              "type": "Row",
+              "name": "Offline Banner Left",
+              "layout": {
+                "gap": 10,
+                "crossAxisAlignment": "center"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "offline_banner_icon",
+                  "type": "Icon",
+                  "name": "Offline Banner Icon",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "name": "cloud_off",
+                    "size": 18,
+                    "color": "#f59e0b"
+                  }
+                },
+                {
+                  "id": "offline_banner_text_col",
+                  "type": "Column",
+                  "name": "Offline Banner Text",
+                  "layout": {
+                    "gap": 2
+                  },
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "offline_banner_title",
+                      "type": "Text",
+                      "name": "Offline Banner Title",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "AgentDispatch Offline",
+                        "fontSize": 14,
+                        "fontWeight": "600",
+                        "color": "#fbbf24"
+                      }
+                    },
+                    {
+                      "id": "offline_banner_sub",
+                      "type": "Text",
+                      "name": "Offline Banner Subtitle",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Reconnecting to ws://192.168.68.69:3001/dashboard/ws • Attempt 3 of 10 • Next retry in 4s",
+                        "fontSize": 11,
+                        "color": "#d97706"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "offline_retry_btn",
+              "type": "Button",
+              "name": "Manual Retry Button",
+              "layout": {},
+              "style": {
+                "borderColor": "#f59e0b",
+                "color": "#f59e0b",
+                "borderRadius": 6
+              },
+              "children": [],
+              "props": {
+                "label": "Retry Now",
+                "variant": "outlined",
+                "height": 36
+              },
+              "metadata": {
+                "handlers": [
+                  {
+                    "event": "tap",
+                    "action": "retryWebSocketConnection()"
+                  }
+                ],
+                "accessibility": {
+                  "role": "button",
+                  "label": "Manually retry connection to AgentDispatch"
+                },
+                "specRef": "requirements.md#NFR-005"
+              }
+            }
+          ],
+          "metadata": {
+            "visibility": {
+              "when": "ws.connectionState === disconnected or reconnecting"
+            },
+            "specRef": "requirements.md#AC-035"
+          }
+        },
+        {
+          "id": "offline_stale_notice",
+          "type": "Row",
+          "name": "Stale Data Notice",
+          "layout": {
+            "padding": [
+              8,
+              20,
+              8,
+              20
+            ],
+            "gap": 8,
+            "crossAxisAlignment": "center"
+          },
+          "style": {
+            "background": "#1a1a1a",
+            "borderBottom": "1px solid #1a2e2a"
+          },
+          "children": [
+            {
+              "id": "offline_stale_icon",
+              "type": "Icon",
+              "name": "Stale Icon",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "name": "history",
+                "size": 13,
+                "color": "#71717a"
+              }
+            },
+            {
+              "id": "offline_stale_text",
+              "type": "Text",
+              "name": "Stale Data Text",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "text": "Displaying last known state • Last updated: 15:30:12 (4 minutes ago)",
+                "fontSize": 11,
+                "color": "#71717a"
+              },
+              "metadata": {
+                "bindings": [
+                  {
+                    "field": "ws.lastConnectedAt",
+                    "direction": "read"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "offline_frozen_content",
+          "type": "Column",
+          "name": "Frozen Content",
+          "layout": {
+            "padding": [
+              16,
+              20,
+              16,
+              20
+            ],
+            "gap": 12
+          },
+          "style": {
+            "flex": 1,
+            "opacity": 0.4,
+            "pointerEvents": "none"
+          },
+          "children": [
+            {
+              "id": "offline_frozen_pipeline_label",
+              "type": "Text",
+              "name": "Frozen Pipeline Label",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "text": "PIPELINE OVERVIEW (stale)",
+                "fontSize": 10,
+                "fontWeight": "700",
+                "color": "#52525b",
+                "letterSpacing": "2px"
+              }
+            },
+            {
+              "id": "offline_frozen_pipeline_bar",
+              "type": "Row",
+              "name": "Frozen Pipeline Bar",
+              "layout": {
+                "gap": 4
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "offline_frozen_seg_Backlog",
+                  "type": "Box",
+                  "name": "Frozen Seg Backlog",
+                  "layout": {},
+                  "style": {
+                    "flex": 1,
+                    "height": 50,
+                    "background": "#111816",
+                    "borderRadius": 6,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": []
+                },
+                {
+                  "id": "offline_frozen_seg_Spec_Creation",
+                  "type": "Box",
+                  "name": "Frozen Seg Spec Creation",
+                  "layout": {},
+                  "style": {
+                    "flex": 1,
+                    "height": 50,
+                    "background": "#111816",
+                    "borderRadius": 6,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": []
+                },
+                {
+                  "id": "offline_frozen_seg_Building",
+                  "type": "Box",
+                  "name": "Frozen Seg Building",
+                  "layout": {},
+                  "style": {
+                    "flex": 1,
+                    "height": 50,
+                    "background": "#111816",
+                    "borderRadius": 6,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": []
+                },
+                {
+                  "id": "offline_frozen_seg_Testing",
+                  "type": "Box",
+                  "name": "Frozen Seg Testing",
+                  "layout": {},
+                  "style": {
+                    "flex": 1,
+                    "height": 50,
+                    "background": "#111816",
+                    "borderRadius": 6,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": []
+                },
+                {
+                  "id": "offline_frozen_seg_Human_Review",
+                  "type": "Box",
+                  "name": "Frozen Seg Human Review",
+                  "layout": {},
+                  "style": {
+                    "flex": 1,
+                    "height": 50,
+                    "background": "#111816",
+                    "borderRadius": 6,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": []
+                },
+                {
+                  "id": "offline_frozen_seg_Done",
+                  "type": "Box",
+                  "name": "Frozen Seg Done",
+                  "layout": {},
+                  "style": {
+                    "flex": 1,
+                    "height": 50,
+                    "background": "#111816",
+                    "borderRadius": 6,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

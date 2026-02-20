@@ -1,0 +1,138 @@
+{
+  "initialScreen": "board-view",
+  "edges": [
+    {
+      "from": "board-view",
+      "to": "card-detail",
+      "trigger": "tap:card_normal_1",
+      "animation": "slideLeft",
+      "description": "Open card detail panel when user taps a card"
+    },
+    {
+      "from": "board-view",
+      "to": "card-detail",
+      "trigger": "tap:card_blocked_1",
+      "animation": "slideLeft",
+      "description": "Open blocked card detail (shows blocker section)"
+    },
+    {
+      "from": "card-detail",
+      "to": "board-view",
+      "trigger": "tap:detail_close_btn",
+      "animation": "slideRight",
+      "description": "Close card detail panel, return to board"
+    },
+    {
+      "from": "card-detail",
+      "to": "board-view",
+      "trigger": "tap:unblock_btn",
+      "animation": "slideRight",
+      "description": "Submit unblock response, return to board (card indicator cleared)"
+    },
+    {
+      "from": "board-view",
+      "to": "card-create-form",
+      "trigger": "tap:add_card_global_btn",
+      "animation": "fadeIn",
+      "description": "Open card creation modal"
+    },
+    {
+      "from": "board-view",
+      "to": "card-create-form",
+      "trigger": "tap:col_backlog_add_btn",
+      "animation": "fadeIn",
+      "description": "Open card creation modal targeting Backlog column"
+    },
+    {
+      "from": "card-create-form",
+      "to": "board-view",
+      "trigger": "tap:form_submit_btn",
+      "animation": "fadeOut",
+      "description": "Submit card creation, return to board with new card visible"
+    },
+    {
+      "from": "card-create-form",
+      "to": "board-view",
+      "trigger": "tap:form_cancel_btn",
+      "animation": "fadeOut",
+      "description": "Cancel card creation, discard form data"
+    },
+    {
+      "from": "card-create-form",
+      "to": "board-view",
+      "trigger": "tap:form_close_btn",
+      "animation": "fadeOut",
+      "description": "Close modal, discard form data"
+    },
+    {
+      "from": "board-view",
+      "to": "dashboard-view",
+      "trigger": "tap:dashboard_tab_btn",
+      "animation": "crossFade",
+      "description": "Switch to cross-repo dashboard panel"
+    },
+    {
+      "from": "dashboard-view",
+      "to": "board-view",
+      "trigger": "tap:dash_board_tab",
+      "animation": "crossFade",
+      "description": "Switch back to kanban board view"
+    },
+    {
+      "from": "board-view",
+      "to": "board-empty-state",
+      "trigger": "state:board.notFound",
+      "animation": "crossFade",
+      "description": "Board not found, show empty/initialize state (AF-001.1)"
+    },
+    {
+      "from": "board-view",
+      "to": "board-error-state",
+      "trigger": "state:board.validationError",
+      "animation": "crossFade",
+      "description": "Board YAML malformed, show error state (EF-001.1)"
+    },
+    {
+      "from": "board-empty-state",
+      "to": "board-view",
+      "trigger": "tap:initialize_board_btn",
+      "animation": "crossFade",
+      "description": "Initialize .kanban/ directory, proceed to board"
+    },
+    {
+      "from": "board-error-state",
+      "to": "board-view",
+      "trigger": "state:board.fixed",
+      "animation": "crossFade",
+      "description": "board.yaml fixed by user, re-render board"
+    },
+    {
+      "from": "cms-login",
+      "to": "cms-ops",
+      "trigger": "tap:login_submit_btn",
+      "animation": "crossFade",
+      "description": "Authenticate with basic auth, enter ops dashboard"
+    },
+    {
+      "from": "cms-ops",
+      "to": "cms-offline",
+      "trigger": "state:ws.connectionLost",
+      "animation": "crossFade",
+      "description": "WebSocket connection lost, show reconnecting state"
+    },
+    {
+      "from": "cms-offline",
+      "to": "cms-ops",
+      "trigger": "state:ws.reconnected",
+      "animation": "crossFade",
+      "description": "WebSocket reconnected, return to live ops dashboard"
+    },
+    {
+      "from": "cms-offline",
+      "to": "cms-ops",
+      "trigger": "tap:offline_retry_btn",
+      "animation": "crossFade",
+      "description": "Manual retry connection"
+    }
+  ]
+}

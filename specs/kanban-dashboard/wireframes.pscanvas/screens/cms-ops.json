@@ -1,0 +1,1786 @@
+{
+  "id": "32ce2600",
+  "type": "Screen",
+  "name": "CMS Ops",
+  "layout": {
+    "sizing": {
+      "width": {
+        "type": "fixed",
+        "value": 1440
+      },
+      "height": {
+        "type": "fixed",
+        "value": 900
+      }
+    }
+  },
+  "style": {},
+  "children": [
+    {
+      "id": "cms_root",
+      "type": "Column",
+      "name": "CMS Root",
+      "layout": {
+        "padding": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "gap": 0
+      },
+      "style": {
+        "background": "#080c0b",
+        "width": 1440,
+        "height": 900
+      },
+      "children": [
+        {
+          "id": "cms_topbar",
+          "type": "Row",
+          "name": "CMS Top Bar",
+          "layout": {
+            "padding": [
+              0,
+              20,
+              0,
+              20
+            ],
+            "gap": 12,
+            "crossAxisAlignment": "center",
+            "mainAxisAlignment": "spaceBetween"
+          },
+          "style": {
+            "background": "#0a0f0e",
+            "height": 56,
+            "borderBottom": "1px solid #1a2e2a"
+          },
+          "children": [
+            {
+              "id": "cms_topbar_left",
+              "type": "Row",
+              "name": "CMS Topbar Left",
+              "layout": {
+                "gap": 12,
+                "crossAxisAlignment": "center"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "cms_logo_text",
+                  "type": "Text",
+                  "name": "CMS Logo",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "text": "AIFactory CMS",
+                    "fontSize": 16,
+                    "fontWeight": "700",
+                    "color": "#ffffff"
+                  }
+                },
+                {
+                  "id": "cms_ops_tab",
+                  "type": "Text",
+                  "name": "Ops Tab",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "text": "Ops Dashboard",
+                    "fontSize": 13,
+                    "color": "#0d9488",
+                    "borderBottom": "2px solid #0d9488",
+                    "paddingBottom": "4px"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "cms_topbar_right",
+              "type": "Row",
+              "name": "CMS Topbar Right",
+              "layout": {
+                "gap": 12,
+                "crossAxisAlignment": "center"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "cms_conn_status",
+                  "type": "Row",
+                  "name": "CMS Connection Status",
+                  "layout": {
+                    "gap": 6,
+                    "crossAxisAlignment": "center",
+                    "padding": [
+                      4,
+                      10,
+                      4,
+                      10
+                    ]
+                  },
+                  "style": {
+                    "background": "#042f2e",
+                    "borderRadius": 9999,
+                    "border": {"width": 1, "color": "#0d9488"}
+                  },
+                  "children": [
+                    {
+                      "id": "cms_conn_dot",
+                      "type": "Box",
+                      "name": "Connection Dot",
+                      "layout": {},
+                      "style": {
+                        "width": 8,
+                        "height": 8,
+                        "borderRadius": 9999,
+                        "background": "#22c55e"
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "cms_conn_text",
+                      "type": "Text",
+                      "name": "Connection Text",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Connected",
+                        "fontSize": 11,
+                        "color": "#14b8a6"
+                      }
+                    }
+                  ],
+                  "metadata": {
+                    "bindings": [
+                      {
+                        "field": "ws.connectionState",
+                        "direction": "read"
+                      }
+                    ],
+                    "specRef": "requirements.md#KB-016"
+                  }
+                },
+                {
+                  "id": "cms_user_text",
+                  "type": "Text",
+                  "name": "CMS User Text",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "text": "ops",
+                    "fontSize": 12,
+                    "color": "#71717a"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "pipeline_overview_section",
+          "type": "Column",
+          "name": "Pipeline Overview Section",
+          "layout": {
+            "padding": [
+              16,
+              20,
+              16,
+              20
+            ],
+            "gap": 10
+          },
+          "style": {
+            "background": "#0a0e0d",
+            "borderBottom": "1px solid #1a2e2a"
+          },
+          "children": [
+            {
+              "id": "pipeline_label",
+              "type": "Text",
+              "name": "Pipeline Label",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "text": "PIPELINE OVERVIEW",
+                "fontSize": 10,
+                "fontWeight": "700",
+                "color": "#52525b",
+                "letterSpacing": "2px"
+              }
+            },
+            {
+              "id": "pipeline_bar",
+              "type": "Row",
+              "name": "Pipeline Bar",
+              "layout": {
+                "gap": 4,
+                "crossAxisAlignment": "stretch"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "pipeline_seg_backlog",
+                  "type": "Column",
+                  "name": "Pipeline Backlog",
+                  "layout": {
+                    "padding": [
+                      8,
+                      10,
+                      8,
+                      10
+                    ],
+                    "gap": 4,
+                    "crossAxisAlignment": "center"
+                  },
+                  "style": {
+                    "flex": 1,
+                    "background": "#111816",
+                    "borderRadius": 6,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": [
+                    {
+                      "id": "pipeline_seg_backlog_count",
+                      "type": "Text",
+                      "name": "Backlog Count",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "2",
+                        "fontSize": 18,
+                        "fontWeight": "700",
+                        "color": "#3f3f46",
+                        "textAlign": "center"
+                      }
+                    },
+                    {
+                      "id": "pipeline_seg_backlog_label",
+                      "type": "Text",
+                      "name": "Backlog Label",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Backlog",
+                        "fontSize": 9,
+                        "color": "#71717a",
+                        "textAlign": "center",
+                        "letterSpacing": "0.5px"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "pipeline_seg_spec_creation",
+                  "type": "Column",
+                  "name": "Pipeline Spec Creation",
+                  "layout": {
+                    "padding": [
+                      8,
+                      10,
+                      8,
+                      10
+                    ],
+                    "gap": 4,
+                    "crossAxisAlignment": "center"
+                  },
+                  "style": {
+                    "flex": 1,
+                    "background": "#111816",
+                    "borderRadius": 6,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": [
+                    {
+                      "id": "pipeline_seg_spec_creation_count",
+                      "type": "Text",
+                      "name": "Spec Creation Count",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "1",
+                        "fontSize": 18,
+                        "fontWeight": "700",
+                        "color": "#6366f1",
+                        "textAlign": "center"
+                      }
+                    },
+                    {
+                      "id": "pipeline_seg_spec_creation_label",
+                      "type": "Text",
+                      "name": "Spec Creation Label",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Spec Creation",
+                        "fontSize": 9,
+                        "color": "#71717a",
+                        "textAlign": "center",
+                        "letterSpacing": "0.5px"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "pipeline_seg_spec_review",
+                  "type": "Column",
+                  "name": "Pipeline Spec Review",
+                  "layout": {
+                    "padding": [
+                      8,
+                      10,
+                      8,
+                      10
+                    ],
+                    "gap": 4,
+                    "crossAxisAlignment": "center"
+                  },
+                  "style": {
+                    "flex": 1,
+                    "background": "#111816",
+                    "borderRadius": 6,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": [
+                    {
+                      "id": "pipeline_seg_spec_review_count",
+                      "type": "Text",
+                      "name": "Spec Review Count",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "0",
+                        "fontSize": 18,
+                        "fontWeight": "700",
+                        "color": "#8b5cf6",
+                        "textAlign": "center"
+                      }
+                    },
+                    {
+                      "id": "pipeline_seg_spec_review_label",
+                      "type": "Text",
+                      "name": "Spec Review Label",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Spec Review",
+                        "fontSize": 9,
+                        "color": "#71717a",
+                        "textAlign": "center",
+                        "letterSpacing": "0.5px"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "pipeline_seg_building",
+                  "type": "Column",
+                  "name": "Pipeline Building",
+                  "layout": {
+                    "padding": [
+                      8,
+                      10,
+                      8,
+                      10
+                    ],
+                    "gap": 4,
+                    "crossAxisAlignment": "center"
+                  },
+                  "style": {
+                    "flex": 1,
+                    "background": "#111816",
+                    "borderRadius": 6,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": [
+                    {
+                      "id": "pipeline_seg_building_count",
+                      "type": "Text",
+                      "name": "Building Count",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "3",
+                        "fontSize": 18,
+                        "fontWeight": "700",
+                        "color": "#0d9488",
+                        "textAlign": "center"
+                      }
+                    },
+                    {
+                      "id": "pipeline_seg_building_label",
+                      "type": "Text",
+                      "name": "Building Label",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Building",
+                        "fontSize": 9,
+                        "color": "#71717a",
+                        "textAlign": "center",
+                        "letterSpacing": "0.5px"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "pipeline_seg_testing",
+                  "type": "Column",
+                  "name": "Pipeline Testing",
+                  "layout": {
+                    "padding": [
+                      8,
+                      10,
+                      8,
+                      10
+                    ],
+                    "gap": 4,
+                    "crossAxisAlignment": "center"
+                  },
+                  "style": {
+                    "flex": 1,
+                    "background": "#111816",
+                    "borderRadius": 6,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": [
+                    {
+                      "id": "pipeline_seg_testing_count",
+                      "type": "Text",
+                      "name": "Testing Count",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "1",
+                        "fontSize": 18,
+                        "fontWeight": "700",
+                        "color": "#06b6d4",
+                        "textAlign": "center"
+                      }
+                    },
+                    {
+                      "id": "pipeline_seg_testing_label",
+                      "type": "Text",
+                      "name": "Testing Label",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Testing",
+                        "fontSize": 9,
+                        "color": "#71717a",
+                        "textAlign": "center",
+                        "letterSpacing": "0.5px"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "pipeline_seg_human_review",
+                  "type": "Column",
+                  "name": "Pipeline Human Review",
+                  "layout": {
+                    "padding": [
+                      8,
+                      10,
+                      8,
+                      10
+                    ],
+                    "gap": 4,
+                    "crossAxisAlignment": "center"
+                  },
+                  "style": {
+                    "flex": 1,
+                    "background": "#111816",
+                    "borderRadius": 6,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": [
+                    {
+                      "id": "pipeline_seg_human_review_count",
+                      "type": "Text",
+                      "name": "Human Review Count",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "1",
+                        "fontSize": 18,
+                        "fontWeight": "700",
+                        "color": "#f59e0b",
+                        "textAlign": "center"
+                      }
+                    },
+                    {
+                      "id": "pipeline_seg_human_review_label",
+                      "type": "Text",
+                      "name": "Human Review Label",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Human Review",
+                        "fontSize": 9,
+                        "color": "#71717a",
+                        "textAlign": "center",
+                        "letterSpacing": "0.5px"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "pipeline_seg_done",
+                  "type": "Column",
+                  "name": "Pipeline Done",
+                  "layout": {
+                    "padding": [
+                      8,
+                      10,
+                      8,
+                      10
+                    ],
+                    "gap": 4,
+                    "crossAxisAlignment": "center"
+                  },
+                  "style": {
+                    "flex": 1,
+                    "background": "#111816",
+                    "borderRadius": 6,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": [
+                    {
+                      "id": "pipeline_seg_done_count",
+                      "type": "Text",
+                      "name": "Done Count",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "4",
+                        "fontSize": 18,
+                        "fontWeight": "700",
+                        "color": "#22c55e",
+                        "textAlign": "center"
+                      }
+                    },
+                    {
+                      "id": "pipeline_seg_done_label",
+                      "type": "Text",
+                      "name": "Done Label",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Done",
+                        "fontSize": 9,
+                        "color": "#71717a",
+                        "textAlign": "center",
+                        "letterSpacing": "0.5px"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "metadata": {
+                "bindings": [
+                  {
+                    "field": "pipeline",
+                    "direction": "read"
+                  }
+                ],
+                "specRef": "requirements.md#KB-018"
+              }
+            }
+          ]
+        },
+        {
+          "id": "cms_content",
+          "type": "Row",
+          "name": "CMS Content",
+          "layout": {
+            "gap": 0,
+            "padding": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "crossAxisAlignment": "stretch"
+          },
+          "style": {
+            "flex": 1,
+            "overflowY": "hidden"
+          },
+          "children": [
+            {
+              "id": "cms_agents_col",
+              "type": "Column",
+              "name": "CMS Agents Column",
+              "layout": {
+                "gap": 0,
+                "padding": [
+                  16,
+                  16,
+                  16,
+                  16
+                ]
+              },
+              "style": {
+                "flex": 2,
+                "borderRight": "1px solid #1a2e2a",
+                "overflowY": "auto"
+              },
+              "children": [
+                {
+                  "id": "agents_header",
+                  "type": "Row",
+                  "name": "Agents Header",
+                  "layout": {
+                    "gap": 8,
+                    "crossAxisAlignment": "center",
+                    "mainAxisAlignment": "spaceBetween",
+                    "padding": [
+                      0,
+                      0,
+                      12,
+                      0
+                    ]
+                  },
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "agents_title",
+                      "type": "Text",
+                      "name": "Agents Title",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "ACTIVE AGENTS",
+                        "fontSize": 10,
+                        "fontWeight": "700",
+                        "color": "#52525b",
+                        "letterSpacing": "2px"
+                      }
+                    },
+                    {
+                      "id": "agents_count_badge",
+                      "type": "Text",
+                      "name": "Agents Count Badge",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "2 running",
+                        "fontSize": 11,
+                        "color": "#0d9488",
+                        "background": "#042f2e",
+                        "padding": "2px 8px",
+                        "borderRadius": 9999
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "agent_panel_1",
+                  "type": "Column",
+                  "name": "Agent Panel 1",
+                  "layout": {
+                    "padding": [
+                      12,
+                      12,
+                      12,
+                      12
+                    ],
+                    "gap": 10
+                  },
+                  "style": {
+                    "background": "#111816",
+                    "borderRadius": 10,
+                    "border": {"width": 1, "color": "#1a2e2a"},
+                    "marginBottom": 12
+                  },
+                  "children": [
+                    {
+                      "id": "ap1_header",
+                      "type": "Row",
+                      "name": "AP1 Header",
+                      "layout": {
+                        "gap": 8,
+                        "crossAxisAlignment": "center",
+                        "mainAxisAlignment": "spaceBetween"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "ap1_left",
+                          "type": "Row",
+                          "name": "AP1 Left",
+                          "layout": {
+                            "gap": 8,
+                            "crossAxisAlignment": "center"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "ap1_spinner",
+                              "type": "Box",
+                              "name": "AP1 Spinner",
+                              "layout": {},
+                              "style": {
+                                "width": 10,
+                                "height": 10,
+                                "borderRadius": 9999,
+                                "background": "#0d9488",
+                                "border": {"width": 2, "color": "#042f2e"}
+                              },
+                              "children": []
+                            },
+                            {
+                              "id": "ap1_agent_name",
+                              "type": "Text",
+                              "name": "AP1 Agent Name",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "specops-builder",
+                                "fontSize": 13,
+                                "fontWeight": "600",
+                                "color": "#ffffff"
+                              }
+                            },
+                            {
+                              "id": "ap1_card_badge",
+                              "type": "Text",
+                              "name": "AP1 Card Badge",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "a1b2c3",
+                                "fontSize": 10,
+                                "color": "#52525b",
+                                "background": "#1a2e2a",
+                                "padding": "2px 6px",
+                                "borderRadius": 4,
+                                "fontFamily": "monospace"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "id": "ap1_meta",
+                          "type": "Row",
+                          "name": "AP1 Meta",
+                          "layout": {
+                            "gap": 8,
+                            "crossAxisAlignment": "center"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "ap1_tool_count",
+                              "type": "Text",
+                              "name": "AP1 Tool Count",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "42 tools",
+                                "fontSize": 10,
+                                "color": "#71717a"
+                              }
+                            },
+                            {
+                              "id": "ap1_elapsed",
+                              "type": "Text",
+                              "name": "AP1 Elapsed",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "12:34",
+                                "fontSize": 10,
+                                "color": "#71717a"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "ap1_feed",
+                      "type": "Column",
+                      "name": "AP1 Tool Call Feed",
+                      "layout": {
+                        "gap": 4,
+                        "padding": [
+                          8,
+                          8,
+                          8,
+                          8
+                        ]
+                      },
+                      "style": {
+                        "background": "#0a0e0d",
+                        "borderRadius": 6,
+                        "maxHeight": 160,
+                        "overflowY": "auto"
+                      },
+                      "children": [
+                        {
+                          "id": "ap1_entry_file-write",
+                          "type": "Row",
+                          "name": "Tool Call Entry file_write",
+                          "layout": {
+                            "gap": 8,
+                            "crossAxisAlignment": "center"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "ap1_entry_file-write_ts",
+                              "type": "Text",
+                              "name": "Entry Timestamp",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "15:30:12",
+                                "fontSize": 9,
+                                "color": "#52525b",
+                                "fontFamily": "monospace"
+                              }
+                            },
+                            {
+                              "id": "ap1_entry_file-write_tool",
+                              "type": "Text",
+                              "name": "Tool Name",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "file_write",
+                                "fontSize": 10,
+                                "fontWeight": "600",
+                                "color": "#14b8a6",
+                                "fontFamily": "monospace"
+                              }
+                            },
+                            {
+                              "id": "ap1_entry_file-write_input",
+                              "type": "Text",
+                              "name": "Tool Input",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "src/cms/websocket.ts",
+                                "fontSize": 10,
+                                "color": "#71717a",
+                                "fontFamily": "monospace"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "id": "ap1_entry_shell",
+                          "type": "Row",
+                          "name": "Tool Call Entry shell",
+                          "layout": {
+                            "gap": 8,
+                            "crossAxisAlignment": "center"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "ap1_entry_shell_ts",
+                              "type": "Text",
+                              "name": "Entry Timestamp",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "15:30:08",
+                                "fontSize": 9,
+                                "color": "#52525b",
+                                "fontFamily": "monospace"
+                              }
+                            },
+                            {
+                              "id": "ap1_entry_shell_tool",
+                              "type": "Text",
+                              "name": "Tool Name",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "shell",
+                                "fontSize": 10,
+                                "fontWeight": "600",
+                                "color": "#14b8a6",
+                                "fontFamily": "monospace"
+                              }
+                            },
+                            {
+                              "id": "ap1_entry_shell_input",
+                              "type": "Text",
+                              "name": "Tool Input",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "npm test",
+                                "fontSize": 10,
+                                "color": "#71717a",
+                                "fontFamily": "monospace"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "id": "ap1_entry_grep",
+                          "type": "Row",
+                          "name": "Tool Call Entry grep",
+                          "layout": {
+                            "gap": 8,
+                            "crossAxisAlignment": "center"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "ap1_entry_grep_ts",
+                              "type": "Text",
+                              "name": "Entry Timestamp",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "15:29:55",
+                                "fontSize": 9,
+                                "color": "#52525b",
+                                "fontFamily": "monospace"
+                              }
+                            },
+                            {
+                              "id": "ap1_entry_grep_tool",
+                              "type": "Text",
+                              "name": "Tool Name",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "grep",
+                                "fontSize": 10,
+                                "fontWeight": "600",
+                                "color": "#14b8a6",
+                                "fontFamily": "monospace"
+                              }
+                            },
+                            {
+                              "id": "ap1_entry_grep_input",
+                              "type": "Text",
+                              "name": "Tool Input",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "src/ -r reconnect",
+                                "fontSize": 10,
+                                "color": "#71717a",
+                                "fontFamily": "monospace"
+                              }
+                            }
+                          ]
+                        }
+                      ],
+                      "metadata": {
+                        "bindings": [
+                          {
+                            "field": "agent.toolCalls",
+                            "direction": "read"
+                          }
+                        ],
+                        "specRef": "requirements.md#KB-017"
+                      }
+                    }
+                  ],
+                  "metadata": {
+                    "bindings": [
+                      {
+                        "field": "agent.agentId",
+                        "direction": "read"
+                      },
+                      {
+                        "field": "agent.agentName",
+                        "direction": "read"
+                      },
+                      {
+                        "field": "agent.toolCallCount",
+                        "direction": "read"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "agent_panel_2",
+                  "type": "Column",
+                  "name": "Agent Panel 2",
+                  "layout": {
+                    "padding": [
+                      12,
+                      12,
+                      12,
+                      12
+                    ],
+                    "gap": 10
+                  },
+                  "style": {
+                    "background": "#111816",
+                    "borderRadius": 10,
+                    "border": {"width": 1, "color": "#1a2e2a"},
+                    "marginBottom": 12
+                  },
+                  "children": [
+                    {
+                      "id": "ap2_header",
+                      "type": "Row",
+                      "name": "AP2 Header",
+                      "layout": {
+                        "gap": 8,
+                        "crossAxisAlignment": "center"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "ap2_spinner",
+                          "type": "Box",
+                          "name": "AP2 Spinner",
+                          "layout": {},
+                          "style": {
+                            "width": 10,
+                            "height": 10,
+                            "borderRadius": 9999,
+                            "background": "#0d9488"
+                          },
+                          "children": []
+                        },
+                        {
+                          "id": "ap2_agent_name",
+                          "type": "Text",
+                          "name": "AP2 Agent Name",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "specops-requirements",
+                            "fontSize": 13,
+                            "fontWeight": "600",
+                            "color": "#ffffff"
+                          }
+                        },
+                        {
+                          "id": "ap2_card_badge",
+                          "type": "Text",
+                          "name": "AP2 Card Badge",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "g7h8i9",
+                            "fontSize": 10,
+                            "color": "#52525b",
+                            "background": "#1a2e2a",
+                            "padding": "2px 6px",
+                            "borderRadius": 4,
+                            "fontFamily": "monospace"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "ap2_thinking_box",
+                      "type": "Column",
+                      "name": "AP2 Thinking Box",
+                      "layout": {
+                        "padding": [
+                          8,
+                          8,
+                          8,
+                          8
+                        ],
+                        "gap": 4
+                      },
+                      "style": {
+                        "background": "#042f2e",
+                        "borderRadius": 6,
+                        "border": {"width": 1, "color": "#0d9488"}
+                      },
+                      "children": [
+                        {
+                          "id": "ap2_thinking_label",
+                          "type": "Text",
+                          "name": "AP2 Thinking Label",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "THINKING",
+                            "fontSize": 9,
+                            "fontWeight": "700",
+                            "color": "#0d9488",
+                            "letterSpacing": "1.5px"
+                          }
+                        },
+                        {
+                          "id": "ap2_thinking_text",
+                          "type": "Text",
+                          "name": "AP2 Thinking Text",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "Analyzing acceptance criteria for kanban-dashboard... Need to verify KB-031 validation requirements match the schema constraints...",
+                            "fontSize": 11,
+                            "color": "#d4d4d8",
+                            "lineHeight": 1.5
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "no_agents_state",
+                  "type": "Column",
+                  "name": "No Agents State",
+                  "layout": {
+                    "crossAxisAlignment": "center",
+                    "mainAxisAlignment": "center",
+                    "gap": 8,
+                    "padding": [
+                      24,
+                      0,
+                      24,
+                      0
+                    ]
+                  },
+                  "style": {
+                    "background": "#0a0e0d",
+                    "borderRadius": 8,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": [
+                    {
+                      "id": "no_agents_icon",
+                      "type": "Icon",
+                      "name": "No Agents Icon",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "name": "person",
+                        "size": 24,
+                        "color": "#3f3f46"
+                      }
+                    },
+                    {
+                      "id": "no_agents_text",
+                      "type": "Text",
+                      "name": "No Agents Text",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "No active agents",
+                        "fontSize": 13,
+                        "color": "#52525b",
+                        "textAlign": "center"
+                      }
+                    },
+                    {
+                      "id": "no_agents_last_activity",
+                      "type": "Text",
+                      "name": "No Agents Last Activity",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Last activity: 14 min ago",
+                        "fontSize": 11,
+                        "color": "#3f3f46"
+                      }
+                    }
+                  ],
+                  "metadata": {
+                    "visibility": {
+                      "when": "activeAgents.length === 0"
+                    },
+                    "specRef": "requirements.md#AC-034"
+                  }
+                }
+              ],
+              "metadata": {
+                "bindings": [
+                  {
+                    "field": "activeAgents",
+                    "direction": "read"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "cms_blocked_col",
+              "type": "Column",
+              "name": "CMS Blocked Column",
+              "layout": {
+                "gap": 0,
+                "padding": [
+                  16,
+                  16,
+                  16,
+                  16
+                ]
+              },
+              "style": {
+                "flex": 1,
+                "borderRight": "1px solid #1a2e2a",
+                "overflowY": "auto"
+              },
+              "children": [
+                {
+                  "id": "blocked_header",
+                  "type": "Row",
+                  "name": "Blocked Header",
+                  "layout": {
+                    "gap": 8,
+                    "crossAxisAlignment": "center",
+                    "mainAxisAlignment": "spaceBetween",
+                    "padding": [
+                      0,
+                      0,
+                      12,
+                      0
+                    ]
+                  },
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "blocked_title",
+                      "type": "Text",
+                      "name": "Blocked Title",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "BLOCKED ITEMS",
+                        "fontSize": 10,
+                        "fontWeight": "700",
+                        "color": "#52525b",
+                        "letterSpacing": "2px"
+                      }
+                    },
+                    {
+                      "id": "blocked_count_badge",
+                      "type": "Row",
+                      "name": "Blocked Count Badge",
+                      "layout": {
+                        "gap": 4,
+                        "crossAxisAlignment": "center",
+                        "padding": [
+                          2,
+                          8,
+                          2,
+                          8
+                        ]
+                      },
+                      "style": {
+                        "background": "#451a03",
+                        "borderRadius": 9999,
+                        "border": {"width": 1, "color": "#b45309"}
+                      },
+                      "children": [
+                        {
+                          "id": "blocked_count_icon",
+                          "type": "Icon",
+                          "name": "Blocked Count Icon",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "name": "warning",
+                            "size": 10,
+                            "color": "#f59e0b"
+                          }
+                        },
+                        {
+                          "id": "blocked_count_text",
+                          "type": "Text",
+                          "name": "Blocked Count Text",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "2 blocked",
+                            "fontSize": 10,
+                            "color": "#f59e0b"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "blocked_item_1",
+                  "type": "Column",
+                  "name": "Blocked Item 1",
+                  "layout": {
+                    "padding": [
+                      12,
+                      12,
+                      12,
+                      12
+                    ],
+                    "gap": 8
+                  },
+                  "style": {
+                    "background": "#1a1008",
+                    "borderRadius": 8,
+                    "border": {"width": 1, "color": "#92400e"},
+                    "marginBottom": 10
+                  },
+                  "children": [
+                    {
+                      "id": "bi1_top_row",
+                      "type": "Row",
+                      "name": "BI1 Top Row",
+                      "layout": {
+                        "gap": 6,
+                        "crossAxisAlignment": "center",
+                        "mainAxisAlignment": "spaceBetween"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "bi1_left",
+                          "type": "Row",
+                          "name": "BI1 Left",
+                          "layout": {
+                            "gap": 6,
+                            "crossAxisAlignment": "center"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "bi1_warning_icon",
+                              "type": "Icon",
+                              "name": "BI1 Warning",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "name": "warning",
+                                "size": 12,
+                                "color": "#f59e0b"
+                              }
+                            },
+                            {
+                              "id": "bi1_card_id",
+                              "type": "Text",
+                              "name": "BI1 Card ID",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "d4e5f6",
+                                "fontSize": 10,
+                                "color": "#71717a",
+                                "fontFamily": "monospace"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "id": "bi1_age",
+                          "type": "Text",
+                          "name": "BI1 Age",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "2h ago",
+                            "fontSize": 10,
+                            "color": "#92400e"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "bi1_card_title",
+                      "type": "Text",
+                      "name": "BI1 Card Title",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Configure Slack webhook for blockers",
+                        "fontSize": 12,
+                        "fontWeight": "600",
+                        "color": "#fbbf24"
+                      }
+                    },
+                    {
+                      "id": "bi1_question",
+                      "type": "Text",
+                      "name": "BI1 Question",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Which Slack channel? #ops or #dev?",
+                        "fontSize": 11,
+                        "color": "#d97706",
+                        "lineHeight": 1.4
+                      }
+                    },
+                    {
+                      "id": "bi1_agent_row",
+                      "type": "Row",
+                      "name": "BI1 Agent Row",
+                      "layout": {
+                        "gap": 4,
+                        "crossAxisAlignment": "center"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "bi1_agent_label",
+                          "type": "Text",
+                          "name": "BI1 Agent Label",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "by specops-builder",
+                            "fontSize": 10,
+                            "color": "#6b7280"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "bi1_readonly_notice",
+                      "type": "Text",
+                      "name": "BI1 Read Only Notice",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Resolve via VS Code, Slack, or Vivian",
+                        "fontSize": 10,
+                        "color": "#52525b",
+                        "fontStyle": "italic"
+                      },
+                      "metadata": {
+                        "specRef": "requirements.md#KB-019"
+                      }
+                    }
+                  ],
+                  "metadata": {
+                    "bindings": [
+                      {
+                        "field": "blockedCard.cardTitle",
+                        "direction": "read"
+                      },
+                      {
+                        "field": "blockedCard.question",
+                        "direction": "read"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "id": "cms_completions_col",
+              "type": "Column",
+              "name": "CMS Completions Column",
+              "layout": {
+                "gap": 0,
+                "padding": [
+                  16,
+                  16,
+                  16,
+                  16
+                ]
+              },
+              "style": {
+                "flex": 1,
+                "overflowY": "auto"
+              },
+              "children": [
+                {
+                  "id": "completions_header",
+                  "type": "Text",
+                  "name": "Completions Header",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "text": "RECENT COMPLETIONS",
+                    "fontSize": 10,
+                    "fontWeight": "700",
+                    "color": "#52525b",
+                    "letterSpacing": "2px",
+                    "marginBottom": "12px"
+                  }
+                },
+                {
+                  "id": "comp_item_m3n4o5",
+                  "type": "Row",
+                  "name": "Completion Initialize Board",
+                  "layout": {
+                    "padding": [
+                      10,
+                      10,
+                      10,
+                      10
+                    ],
+                    "gap": 10,
+                    "crossAxisAlignment": "start"
+                  },
+                  "style": {
+                    "background": "#111816",
+                    "borderRadius": 8,
+                    "border": {"width": 1, "color": "#1a2e2a"},
+                    "marginBottom": 8
+                  },
+                  "children": [
+                    {
+                      "id": "comp_m3_icon",
+                      "type": "Icon",
+                      "name": "Comp M3 Icon",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "name": "check_circle",
+                        "size": 14,
+                        "color": "#22c55e"
+                      }
+                    },
+                    {
+                      "id": "comp_m3_info",
+                      "type": "Column",
+                      "name": "Comp M3 Info",
+                      "layout": {
+                        "gap": 3
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "comp_m3_title",
+                          "type": "Text",
+                          "name": "Comp M3 Title",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "Initialize .kanban board",
+                            "fontSize": 12,
+                            "fontWeight": "500",
+                            "color": "#d4d4d8"
+                          }
+                        },
+                        {
+                          "id": "comp_m3_meta",
+                          "type": "Text",
+                          "name": "Comp M3 Meta",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "specops-requirements • 5min ago",
+                            "fontSize": 10,
+                            "color": "#71717a"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "comp_item_x9y8z7",
+                  "type": "Row",
+                  "name": "Completion Deploy Staging",
+                  "layout": {
+                    "padding": [
+                      10,
+                      10,
+                      10,
+                      10
+                    ],
+                    "gap": 10,
+                    "crossAxisAlignment": "start"
+                  },
+                  "style": {
+                    "background": "#1a0808",
+                    "borderRadius": 8,
+                    "border": {"width": 1, "color": "#450a0a"},
+                    "marginBottom": 8
+                  },
+                  "children": [
+                    {
+                      "id": "comp_x9_icon",
+                      "type": "Icon",
+                      "name": "Comp X9 Icon",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "name": "cancel",
+                        "size": 14,
+                        "color": "#ef4444"
+                      }
+                    },
+                    {
+                      "id": "comp_x9_info",
+                      "type": "Column",
+                      "name": "Comp X9 Info",
+                      "layout": {
+                        "gap": 3
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "comp_x9_title",
+                          "type": "Text",
+                          "name": "Comp X9 Title",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "Deploy to staging",
+                            "fontSize": 12,
+                            "fontWeight": "500",
+                            "color": "#fca5a5"
+                          }
+                        },
+                        {
+                          "id": "comp_x9_meta",
+                          "type": "Text",
+                          "name": "Comp X9 Meta",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "specops-verifier • 2h ago",
+                            "fontSize": 10,
+                            "color": "#71717a"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "metadata": {
+                "bindings": [
+                  {
+                    "field": "recentCompletions",
+                    "direction": "read"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "cms_connecting_overlay",
+          "type": "Column",
+          "name": "CMS Connecting Overlay",
+          "layout": {
+            "crossAxisAlignment": "center",
+            "mainAxisAlignment": "center",
+            "gap": 16
+          },
+          "style": {
+            "position": "absolute",
+            "top": 0,
+            "left": 0,
+            "width": 1440,
+            "height": 900,
+            "background": "rgba(8,12,11,0.95)",
+            "zIndex": 50
+          },
+          "children": [
+            {
+              "id": "cms_connecting_icon",
+              "type": "Icon",
+              "name": "Connecting Spinner Icon",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "name": "sync",
+                "size": 40,
+                "color": "#0d9488"
+              }
+            },
+            {
+              "id": "cms_connecting_text",
+              "type": "Text",
+              "name": "Connecting Text",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "text": "Connecting to AgentDispatch...",
+                "fontSize": 18,
+                "fontWeight": "500",
+                "color": "#ffffff"
+              }
+            },
+            {
+              "id": "cms_connecting_sub",
+              "type": "Text",
+              "name": "Connecting Subtext",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "text": "ws://192.168.68.69:3001/dashboard/ws",
+                "fontSize": 12,
+                "color": "#52525b",
+                "fontFamily": "monospace"
+              }
+            }
+          ],
+          "metadata": {
+            "visibility": {
+              "when": "ws.connectionState === connecting",
+              "animation": "fadeOut"
+            },
+            "specRef": "requirements.md#KB-029"
+          }
+        }
+      ]
+    }
+  ]
+}

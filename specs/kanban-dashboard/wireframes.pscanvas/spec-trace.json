@@ -1,0 +1,236 @@
+{
+  "nodes": {
+    "search_input": {
+      "specFile": "requirements.md",
+      "section": "KB-033",
+      "description": "Board search bar — filters cards by title text in real-time"
+    },
+    "filter_priority_btn": {
+      "specFile": "requirements.md",
+      "section": "KB-033",
+      "description": "Priority filter dropdown"
+    },
+    "filter_blocked_btn": {
+      "specFile": "requirements.md",
+      "section": "KB-033",
+      "description": "Blocked-only toggle filter"
+    },
+    "active_filter_chip": {
+      "specFile": "acceptance-criteria.md",
+      "section": "AC-074",
+      "description": "Removable filter chip shown when filter active"
+    },
+    "add_card_global_btn": {
+      "specFile": "requirements.md",
+      "section": "KB-021",
+      "description": "Add Card button triggers card creation form"
+    },
+    "col_backlog_add_btn": {
+      "specFile": "requirements.md",
+      "section": "KB-021",
+      "description": "Column-level Add Card button"
+    },
+    "wip_indicator": {
+      "specFile": "requirements.md",
+      "section": "KB-035",
+      "description": "WIP exceeded indicator — icon + count (non-color indicator)"
+    },
+    "wip_icon": {
+      "specFile": "requirements.md",
+      "section": "KB-035",
+      "description": "Exclamation icon alongside red WIP text (WCAG 1.4.1)"
+    },
+    "blocked_warning_icon": {
+      "specFile": "requirements.md",
+      "section": "KB-035",
+      "description": "Warning triangle icon alongside blocked color (WCAG 1.4.1)"
+    },
+    "card_blocked_1": {
+      "specFile": "requirements.md",
+      "section": "KB-004",
+      "description": "Blocked card visual indicator with icon + border + pulse"
+    },
+    "card_blocked_question_preview": {
+      "specFile": "acceptance-criteria.md",
+      "section": "AC-009",
+      "description": "Blocker question preview on card at board level"
+    },
+    "blocked_age_text": {
+      "specFile": "review.md",
+      "section": "UX-S-003",
+      "description": "Blocker age shown on card (suggestion from review)"
+    },
+    "card1_keyboard_hint": {
+      "specFile": "requirements.md",
+      "section": "KB-034",
+      "description": "Alt+Arrow keyboard shortcut hint text on card"
+    },
+    "loading_skeleton_overlay": {
+      "specFile": "requirements.md",
+      "section": "KB-028",
+      "description": "Loading skeleton shown during board initial read"
+    },
+    "undo_toast": {
+      "specFile": "requirements.md",
+      "section": "KB-030",
+      "description": "Undo toast after drag-drop — 5 second window"
+    },
+    "undo_btn": {
+      "specFile": "acceptance-criteria.md",
+      "section": "AC-070",
+      "description": "Undo button reverts card to previous column"
+    },
+    "parse_warning_badge": {
+      "specFile": "requirements.md",
+      "section": "EF-001.2",
+      "description": "Warning indicator for skipped malformed cards"
+    },
+    "blocker_header_icon": {
+      "specFile": "requirements.md",
+      "section": "KB-035",
+      "description": "Warning icon alongside blocker title (WCAG 1.4.1)"
+    },
+    "unblock_btn": {
+      "specFile": "requirements.md",
+      "section": "KB-032",
+      "description": "Unblock button — disabled when response textarea is empty"
+    },
+    "blocker_hint_text": {
+      "specFile": "acceptance-criteria.md",
+      "section": "AC-072",
+      "description": "Hint text shown when response is empty"
+    },
+    "blocker_response_textarea": {
+      "specFile": "requirements.md",
+      "section": "KB-005",
+      "description": "Response textarea for human unblock answer"
+    },
+    "title_required_indicator": {
+      "specFile": "requirements.md",
+      "section": "KB-031",
+      "description": "Required field asterisk on title"
+    },
+    "title_char_counter": {
+      "specFile": "requirements.md",
+      "section": "KB-031",
+      "description": "Character counter 0/200 on title field"
+    },
+    "title_error_text": {
+      "specFile": "acceptance-criteria.md",
+      "section": "AC-071",
+      "description": "Inline validation error: Title is required"
+    },
+    "form_submit_btn": {
+      "specFile": "requirements.md",
+      "section": "KB-031",
+      "description": "Submit disabled when title is empty"
+    },
+    "initialize_board_btn": {
+      "specFile": "requirements.md",
+      "section": "AF-001.1",
+      "description": "Initialize Board button creates .kanban/ directory"
+    },
+    "open_editor_btn": {
+      "specFile": "requirements.md",
+      "section": "EF-001.1",
+      "description": "Open board.yaml in editor action for malformed YAML"
+    },
+    "cms_conn_status": {
+      "specFile": "requirements.md",
+      "section": "KB-016",
+      "description": "WebSocket connection status indicator"
+    },
+    "cms_connecting_overlay": {
+      "specFile": "requirements.md",
+      "section": "KB-029",
+      "description": "Connecting overlay shown during WebSocket handshake"
+    },
+    "pipeline_bar": {
+      "specFile": "requirements.md",
+      "section": "KB-018",
+      "description": "Pipeline overview bar with per-column card counts"
+    },
+    "blocked_item_1": {
+      "specFile": "requirements.md",
+      "section": "KB-019",
+      "description": "Blocked item card — read-only in CMS"
+    },
+    "bi1_readonly_notice": {
+      "specFile": "requirements.md",
+      "section": "KB-019",
+      "description": "Directs user to resolve via VS Code/Slack/Vivian"
+    },
+    "no_agents_state": {
+      "specFile": "acceptance-criteria.md",
+      "section": "AC-034",
+      "description": "No active agents empty state"
+    },
+    "offline_banner": {
+      "specFile": "acceptance-criteria.md",
+      "section": "AC-035",
+      "description": "AgentDispatch offline banner with retry"
+    },
+    "offline_retry_btn": {
+      "specFile": "requirements.md",
+      "section": "NFR-005",
+      "description": "Manual retry WebSocket connection"
+    },
+    "login_submit_btn": {
+      "specFile": "requirements.md",
+      "section": "KB-020",
+      "description": "Basic auth sign-in button"
+    },
+    "ap1_feed": {
+      "specFile": "requirements.md",
+      "section": "KB-017",
+      "description": "Scrolling tool call feed for active agent"
+    }
+  },
+  "screens": {
+    "board-view": {
+      "specFile": "requirements.md",
+      "section": "UC-001",
+      "description": "Main SDLC kanban board with 7 columns — primary human view"
+    },
+    "card-detail": {
+      "specFile": "requirements.md",
+      "section": "UC-002",
+      "description": "Card detail panel with blocker response area"
+    },
+    "card-create-form": {
+      "specFile": "requirements.md",
+      "section": "UC-007",
+      "description": "Card creation form with title validation"
+    },
+    "dashboard-view": {
+      "specFile": "requirements.md",
+      "section": "UC-005",
+      "description": "Cross-repo dashboard showing all projects"
+    },
+    "board-empty-state": {
+      "specFile": "requirements.md",
+      "section": "AF-001.1",
+      "description": "No .kanban/ directory — show Initialize Board button"
+    },
+    "board-error-state": {
+      "specFile": "requirements.md",
+      "section": "EF-001.1",
+      "description": "Malformed board.yaml — show validation error and editor link"
+    },
+    "cms-ops": {
+      "specFile": "requirements.md",
+      "section": "UC-006",
+      "description": "CMS live ops dashboard — read-only real-time view"
+    },
+    "cms-login": {
+      "specFile": "requirements.md",
+      "section": "KB-020",
+      "description": "CMS basic auth login page"
+    },
+    "cms-offline": {
+      "specFile": "requirements.md",
+      "section": "AF-006.2",
+      "description": "CMS disconnected/reconnecting state"
+    }
+  }
+}

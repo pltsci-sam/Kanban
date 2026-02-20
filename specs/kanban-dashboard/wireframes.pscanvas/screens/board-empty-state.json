@@ -1,0 +1,207 @@
+{
+  "id": "62793c12",
+  "type": "Screen",
+  "name": "Board Empty State",
+  "layout": {
+    "sizing": {
+      "width": {
+        "type": "fixed",
+        "value": 1280
+      },
+      "height": {
+        "type": "fixed",
+        "value": 800
+      }
+    }
+  },
+  "style": {},
+  "children": [
+    {
+      "id": "empty_root",
+      "type": "Column",
+      "name": "Empty Root",
+      "layout": {
+        "padding": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "gap": 0,
+        "crossAxisAlignment": "stretch"
+      },
+      "style": {
+        "background": "#080c0b",
+        "width": 1280,
+        "height": 800
+      },
+      "children": [
+        {
+          "id": "empty_topbar",
+          "type": "Row",
+          "name": "Empty Topbar",
+          "layout": {
+            "padding": [
+              0,
+              16,
+              0,
+              16
+            ],
+            "crossAxisAlignment": "center"
+          },
+          "style": {
+            "background": "#0a0f0e",
+            "height": 56,
+            "borderBottom": "1px solid #1a2e2a"
+          },
+          "children": [
+            {
+              "id": "empty_topbar_title",
+              "type": "Text",
+              "name": "Empty Topbar Title",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "text": "Kanban — No Board Found",
+                "fontSize": 16,
+                "fontWeight": "600",
+                "color": "#ffffff"
+              }
+            }
+          ]
+        },
+        {
+          "id": "empty_center",
+          "type": "Column",
+          "name": "Empty Center",
+          "layout": {
+            "crossAxisAlignment": "center",
+            "mainAxisAlignment": "center",
+            "gap": 20,
+            "padding": [
+              0,
+              0,
+              80,
+              0
+            ]
+          },
+          "style": {
+            "flex": 1
+          },
+          "children": [
+            {
+              "id": "empty_icon",
+              "type": "Box",
+              "name": "Empty Icon Container",
+              "layout": {
+                "crossAxisAlignment": "center",
+                "mainAxisAlignment": "center"
+              },
+              "style": {
+                "width": 80,
+                "height": 80,
+                "borderRadius": 9999,
+                "background": "#0a0e0d",
+                "border": {"width": 1, "color": "#1a2e2a"}
+              },
+              "children": [
+                {
+                  "id": "empty_icon_inner",
+                  "type": "Icon",
+                  "name": "Empty Board Icon",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "name": "info",
+                    "size": 36,
+                    "color": "#1a2e2a"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "empty_title",
+              "type": "Text",
+              "name": "Empty Title",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "text": "No Kanban Board Found",
+                "fontSize": 22,
+                "fontWeight": "600",
+                "color": "#ffffff",
+                "textAlign": "center"
+              }
+            },
+            {
+              "id": "empty_subtitle",
+              "type": "Text",
+              "name": "Empty Subtitle",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "text": "This workspace does not have a .kanban/ directory.\nInitialize a board to start tracking SDLC work.",
+                "fontSize": 14,
+                "color": "#71717a",
+                "textAlign": "center",
+                "lineHeight": 1.6
+              }
+            },
+            {
+              "id": "initialize_board_btn",
+              "type": "Button",
+              "name": "Initialize Board Button",
+              "layout": {},
+              "style": {
+                "background": "#0d9488",
+                "color": "#ffffff",
+                "borderRadius": 8,
+                "paddingLeft": 24,
+                "paddingRight": 24,
+                "fontSize": 14,
+                "fontWeight": "600"
+              },
+              "children": [],
+              "props": {
+                "label": "Initialize Board",
+                "variant": "filled",
+                "height": 48
+              },
+              "metadata": {
+                "handlers": [
+                  {
+                    "event": "tap",
+                    "action": "initializeBoard(workspaceRoot)"
+                  }
+                ],
+                "accessibility": {
+                  "role": "button",
+                  "label": "Initialize kanban board in current workspace"
+                },
+                "specRef": "requirements.md#AF-001.1"
+              }
+            },
+            {
+              "id": "empty_cli_hint",
+              "type": "Text",
+              "name": "CLI Hint",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "text": "Or run: kanban init",
+                "fontSize": 12,
+                "color": "#52525b",
+                "fontFamily": "monospace"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

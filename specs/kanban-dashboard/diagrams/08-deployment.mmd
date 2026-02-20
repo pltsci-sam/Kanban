@@ -1,0 +1,44 @@
+graph TB
+    subgraph Dev["DEVELOPER MACHINE"]
+        VSCode["VS Code + Extension"]
+        CCSkill["Claude Code + Kanban Skill"]
+        Git["Git Repos<br/>with .kanban/ directories"]
+    end
+
+    subgraph NUC["INTEL NUC (LAN: 192.168.68.x)"]
+        AD["AgentDispatch<br/>:3001"]
+        CMS_Server["CMS HTTP Server<br/>GET /ops (Basic Auth)"]
+        WS_Server["WebSocket Server<br/>/dashboard/ws"]
+        SSE_Server["SSE Streams<br/>/agents/:id/thinking"]
+        Agents["SPECOPS Agent Pool<br/>(Claude Code sessions)"]
+    end
+
+    subgraph Browser["BROWSER (LAN)"]
+        Dashboard["CMS Ops Dashboard<br/>Real-time agent monitoring"]
+    end
+
+    subgraph External["EXTERNAL"]
+        SlackAPI["Slack API<br/>Webhook + Bot"]
+        VivianDevice["Vivian<br/>Voice Assistant"]
+    end
+
+    VSCode <-->|"File I/O"| Git
+    CCSkill <-->|"File I/O"| Git
+    AD <-->|"File I/O"| Git
+    Agents <-->|"File I/O"| Git
+
+    AD --> CMS_Server
+    AD --> WS_Server
+    AD --> SSE_Server
+
+    Dashboard -->|"HTTP Basic Auth"| CMS_Server
+    Dashboard -->|"WebSocket"| WS_Server
+    Dashboard -->|"SSE"| SSE_Server
+
+    AD -->|"HMAC-SHA256<br/>Signed Webhooks"| SlackAPI
+    VivianDevice -->|"File I/O"| Git
+
+    style NUC fill:#111816,stroke:#0d9488,color:#fff
+    style Dev fill:#1a2e2a,stroke:#14b8a6,color:#fff
+    style Browser fill:#042f2e,stroke:#0d9488,color:#fff
+    style External fill:#27272a,stroke:#a1a1aa,color:#fff

@@ -1,0 +1,50 @@
+sequenceDiagram
+    actor Human
+    participant VS as VS Code
+    participant FS as .kanban/ Files
+    participant AD as AgentDispatch
+    participant SP as SPECOPS Agents
+    participant Slack as Slack
+
+    rect rgb(26, 46, 42)
+    Note over Human,Slack: Card Creation & Spec Phase
+    Human->>VS: Create card (title, priority)
+    VS->>FS: Write cards/{id}.md + update board.yaml
+    AD->>FS: Heartbeat detects new card in Backlog
+    AD->>SP: Dispatch spec agent
+    SP->>FS: Update column → Spec Creation
+    SP->>FS: Append milestone notes
+    SP->>FS: Update column → Spec Review
+    end
+
+    rect rgb(30, 27, 75)
+    Note over Human,Slack: Human Review & Build Phase
+    Human->>VS: Open card, review spec
+    Human->>VS: Approve → move to Building
+    VS->>FS: Update column → Building
+    AD->>FS: Heartbeat detects card in Building
+    AD->>SP: Dispatch builder agent
+    SP->>FS: Write code, append notes
+    SP->>FS: Update column → Testing
+    end
+
+    rect rgb(69, 10, 10)
+    Note over Human,Slack: Blocker Flow (if triggered)
+    SP-->>FS: Add blocker to card frontmatter
+    AD-->>Slack: Post blocker notification
+    Slack-->>Human: Agent needs help
+    Human->>VS: Read blocker, write answer
+    Human->>VS: Click Unblock
+    VS->>FS: Remove blocker + append resolution note
+    AD->>FS: Heartbeat detects unblocked card
+    end
+
+    rect rgb(26, 46, 42)
+    Note over Human,Slack: Testing & Completion
+    AD->>SP: Dispatch verifier agent
+    SP->>FS: Run tests + verify ACs
+    SP->>FS: Update column → Human Review
+    Human->>VS: Final review → approve
+    VS->>FS: Update column → Done
+    Note over FS: Auto-archive after 30 days
+    end

@@ -1,0 +1,2684 @@
+{
+  "id": "92e75df2",
+  "type": "Screen",
+  "name": "Board View",
+  "layout": {
+    "sizing": {
+      "width": {
+        "type": "fixed",
+        "value": 1280
+      },
+      "height": {
+        "type": "fixed",
+        "value": 800
+      }
+    }
+  },
+  "style": {},
+  "children": [
+    {
+      "id": "board_root",
+      "type": "Column",
+      "name": "Board Root",
+      "layout": {
+        "padding": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "gap": 0
+      },
+      "style": {
+        "background": "#080c0b",
+        "width": 1280,
+        "height": 800
+      },
+      "children": [
+        {
+          "id": "topbar",
+          "type": "Row",
+          "name": "Top App Bar",
+          "layout": {
+            "padding": [
+              0,
+              16,
+              0,
+              16
+            ],
+            "gap": 12,
+            "crossAxisAlignment": "center",
+            "mainAxisAlignment": "spaceBetween"
+          },
+          "style": {
+            "background": "#0a0f0e",
+            "height": 56,
+            "width": 1280,
+            "borderBottom": "1px solid #1a2e2a"
+          },
+          "children": [
+            {
+              "id": "topbar_left",
+              "type": "Row",
+              "name": "Top Bar Left",
+              "layout": {
+                "gap": 12,
+                "crossAxisAlignment": "center"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "board_title_label",
+                  "type": "Text",
+                  "name": "Board Title",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "text": "AgentDispatch — SDLC Board",
+                    "fontSize": 16,
+                    "fontWeight": "600",
+                    "color": "#ffffff"
+                  }
+                },
+                {
+                  "id": "parse_warning_badge",
+                  "type": "Row",
+                  "name": "Parse Warning Badge",
+                  "layout": {
+                    "gap": 4,
+                    "crossAxisAlignment": "center",
+                    "padding": [
+                      3,
+                      8,
+                      3,
+                      8
+                    ]
+                  },
+                  "style": {
+                    "background": "#451a03",
+                    "borderRadius": 4,
+                    "border": {"width": 1, "color": "#f59e0b"}
+                  },
+                  "children": [],
+                  "metadata": {
+                    "bindings": [
+                      {
+                        "field": "board.parseErrors",
+                        "direction": "read"
+                      }
+                    ],
+                    "visibility": {
+                      "when": "board.parseErrors.length > 0"
+                    },
+                    "handlers": [
+                      {
+                        "event": "tap",
+                        "action": "showParseErrors()"
+                      }
+                    ],
+                    "accessibility": {
+                      "role": "alert",
+                      "label": "One or more cards have parse errors"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "topbar_right",
+              "type": "Row",
+              "name": "Top Bar Right",
+              "layout": {
+                "gap": 8,
+                "crossAxisAlignment": "center"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "dashboard_tab_btn",
+                  "type": "Button",
+                  "name": "Dashboard Tab",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "label": "Dashboard",
+                    "variant": "ghost",
+                    "fontSize": 13,
+                    "color": "#a1a1aa"
+                  },
+                  "metadata": {
+                    "handlers": [
+                      {
+                        "event": "tap",
+                        "action": "navigate(dashboard-view)"
+                      }
+                    ],
+                    "accessibility": {
+                      "role": "tab",
+                      "label": "Cross-repo dashboard view"
+                    }
+                  }
+                },
+                {
+                  "id": "board_tab_btn",
+                  "type": "Button",
+                  "name": "Board Tab (Active)",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "label": "Board",
+                    "variant": "ghost",
+                    "fontSize": 13,
+                    "color": "#0d9488"
+                  }
+                },
+                {
+                  "id": "settings_btn",
+                  "type": "Button",
+                  "name": "Settings Button",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "label": "",
+                    "icon": "settings",
+                    "variant": "ghost",
+                    "size": 36
+                  },
+                  "metadata": {
+                    "handlers": [
+                      {
+                        "event": "tap",
+                        "action": "openSettings()"
+                      }
+                    ],
+                    "accessibility": {
+                      "role": "button",
+                      "label": "Open settings"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "search_filter_bar",
+          "type": "Row",
+          "name": "Search and Filter Bar",
+          "layout": {
+            "padding": [
+              10,
+              16,
+              10,
+              16
+            ],
+            "gap": 12,
+            "crossAxisAlignment": "center"
+          },
+          "style": {
+            "background": "#0a0e0d",
+            "borderBottom": "1px solid #1a2e2a",
+            "height": 52
+          },
+          "children": [
+            {
+              "id": "search_input",
+              "type": "TextInput",
+              "name": "Search Input",
+              "layout": {},
+              "style": {
+                "background": "#111816",
+                "border": {"width": 1, "color": "#1a2e2a"},
+                "borderRadius": 8,
+                "height": 36,
+                "fontSize": 13
+              },
+              "children": [],
+              "props": {
+                "placeholder": "Search cards...",
+                "prefixIcon": "search",
+                "width": 280
+              },
+              "metadata": {
+                "bindings": [
+                  {
+                    "field": "board.searchQuery",
+                    "direction": "two-way"
+                  }
+                ],
+                "handlers": [
+                  {
+                    "event": "change",
+                    "action": "filterCards(searchQuery)"
+                  }
+                ],
+                "accessibility": {
+                  "role": "searchbox",
+                  "label": "Search cards by title"
+                }
+              }
+            },
+            {
+              "id": "filter_priority_btn",
+              "type": "Button",
+              "name": "Filter Priority",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "label": "Priority",
+                "variant": "outlined",
+                "fontSize": 12,
+                "height": 32
+              },
+              "metadata": {
+                "handlers": [
+                  {
+                    "event": "tap",
+                    "action": "openFilterDropdown(priority)"
+                  }
+                ],
+                "accessibility": {
+                  "role": "button",
+                  "label": "Filter by priority"
+                }
+              }
+            },
+            {
+              "id": "filter_label_btn",
+              "type": "Button",
+              "name": "Filter Label",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "label": "Label",
+                "variant": "outlined",
+                "fontSize": 12,
+                "height": 32
+              }
+            },
+            {
+              "id": "filter_blocked_btn",
+              "type": "Button",
+              "name": "Filter Blocked Only",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "label": "Blocked only",
+                "variant": "outlined",
+                "fontSize": 12,
+                "height": 32
+              },
+              "metadata": {
+                "handlers": [
+                  {
+                    "event": "tap",
+                    "action": "toggleFilter(blocked)"
+                  }
+                ],
+                "accessibility": {
+                  "role": "button",
+                  "label": "Show blocked cards only"
+                }
+              }
+            },
+            {
+              "id": "active_filter_chip",
+              "type": "Row",
+              "name": "Active Filter Chip",
+              "layout": {
+                "gap": 4,
+                "crossAxisAlignment": "center",
+                "padding": [
+                  4,
+                  10,
+                  4,
+                  10
+                ]
+              },
+              "style": {
+                "background": "#042f2e",
+                "borderRadius": 9999,
+                "border": {"width": 1, "color": "#0d9488"}
+              },
+              "children": [
+                {
+                  "id": "active_filter_text",
+                  "type": "Text",
+                  "name": "Active Filter Label",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "text": "priority: high",
+                    "fontSize": 11,
+                    "color": "#14b8a6"
+                  }
+                },
+                {
+                  "id": "remove_filter_btn",
+                  "type": "Icon",
+                  "name": "Remove Filter",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "name": "close",
+                    "size": 10,
+                    "color": "#14b8a6"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "filter_spacer",
+              "type": "Spacer",
+              "name": "Filter Bar Spacer",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "flex": 1
+              }
+            },
+            {
+              "id": "add_card_global_btn",
+              "type": "Button",
+              "name": "Add Card Global",
+              "layout": {},
+              "style": {
+                "background": "#0d9488",
+                "color": "#ffffff",
+                "borderRadius": 8
+              },
+              "children": [],
+              "props": {
+                "label": "+ Add Card",
+                "variant": "filled",
+                "fontSize": 12,
+                "height": 32
+              },
+              "metadata": {
+                "handlers": [
+                  {
+                    "event": "tap",
+                    "action": "navigate(card-create-form)"
+                  }
+                ],
+                "accessibility": {
+                  "role": "button",
+                  "label": "Create new card"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "board_columns_area",
+          "type": "Row",
+          "name": "Board Columns Area",
+          "layout": {
+            "gap": 0,
+            "padding": [
+              12,
+              12,
+              12,
+              12
+            ],
+            "crossAxisAlignment": "stretch"
+          },
+          "style": {
+            "flex": 1,
+            "overflowX": "auto",
+            "background": "#080c0b"
+          },
+          "children": [
+            {
+              "id": "col_backlog",
+              "type": "Column",
+              "name": "Backlog Column",
+              "layout": {
+                "gap": 8,
+                "padding": [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "style": {
+                "width": 172,
+                "minHeight": 650,
+                "background": "#0a0e0d",
+                "borderRadius": 8,
+                "border": {"width": 1, "color": "#1a2e2a"}
+              },
+              "children": [
+                {
+                  "id": "col_backlog_header",
+                  "type": "Row",
+                  "name": "Backlog Header",
+                  "layout": {
+                    "padding": [
+                      10,
+                      12,
+                      10,
+                      12
+                    ],
+                    "gap": 6,
+                    "crossAxisAlignment": "center",
+                    "mainAxisAlignment": "spaceBetween"
+                  },
+                  "style": {
+                    "borderBottom": "1px solid #1a2e2a"
+                  },
+                  "children": [
+                    {
+                      "id": "col_backlog_title",
+                      "type": "Text",
+                      "name": "Backlog Title",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Backlog",
+                        "fontSize": 11,
+                        "fontWeight": "600",
+                        "color": "#a1a1aa",
+                        "textTransform": "uppercase",
+                        "letterSpacing": "1.5px"
+                      }
+                    },
+                    {
+                      "id": "col_backlog_count",
+                      "type": "Text",
+                      "name": "Backlog Card Count",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "5",
+                        "fontSize": 11,
+                        "color": "#52525b",
+                        "background": "#1a2e2a",
+                        "padding": "2px 6px",
+                        "borderRadius": 9999
+                      }
+                    },
+                    {
+                      "id": "col_backlog_add_btn",
+                      "type": "Button",
+                      "name": "Backlog Add Card",
+                      "layout": {},
+                      "style": {
+                        "color": "#52525b"
+                      },
+                      "children": [],
+                      "props": {
+                        "label": "+",
+                        "variant": "ghost",
+                        "fontSize": 14,
+                        "height": 20,
+                        "width": 20
+                      },
+                      "metadata": {
+                        "handlers": [
+                          {
+                            "event": "tap",
+                            "action": "navigate(card-create-form, column=Backlog)"
+                          }
+                        ],
+                        "accessibility": {
+                          "role": "button",
+                          "label": "Add card to Backlog"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "col_backlog_cards",
+                  "type": "Column",
+                  "name": "Backlog Cards",
+                  "layout": {
+                    "gap": 6,
+                    "padding": [
+                      8,
+                      8,
+                      8,
+                      8
+                    ]
+                  },
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "card_normal_1",
+                      "type": "Column",
+                      "name": "Normal Card 1",
+                      "layout": {
+                        "padding": [
+                          10,
+                          10,
+                          10,
+                          10
+                        ],
+                        "gap": 6
+                      },
+                      "style": {
+                        "background": "#111816",
+                        "borderRadius": 8,
+                        "border": {"width": 1, "color": "#1a2e2a"},
+                        "cursor": "pointer"
+                      },
+                      "children": [
+                        {
+                          "id": "card1_labels",
+                          "type": "Row",
+                          "name": "Card 1 Labels",
+                          "layout": {
+                            "gap": 4
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "card1_label_feature",
+                              "type": "Row",
+                              "name": "Feature Label",
+                              "layout": {
+                                "gap": 3,
+                                "crossAxisAlignment": "center",
+                                "padding": [
+                                  2,
+                                  6,
+                                  2,
+                                  6
+                                ]
+                              },
+                              "style": {
+                                "background": "#1e3a5f",
+                                "borderRadius": 9999
+                              },
+                              "children": [
+                                {
+                                  "id": "card1_label_feature_dot",
+                                  "type": "Box",
+                                  "name": "Feature Dot",
+                                  "layout": {},
+                                  "style": {
+                                    "width": 5,
+                                    "height": 5,
+                                    "borderRadius": 9999,
+                                    "background": "#3b82f6"
+                                  },
+                                  "children": []
+                                },
+                                {
+                                  "id": "card1_label_feature_text",
+                                  "type": "Text",
+                                  "name": "Feature Label Text",
+                                  "layout": {},
+                                  "style": {},
+                                  "children": [],
+                                  "props": {
+                                    "text": "feature",
+                                    "fontSize": 9,
+                                    "color": "#93c5fd"
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "card1_title",
+                          "type": "Text",
+                          "name": "Card 1 Title",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "Implement WebSocket reconnection logic",
+                            "fontSize": 12,
+                            "fontWeight": "500",
+                            "color": "#ffffff",
+                            "lineHeight": 1.4
+                          }
+                        },
+                        {
+                          "id": "card1_meta_row",
+                          "type": "Row",
+                          "name": "Card 1 Meta Row",
+                          "layout": {
+                            "gap": 6,
+                            "crossAxisAlignment": "center",
+                            "mainAxisAlignment": "spaceBetween"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "card1_priority",
+                              "type": "Row",
+                              "name": "Card 1 Priority",
+                              "layout": {
+                                "gap": 3,
+                                "crossAxisAlignment": "center"
+                              },
+                              "style": {},
+                              "children": [
+                                {
+                                  "id": "card1_priority_icon",
+                                  "type": "Icon",
+                                  "name": "Priority Icon High",
+                                  "layout": {},
+                                  "style": {},
+                                  "children": [],
+                                  "props": {
+                                    "name": "arrow_forward",
+                                    "size": 10,
+                                    "color": "#f59e0b"
+                                  }
+                                },
+                                {
+                                  "id": "card1_priority_text",
+                                  "type": "Text",
+                                  "name": "Priority Text",
+                                  "layout": {},
+                                  "style": {},
+                                  "children": [],
+                                  "props": {
+                                    "text": "high",
+                                    "fontSize": 10,
+                                    "color": "#a1a1aa"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "id": "card1_keyboard_hint",
+                              "type": "Text",
+                              "name": "Keyboard Hint",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "Alt+←→",
+                                "fontSize": 9,
+                                "color": "#52525b"
+                              }
+                            }
+                          ]
+                        }
+                      ],
+                      "metadata": {
+                        "bindings": [
+                          {
+                            "field": "card.id",
+                            "direction": "read"
+                          },
+                          {
+                            "field": "card.title",
+                            "direction": "read"
+                          },
+                          {
+                            "field": "card.priority",
+                            "direction": "read"
+                          }
+                        ],
+                        "handlers": [
+                          {
+                            "event": "tap",
+                            "action": "navigate(card-detail, cardId=a1b2c3)"
+                          },
+                          {
+                            "event": "drag",
+                            "action": "beginDrag(a1b2c3)"
+                          }
+                        ],
+                        "accessibility": {
+                          "role": "listitem",
+                          "label": "Card: Implement WebSocket reconnection logic, priority high. Press Enter to open. Alt+Left/Right to move columns."
+                        }
+                      }
+                    },
+                    {
+                      "id": "card_blocked_1",
+                      "type": "Column",
+                      "name": "Blocked Card",
+                      "layout": {
+                        "padding": [
+                          10,
+                          10,
+                          10,
+                          10
+                        ],
+                        "gap": 6
+                      },
+                      "style": {
+                        "background": "#1a1008",
+                        "borderRadius": 8,
+                        "border": {"width": 1, "color": "#b45309"},
+                        "cursor": "pointer"
+                      },
+                      "children": [
+                        {
+                          "id": "card_blocked_top_row",
+                          "type": "Row",
+                          "name": "Blocked Card Top Row",
+                          "layout": {
+                            "gap": 6,
+                            "crossAxisAlignment": "center",
+                            "mainAxisAlignment": "spaceBetween"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "blocked_icon_row",
+                              "type": "Row",
+                              "name": "Blocked Icon Row",
+                              "layout": {
+                                "gap": 4,
+                                "crossAxisAlignment": "center"
+                              },
+                              "style": {},
+                              "children": [
+                                {
+                                  "id": "blocked_warning_icon",
+                                  "type": "Icon",
+                                  "name": "Blocked Warning Icon",
+                                  "layout": {},
+                                  "style": {},
+                                  "children": [],
+                                  "props": {
+                                    "name": "warning",
+                                    "size": 12,
+                                    "color": "#f59e0b"
+                                  },
+                                  "metadata": {
+                                    "accessibility": {
+                                      "role": "img",
+                                      "label": "Blocked"
+                                    }
+                                  }
+                                },
+                                {
+                                  "id": "blocked_label_text",
+                                  "type": "Text",
+                                  "name": "Blocked Label",
+                                  "layout": {},
+                                  "style": {},
+                                  "children": [],
+                                  "props": {
+                                    "text": "BLOCKED",
+                                    "fontSize": 9,
+                                    "fontWeight": "700",
+                                    "color": "#f59e0b",
+                                    "letterSpacing": "1px"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "id": "blocked_age_text",
+                              "type": "Text",
+                              "name": "Blocked Age",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "2h ago",
+                                "fontSize": 9,
+                                "color": "#92400e"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "id": "card_blocked_title",
+                          "type": "Text",
+                          "name": "Blocked Card Title",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "Configure Slack webhook for blockers",
+                            "fontSize": 12,
+                            "fontWeight": "500",
+                            "color": "#ffffff",
+                            "lineHeight": 1.4
+                          }
+                        },
+                        {
+                          "id": "card_blocked_question_preview",
+                          "type": "Text",
+                          "name": "Blocked Question Preview",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "Which Slack channel? #ops or #dev?",
+                            "fontSize": 10,
+                            "color": "#a16207",
+                            "fontStyle": "italic"
+                          }
+                        },
+                        {
+                          "id": "card_blocked_meta",
+                          "type": "Row",
+                          "name": "Blocked Card Meta",
+                          "layout": {
+                            "gap": 6,
+                            "crossAxisAlignment": "center"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "card_blocked_priority_icon",
+                              "type": "Icon",
+                              "name": "Priority Medium",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "name": "arrow_forward",
+                                "size": 10,
+                                "color": "#6b7280"
+                              }
+                            },
+                            {
+                              "id": "card_blocked_priority_text",
+                              "type": "Text",
+                              "name": "Blocked Priority",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "medium",
+                                "fontSize": 10,
+                                "color": "#a1a1aa"
+                              }
+                            }
+                          ]
+                        }
+                      ],
+                      "metadata": {
+                        "bindings": [
+                          {
+                            "field": "card.blockers",
+                            "direction": "read"
+                          }
+                        ],
+                        "handlers": [
+                          {
+                            "event": "tap",
+                            "action": "navigate(card-detail, cardId=d4e5f6)"
+                          }
+                        ],
+                        "accessibility": {
+                          "role": "listitem",
+                          "label": "BLOCKED card: Configure Slack webhook for blockers. Warning: blocked 2 hours ago. Press Enter to view blocker question."
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "col_spec_creation",
+              "type": "Column",
+              "name": "Spec Creation Column",
+              "layout": {
+                "gap": 8,
+                "padding": [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "style": {
+                "width": 172,
+                "minHeight": 650,
+                "background": "#0a0e0d",
+                "borderRadius": 8,
+                "border": {"width": 1, "color": "#1a2e2a"},
+                "marginLeft": 8
+              },
+              "children": [
+                {
+                  "id": "col_spec_header",
+                  "type": "Row",
+                  "name": "Spec Creation Header",
+                  "layout": {
+                    "padding": [
+                      10,
+                      12,
+                      10,
+                      12
+                    ],
+                    "gap": 6,
+                    "crossAxisAlignment": "center",
+                    "mainAxisAlignment": "spaceBetween"
+                  },
+                  "style": {
+                    "borderBottom": "1px solid #1a2e2a"
+                  },
+                  "children": [
+                    {
+                      "id": "col_spec_title",
+                      "type": "Text",
+                      "name": "Spec Creation Title",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Spec Creation",
+                        "fontSize": 11,
+                        "fontWeight": "600",
+                        "color": "#a1a1aa",
+                        "textTransform": "uppercase",
+                        "letterSpacing": "1.5px"
+                      }
+                    },
+                    {
+                      "id": "wip_indicator",
+                      "type": "Row",
+                      "name": "WIP Indicator",
+                      "layout": {
+                        "gap": 3,
+                        "crossAxisAlignment": "center",
+                        "padding": [
+                          2,
+                          6,
+                          2,
+                          6
+                        ]
+                      },
+                      "style": {
+                        "background": "#450a0a",
+                        "borderRadius": 4
+                      },
+                      "children": [
+                        {
+                          "id": "wip_icon",
+                          "type": "Icon",
+                          "name": "WIP Exceeded Icon",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "name": "warning",
+                            "size": 10,
+                            "color": "#ef4444"
+                          },
+                          "metadata": {
+                            "accessibility": {
+                              "role": "img",
+                              "label": "WIP limit exceeded"
+                            }
+                          }
+                        },
+                        {
+                          "id": "wip_text",
+                          "type": "Text",
+                          "name": "WIP Exceeded Text",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "4/3",
+                            "fontSize": 10,
+                            "fontWeight": "700",
+                            "color": "#ef4444"
+                          }
+                        }
+                      ],
+                      "metadata": {
+                        "bindings": [
+                          {
+                            "field": "column.wipCount",
+                            "direction": "read"
+                          },
+                          {
+                            "field": "column.wipLimit",
+                            "direction": "read"
+                          }
+                        ],
+                        "visibility": {
+                          "when": "column.wipCount > column.wipLimit"
+                        }
+                      }
+                    },
+                    {
+                      "id": "col_spec_add_btn",
+                      "type": "Button",
+                      "name": "Spec Add Card",
+                      "layout": {},
+                      "style": {
+                        "color": "#52525b"
+                      },
+                      "children": [],
+                      "props": {
+                        "label": "+",
+                        "variant": "ghost",
+                        "fontSize": 14,
+                        "height": 20,
+                        "width": 20
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "col_spec_cards",
+                  "type": "Column",
+                  "name": "Spec Cards",
+                  "layout": {
+                    "gap": 6,
+                    "padding": [
+                      8,
+                      8,
+                      8,
+                      8
+                    ]
+                  },
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "card_enriched_1",
+                      "type": "Column",
+                      "name": "Enriched Card",
+                      "layout": {
+                        "padding": [
+                          10,
+                          10,
+                          10,
+                          10
+                        ],
+                        "gap": 6
+                      },
+                      "style": {
+                        "background": "#111816",
+                        "borderRadius": 8,
+                        "border": {"width": 1, "color": "#1a2e2a"},
+                        "cursor": "pointer"
+                      },
+                      "children": [
+                        {
+                          "id": "card_enriched_labels",
+                          "type": "Row",
+                          "name": "Enriched Card Labels",
+                          "layout": {
+                            "gap": 4
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "card_enriched_label_infra",
+                              "type": "Row",
+                              "name": "Infra Label",
+                              "layout": {
+                                "gap": 3,
+                                "crossAxisAlignment": "center",
+                                "padding": [
+                                  2,
+                                  6,
+                                  2,
+                                  6
+                                ]
+                              },
+                              "style": {
+                                "background": "#2e1065",
+                                "borderRadius": 9999
+                              },
+                              "children": [
+                                {
+                                  "id": "card_enriched_label_dot",
+                                  "type": "Box",
+                                  "name": "Infra Label Dot",
+                                  "layout": {},
+                                  "style": {
+                                    "width": 5,
+                                    "height": 5,
+                                    "borderRadius": 9999,
+                                    "background": "#7c3aed"
+                                  },
+                                  "children": []
+                                },
+                                {
+                                  "id": "card_enriched_label_text",
+                                  "type": "Text",
+                                  "name": "Infra Label Text",
+                                  "layout": {},
+                                  "style": {},
+                                  "children": [],
+                                  "props": {
+                                    "text": "infra",
+                                    "fontSize": 9,
+                                    "color": "#c4b5fd"
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "card_enriched_title",
+                          "type": "Text",
+                          "name": "Enriched Card Title",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "Design kanban schema v2",
+                            "fontSize": 12,
+                            "fontWeight": "500",
+                            "color": "#ffffff",
+                            "lineHeight": 1.4
+                          }
+                        },
+                        {
+                          "id": "card_enriched_adapter",
+                          "type": "Row",
+                          "name": "Adapter Enrichment Row",
+                          "layout": {
+                            "gap": 6,
+                            "crossAxisAlignment": "center"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "adapter_specops_badge",
+                              "type": "Row",
+                              "name": "Specops Adapter Badge",
+                              "layout": {
+                                "gap": 3,
+                                "crossAxisAlignment": "center",
+                                "padding": [
+                                  2,
+                                  6,
+                                  2,
+                                  6
+                                ]
+                              },
+                              "style": {
+                                "background": "#042f2e",
+                                "borderRadius": 4
+                              },
+                              "children": [
+                                {
+                                  "id": "adapter_specops_icon",
+                                  "type": "Icon",
+                                  "name": "Specops Icon",
+                                  "layout": {},
+                                  "style": {},
+                                  "children": [],
+                                  "props": {
+                                    "name": "info",
+                                    "size": 9,
+                                    "color": "#0d9488"
+                                  }
+                                },
+                                {
+                                  "id": "adapter_specops_text",
+                                  "type": "Text",
+                                  "name": "Specops Phase Text",
+                                  "layout": {},
+                                  "style": {},
+                                  "children": [],
+                                  "props": {
+                                    "text": "requirements",
+                                    "fontSize": 9,
+                                    "color": "#14b8a6"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "id": "adapter_questions_badge",
+                              "type": "Row",
+                              "name": "Open Questions Badge",
+                              "layout": {
+                                "gap": 3,
+                                "crossAxisAlignment": "center",
+                                "padding": [
+                                  2,
+                                  6,
+                                  2,
+                                  6
+                                ]
+                              },
+                              "style": {
+                                "background": "#1c1917",
+                                "borderRadius": 4
+                              },
+                              "children": [
+                                {
+                                  "id": "adapter_questions_text",
+                                  "type": "Text",
+                                  "name": "Open Questions Count",
+                                  "layout": {},
+                                  "style": {},
+                                  "children": [],
+                                  "props": {
+                                    "text": "3 questions",
+                                    "fontSize": 9,
+                                    "color": "#a1a1aa"
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "col_spec_review",
+              "type": "Column",
+              "name": "Spec Review Column",
+              "layout": {
+                "gap": 8
+              },
+              "style": {
+                "width": 172,
+                "minHeight": 650,
+                "background": "#0a0e0d",
+                "borderRadius": 8,
+                "border": {"width": 1, "color": "#1a2e2a"},
+                "marginLeft": 8
+              },
+              "children": [
+                {
+                  "id": "col_spec_review_header",
+                  "type": "Row",
+                  "name": "Spec Review Header",
+                  "layout": {
+                    "padding": [
+                      10,
+                      12,
+                      10,
+                      12
+                    ],
+                    "gap": 6,
+                    "crossAxisAlignment": "center",
+                    "mainAxisAlignment": "spaceBetween"
+                  },
+                  "style": {
+                    "borderBottom": "1px solid #1a2e2a"
+                  },
+                  "children": [
+                    {
+                      "id": "col_spec_review_title",
+                      "type": "Text",
+                      "name": "Spec Review Title",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Spec Review",
+                        "fontSize": 11,
+                        "fontWeight": "600",
+                        "color": "#a1a1aa",
+                        "textTransform": "uppercase",
+                        "letterSpacing": "1.5px"
+                      }
+                    },
+                    {
+                      "id": "col_spec_review_count",
+                      "type": "Text",
+                      "name": "Spec Review Count",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "1",
+                        "fontSize": 11,
+                        "color": "#52525b",
+                        "background": "#1a2e2a",
+                        "padding": "2px 6px",
+                        "borderRadius": 9999
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "col_spec_review_cards",
+                  "type": "Column",
+                  "name": "Spec Review Cards",
+                  "layout": {
+                    "gap": 6,
+                    "padding": [
+                      8,
+                      8,
+                      8,
+                      8
+                    ]
+                  },
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "card_spec_review_1",
+                      "type": "Column",
+                      "name": "Spec Review Card",
+                      "layout": {
+                        "padding": [
+                          10,
+                          10,
+                          10,
+                          10
+                        ],
+                        "gap": 6
+                      },
+                      "style": {
+                        "background": "#111816",
+                        "borderRadius": 8,
+                        "border": {"width": 1, "color": "#1a2e2a"},
+                        "cursor": "pointer"
+                      },
+                      "children": [
+                        {
+                          "id": "card_sr1_title",
+                          "type": "Text",
+                          "name": "Spec Review Card Title",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "kanban-dashboard requirements",
+                            "fontSize": 12,
+                            "fontWeight": "500",
+                            "color": "#ffffff",
+                            "lineHeight": 1.4
+                          }
+                        },
+                        {
+                          "id": "card_sr1_meta",
+                          "type": "Row",
+                          "name": "Spec Review Card Meta",
+                          "layout": {
+                            "gap": 6,
+                            "crossAxisAlignment": "center"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "card_sr1_priority_icon",
+                              "type": "Icon",
+                              "name": "SR Priority Critical",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "name": "error",
+                                "size": 10,
+                                "color": "#ef4444"
+                              }
+                            },
+                            {
+                              "id": "card_sr1_priority_text",
+                              "type": "Text",
+                              "name": "SR Priority Text",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "critical",
+                                "fontSize": 10,
+                                "color": "#ef4444"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "col_building",
+              "type": "Column",
+              "name": "Building Column",
+              "layout": {
+                "gap": 8
+              },
+              "style": {
+                "width": 172,
+                "minHeight": 650,
+                "background": "#0a0e0d",
+                "borderRadius": 8,
+                "border": {"width": 1, "color": "#1a2e2a"},
+                "marginLeft": 8
+              },
+              "children": [
+                {
+                  "id": "col_building_header",
+                  "type": "Row",
+                  "name": "Building Header",
+                  "layout": {
+                    "padding": [
+                      10,
+                      12,
+                      10,
+                      12
+                    ],
+                    "gap": 6,
+                    "crossAxisAlignment": "center",
+                    "mainAxisAlignment": "spaceBetween"
+                  },
+                  "style": {
+                    "borderBottom": "1px solid #1a2e2a"
+                  },
+                  "children": [
+                    {
+                      "id": "col_building_title",
+                      "type": "Text",
+                      "name": "Building Title",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Building",
+                        "fontSize": 11,
+                        "fontWeight": "600",
+                        "color": "#a1a1aa",
+                        "textTransform": "uppercase",
+                        "letterSpacing": "1.5px"
+                      }
+                    },
+                    {
+                      "id": "col_building_wip",
+                      "type": "Row",
+                      "name": "Building WIP OK",
+                      "layout": {
+                        "gap": 3,
+                        "crossAxisAlignment": "center",
+                        "padding": [
+                          2,
+                          6,
+                          2,
+                          6
+                        ]
+                      },
+                      "style": {
+                        "background": "#1a2e2a",
+                        "borderRadius": 4
+                      },
+                      "children": [
+                        {
+                          "id": "col_building_wip_text",
+                          "type": "Text",
+                          "name": "Building WIP Text",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "2/3",
+                            "fontSize": 10,
+                            "color": "#0d9488"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "col_building_cards",
+                  "type": "Column",
+                  "name": "Building Cards",
+                  "layout": {
+                    "gap": 6,
+                    "padding": [
+                      8,
+                      8,
+                      8,
+                      8
+                    ]
+                  },
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "card_building_1",
+                      "type": "Column",
+                      "name": "Building Card With Progress",
+                      "layout": {
+                        "padding": [
+                          10,
+                          10,
+                          10,
+                          10
+                        ],
+                        "gap": 6
+                      },
+                      "style": {
+                        "background": "#111816",
+                        "borderRadius": 8,
+                        "border": {"width": 1, "color": "#1a2e2a"},
+                        "cursor": "pointer"
+                      },
+                      "children": [
+                        {
+                          "id": "card_b1_title",
+                          "type": "Text",
+                          "name": "Building Card Title",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "Implement WebSocket reconnection",
+                            "fontSize": 12,
+                            "fontWeight": "500",
+                            "color": "#ffffff",
+                            "lineHeight": 1.4
+                          }
+                        },
+                        {
+                          "id": "card_b1_progress_row",
+                          "type": "Row",
+                          "name": "Progress Row",
+                          "layout": {
+                            "gap": 6,
+                            "crossAxisAlignment": "center"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "card_b1_progress_bar_bg",
+                              "type": "Box",
+                              "name": "Progress Bar BG",
+                              "layout": {},
+                              "style": {
+                                "flex": 1,
+                                "height": 4,
+                                "background": "#1a2e2a",
+                                "borderRadius": 9999
+                              },
+                              "children": [
+                                {
+                                  "id": "card_b1_progress_bar_fill",
+                                  "type": "Box",
+                                  "name": "Progress Bar Fill",
+                                  "layout": {},
+                                  "style": {
+                                    "width": "75%",
+                                    "height": 4,
+                                    "background": "#0d9488",
+                                    "borderRadius": 9999
+                                  },
+                                  "children": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": "card_b1_progress_pct",
+                              "type": "Text",
+                              "name": "Progress Percent",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "75%",
+                                "fontSize": 10,
+                                "color": "#0d9488"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "col_testing",
+              "type": "Column",
+              "name": "Testing Column",
+              "layout": {
+                "gap": 8
+              },
+              "style": {
+                "width": 172,
+                "minHeight": 650,
+                "background": "#0a0e0d",
+                "borderRadius": 8,
+                "border": {"width": 1, "color": "#1a2e2a"},
+                "marginLeft": 8
+              },
+              "children": [
+                {
+                  "id": "col_testing_header",
+                  "type": "Row",
+                  "name": "Testing Header",
+                  "layout": {
+                    "padding": [
+                      10,
+                      12,
+                      10,
+                      12
+                    ],
+                    "gap": 6,
+                    "crossAxisAlignment": "center",
+                    "mainAxisAlignment": "spaceBetween"
+                  },
+                  "style": {
+                    "borderBottom": "1px solid #1a2e2a"
+                  },
+                  "children": [
+                    {
+                      "id": "col_testing_title",
+                      "type": "Text",
+                      "name": "Testing Title",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Testing",
+                        "fontSize": 11,
+                        "fontWeight": "600",
+                        "color": "#a1a1aa",
+                        "textTransform": "uppercase",
+                        "letterSpacing": "1.5px"
+                      }
+                    },
+                    {
+                      "id": "col_testing_count",
+                      "type": "Text",
+                      "name": "Testing Count",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "0",
+                        "fontSize": 11,
+                        "color": "#52525b",
+                        "background": "#1a2e2a",
+                        "padding": "2px 6px",
+                        "borderRadius": 9999
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "col_testing_empty",
+                  "type": "Column",
+                  "name": "Testing Empty",
+                  "layout": {
+                    "padding": [
+                      16,
+                      8,
+                      16,
+                      8
+                    ],
+                    "gap": 4,
+                    "crossAxisAlignment": "center"
+                  },
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "col_testing_empty_text",
+                      "type": "Text",
+                      "name": "Testing Empty Text",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "No cards",
+                        "fontSize": 11,
+                        "color": "#3f3f46",
+                        "textAlign": "center"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "col_human_review",
+              "type": "Column",
+              "name": "Human Review Column",
+              "layout": {
+                "gap": 8
+              },
+              "style": {
+                "width": 172,
+                "minHeight": 650,
+                "background": "#0a0e0d",
+                "borderRadius": 8,
+                "border": {"width": 1, "color": "#1a2e2a"},
+                "marginLeft": 8
+              },
+              "children": [
+                {
+                  "id": "col_hr_header",
+                  "type": "Row",
+                  "name": "Human Review Header",
+                  "layout": {
+                    "padding": [
+                      10,
+                      12,
+                      10,
+                      12
+                    ],
+                    "gap": 6,
+                    "crossAxisAlignment": "center",
+                    "mainAxisAlignment": "spaceBetween"
+                  },
+                  "style": {
+                    "borderBottom": "1px solid #1a2e2a"
+                  },
+                  "children": [
+                    {
+                      "id": "col_hr_title",
+                      "type": "Text",
+                      "name": "Human Review Title",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Human Review",
+                        "fontSize": 11,
+                        "fontWeight": "600",
+                        "color": "#a1a1aa",
+                        "textTransform": "uppercase",
+                        "letterSpacing": "1.5px"
+                      }
+                    },
+                    {
+                      "id": "col_hr_count",
+                      "type": "Text",
+                      "name": "Human Review Count",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "1",
+                        "fontSize": 11,
+                        "color": "#52525b",
+                        "background": "#1a2e2a",
+                        "padding": "2px 6px",
+                        "borderRadius": 9999
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "col_hr_cards",
+                  "type": "Column",
+                  "name": "Human Review Cards",
+                  "layout": {
+                    "gap": 6,
+                    "padding": [
+                      8,
+                      8,
+                      8,
+                      8
+                    ]
+                  },
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "card_hr_1",
+                      "type": "Column",
+                      "name": "Human Review Card",
+                      "layout": {
+                        "padding": [
+                          10,
+                          10,
+                          10,
+                          10
+                        ],
+                        "gap": 6
+                      },
+                      "style": {
+                        "background": "#111816",
+                        "borderRadius": 8,
+                        "border": {"width": 1, "color": "#0d9488"},
+                        "cursor": "pointer"
+                      },
+                      "children": [
+                        {
+                          "id": "card_hr1_title",
+                          "type": "Text",
+                          "name": "HR Card Title",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "CMS ops dashboard spec",
+                            "fontSize": 12,
+                            "fontWeight": "500",
+                            "color": "#ffffff",
+                            "lineHeight": 1.4
+                          }
+                        },
+                        {
+                          "id": "card_hr1_badge",
+                          "type": "Row",
+                          "name": "HR Badge",
+                          "layout": {
+                            "gap": 4,
+                            "crossAxisAlignment": "center",
+                            "padding": [
+                              3,
+                              8,
+                              3,
+                              8
+                            ]
+                          },
+                          "style": {
+                            "background": "#042f2e",
+                            "borderRadius": 4
+                          },
+                          "children": [
+                            {
+                              "id": "card_hr1_badge_icon",
+                              "type": "Icon",
+                              "name": "Check Icon",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "name": "check",
+                                "size": 10,
+                                "color": "#0d9488"
+                              }
+                            },
+                            {
+                              "id": "card_hr1_badge_text",
+                              "type": "Text",
+                              "name": "HR Badge Text",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "Awaiting review",
+                                "fontSize": 10,
+                                "color": "#0d9488"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "col_done",
+              "type": "Column",
+              "name": "Done Column",
+              "layout": {
+                "gap": 8
+              },
+              "style": {
+                "width": 172,
+                "minHeight": 650,
+                "background": "#0a0e0d",
+                "borderRadius": 8,
+                "border": {"width": 1, "color": "#1a2e2a"},
+                "marginLeft": 8
+              },
+              "children": [
+                {
+                  "id": "col_done_header",
+                  "type": "Row",
+                  "name": "Done Header",
+                  "layout": {
+                    "padding": [
+                      10,
+                      12,
+                      10,
+                      12
+                    ],
+                    "gap": 6,
+                    "crossAxisAlignment": "center",
+                    "mainAxisAlignment": "spaceBetween"
+                  },
+                  "style": {
+                    "borderBottom": "1px solid #1a2e2a"
+                  },
+                  "children": [
+                    {
+                      "id": "col_done_title",
+                      "type": "Text",
+                      "name": "Done Title",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Done",
+                        "fontSize": 11,
+                        "fontWeight": "600",
+                        "color": "#a1a1aa",
+                        "textTransform": "uppercase",
+                        "letterSpacing": "1.5px"
+                      }
+                    },
+                    {
+                      "id": "col_done_count",
+                      "type": "Text",
+                      "name": "Done Count",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "3",
+                        "fontSize": 11,
+                        "color": "#52525b",
+                        "background": "#1a2e2a",
+                        "padding": "2px 6px",
+                        "borderRadius": 9999
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "col_done_cards",
+                  "type": "Column",
+                  "name": "Done Cards",
+                  "layout": {
+                    "gap": 6,
+                    "padding": [
+                      8,
+                      8,
+                      8,
+                      8
+                    ]
+                  },
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "card_done_1",
+                      "type": "Column",
+                      "name": "Done Card",
+                      "layout": {
+                        "padding": [
+                          10,
+                          10,
+                          10,
+                          10
+                        ],
+                        "gap": 4
+                      },
+                      "style": {
+                        "background": "#0a0e0d",
+                        "borderRadius": 8,
+                        "border": {"width": 1, "color": "#1a2e2a"},
+                        "opacity": 0.7,
+                        "cursor": "default"
+                      },
+                      "children": [
+                        {
+                          "id": "card_done1_check",
+                          "type": "Icon",
+                          "name": "Done Check",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "name": "check_circle",
+                            "size": 10,
+                            "color": "#22c55e"
+                          }
+                        },
+                        {
+                          "id": "card_done1_title",
+                          "type": "Text",
+                          "name": "Done Card Title",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "Initialize .kanban board",
+                            "fontSize": 12,
+                            "fontWeight": "400",
+                            "color": "#71717a",
+                            "lineHeight": 1.4
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "loading_skeleton_overlay",
+          "type": "Stack",
+          "name": "Loading Skeleton Overlay",
+          "layout": {},
+          "style": {
+            "position": "absolute",
+            "top": 0,
+            "left": 0,
+            "width": 1280,
+            "height": 800,
+            "background": "#080c0b",
+            "zIndex": 10
+          },
+          "children": [
+            {
+              "id": "skeleton_topbar",
+              "type": "Box",
+              "name": "Skeleton Topbar",
+              "layout": {},
+              "style": {
+                "width": 1280,
+                "height": 56,
+                "background": "#0a0f0e",
+                "borderBottom": "1px solid #1a2e2a"
+              },
+              "children": []
+            },
+            {
+              "id": "skeleton_columns_row",
+              "type": "Row",
+              "name": "Skeleton Columns",
+              "layout": {
+                "gap": 8,
+                "padding": [
+                  12,
+                  12,
+                  12,
+                  12
+                ]
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "skeleton_col_1",
+                  "type": "Column",
+                  "name": "Skeleton Column 1",
+                  "layout": {
+                    "gap": 8,
+                    "padding": [
+                      10,
+                      10,
+                      10,
+                      10
+                    ]
+                  },
+                  "style": {
+                    "width": 172,
+                    "minHeight": 600,
+                    "background": "#0a0e0d",
+                    "borderRadius": 8,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": [
+                    {
+                      "id": "skeleton_col1_header",
+                      "type": "Box",
+                      "name": "Skeleton Col Header",
+                      "layout": {},
+                      "style": {
+                        "width": 80,
+                        "height": 12,
+                        "background": "#1a2e2a",
+                        "borderRadius": 4
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "skeleton_col1_card1",
+                      "type": "Box",
+                      "name": "Skeleton Card 1",
+                      "layout": {},
+                      "style": {
+                        "width": 152,
+                        "height": 60,
+                        "background": "#111816",
+                        "borderRadius": 8
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "skeleton_col1_card2",
+                      "type": "Box",
+                      "name": "Skeleton Card 2",
+                      "layout": {},
+                      "style": {
+                        "width": 152,
+                        "height": 50,
+                        "background": "#111816",
+                        "borderRadius": 8
+                      },
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "skeleton_col_2",
+                  "type": "Column",
+                  "name": "Skeleton Column 2",
+                  "layout": {
+                    "gap": 8,
+                    "padding": [
+                      10,
+                      10,
+                      10,
+                      10
+                    ]
+                  },
+                  "style": {
+                    "width": 172,
+                    "minHeight": 600,
+                    "background": "#0a0e0d",
+                    "borderRadius": 8,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": [
+                    {
+                      "id": "skeleton_col2_header",
+                      "type": "Box",
+                      "name": "Skeleton Col Header",
+                      "layout": {},
+                      "style": {
+                        "width": 80,
+                        "height": 12,
+                        "background": "#1a2e2a",
+                        "borderRadius": 4
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "skeleton_col2_card1",
+                      "type": "Box",
+                      "name": "Skeleton Card 1",
+                      "layout": {},
+                      "style": {
+                        "width": 152,
+                        "height": 60,
+                        "background": "#111816",
+                        "borderRadius": 8
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "skeleton_col2_card2",
+                      "type": "Box",
+                      "name": "Skeleton Card 2",
+                      "layout": {},
+                      "style": {
+                        "width": 152,
+                        "height": 50,
+                        "background": "#111816",
+                        "borderRadius": 8
+                      },
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "skeleton_col_3",
+                  "type": "Column",
+                  "name": "Skeleton Column 3",
+                  "layout": {
+                    "gap": 8,
+                    "padding": [
+                      10,
+                      10,
+                      10,
+                      10
+                    ]
+                  },
+                  "style": {
+                    "width": 172,
+                    "minHeight": 600,
+                    "background": "#0a0e0d",
+                    "borderRadius": 8,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": [
+                    {
+                      "id": "skeleton_col3_header",
+                      "type": "Box",
+                      "name": "Skeleton Col Header",
+                      "layout": {},
+                      "style": {
+                        "width": 80,
+                        "height": 12,
+                        "background": "#1a2e2a",
+                        "borderRadius": 4
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "skeleton_col3_card1",
+                      "type": "Box",
+                      "name": "Skeleton Card 1",
+                      "layout": {},
+                      "style": {
+                        "width": 152,
+                        "height": 60,
+                        "background": "#111816",
+                        "borderRadius": 8
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "skeleton_col3_card2",
+                      "type": "Box",
+                      "name": "Skeleton Card 2",
+                      "layout": {},
+                      "style": {
+                        "width": 152,
+                        "height": 50,
+                        "background": "#111816",
+                        "borderRadius": 8
+                      },
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "skeleton_col_4",
+                  "type": "Column",
+                  "name": "Skeleton Column 4",
+                  "layout": {
+                    "gap": 8,
+                    "padding": [
+                      10,
+                      10,
+                      10,
+                      10
+                    ]
+                  },
+                  "style": {
+                    "width": 172,
+                    "minHeight": 600,
+                    "background": "#0a0e0d",
+                    "borderRadius": 8,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": [
+                    {
+                      "id": "skeleton_col4_header",
+                      "type": "Box",
+                      "name": "Skeleton Col Header",
+                      "layout": {},
+                      "style": {
+                        "width": 80,
+                        "height": 12,
+                        "background": "#1a2e2a",
+                        "borderRadius": 4
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "skeleton_col4_card1",
+                      "type": "Box",
+                      "name": "Skeleton Card 1",
+                      "layout": {},
+                      "style": {
+                        "width": 152,
+                        "height": 60,
+                        "background": "#111816",
+                        "borderRadius": 8
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "skeleton_col4_card2",
+                      "type": "Box",
+                      "name": "Skeleton Card 2",
+                      "layout": {},
+                      "style": {
+                        "width": 152,
+                        "height": 50,
+                        "background": "#111816",
+                        "borderRadius": 8
+                      },
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "skeleton_col_5",
+                  "type": "Column",
+                  "name": "Skeleton Column 5",
+                  "layout": {
+                    "gap": 8,
+                    "padding": [
+                      10,
+                      10,
+                      10,
+                      10
+                    ]
+                  },
+                  "style": {
+                    "width": 172,
+                    "minHeight": 600,
+                    "background": "#0a0e0d",
+                    "borderRadius": 8,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": [
+                    {
+                      "id": "skeleton_col5_header",
+                      "type": "Box",
+                      "name": "Skeleton Col Header",
+                      "layout": {},
+                      "style": {
+                        "width": 80,
+                        "height": 12,
+                        "background": "#1a2e2a",
+                        "borderRadius": 4
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "skeleton_col5_card1",
+                      "type": "Box",
+                      "name": "Skeleton Card 1",
+                      "layout": {},
+                      "style": {
+                        "width": 152,
+                        "height": 60,
+                        "background": "#111816",
+                        "borderRadius": 8
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "skeleton_col5_card2",
+                      "type": "Box",
+                      "name": "Skeleton Card 2",
+                      "layout": {},
+                      "style": {
+                        "width": 152,
+                        "height": 50,
+                        "background": "#111816",
+                        "borderRadius": 8
+                      },
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "skeleton_col_6",
+                  "type": "Column",
+                  "name": "Skeleton Column 6",
+                  "layout": {
+                    "gap": 8,
+                    "padding": [
+                      10,
+                      10,
+                      10,
+                      10
+                    ]
+                  },
+                  "style": {
+                    "width": 172,
+                    "minHeight": 600,
+                    "background": "#0a0e0d",
+                    "borderRadius": 8,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": [
+                    {
+                      "id": "skeleton_col6_header",
+                      "type": "Box",
+                      "name": "Skeleton Col Header",
+                      "layout": {},
+                      "style": {
+                        "width": 80,
+                        "height": 12,
+                        "background": "#1a2e2a",
+                        "borderRadius": 4
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "skeleton_col6_card1",
+                      "type": "Box",
+                      "name": "Skeleton Card 1",
+                      "layout": {},
+                      "style": {
+                        "width": 152,
+                        "height": 60,
+                        "background": "#111816",
+                        "borderRadius": 8
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "skeleton_col6_card2",
+                      "type": "Box",
+                      "name": "Skeleton Card 2",
+                      "layout": {},
+                      "style": {
+                        "width": 152,
+                        "height": 50,
+                        "background": "#111816",
+                        "borderRadius": 8
+                      },
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "skeleton_col_7",
+                  "type": "Column",
+                  "name": "Skeleton Column 7",
+                  "layout": {
+                    "gap": 8,
+                    "padding": [
+                      10,
+                      10,
+                      10,
+                      10
+                    ]
+                  },
+                  "style": {
+                    "width": 172,
+                    "minHeight": 600,
+                    "background": "#0a0e0d",
+                    "borderRadius": 8,
+                    "border": {"width": 1, "color": "#1a2e2a"}
+                  },
+                  "children": [
+                    {
+                      "id": "skeleton_col7_header",
+                      "type": "Box",
+                      "name": "Skeleton Col Header",
+                      "layout": {},
+                      "style": {
+                        "width": 80,
+                        "height": 12,
+                        "background": "#1a2e2a",
+                        "borderRadius": 4
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "skeleton_col7_card1",
+                      "type": "Box",
+                      "name": "Skeleton Card 1",
+                      "layout": {},
+                      "style": {
+                        "width": 152,
+                        "height": 60,
+                        "background": "#111816",
+                        "borderRadius": 8
+                      },
+                      "children": []
+                    },
+                    {
+                      "id": "skeleton_col7_card2",
+                      "type": "Box",
+                      "name": "Skeleton Card 2",
+                      "layout": {},
+                      "style": {
+                        "width": 152,
+                        "height": 50,
+                        "background": "#111816",
+                        "borderRadius": 8
+                      },
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "skeleton_spinner_row",
+              "type": "Row",
+              "name": "Skeleton Spinner Row",
+              "layout": {
+                "crossAxisAlignment": "center",
+                "mainAxisAlignment": "center",
+                "padding": [
+                  20,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "skeleton_spinner_text",
+                  "type": "Text",
+                  "name": "Skeleton Loading Text",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "text": "Loading board...",
+                    "fontSize": 12,
+                    "color": "#52525b"
+                  }
+                }
+              ]
+            }
+          ],
+          "metadata": {
+            "visibility": {
+              "when": "board.isLoading",
+              "animation": "fadeOut"
+            }
+          }
+        },
+        {
+          "id": "undo_toast",
+          "type": "Row",
+          "name": "Undo Toast",
+          "layout": {
+            "padding": [
+              12,
+              16,
+              12,
+              16
+            ],
+            "gap": 12,
+            "crossAxisAlignment": "center"
+          },
+          "style": {
+            "position": "absolute",
+            "bottom": 20,
+            "left": "50%",
+            "transform": "translateX(-50%)",
+            "background": "#1a2e2a",
+            "borderRadius": 8,
+            "border": {"width": 1, "color": "#2a4a44"},
+            "zIndex": 20,
+            "minWidth": 320
+          },
+          "children": [
+            {
+              "id": "undo_toast_icon",
+              "type": "Icon",
+              "name": "Undo Toast Icon",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "name": "check_circle",
+                "size": 16,
+                "color": "#22c55e"
+              }
+            },
+            {
+              "id": "undo_toast_text",
+              "type": "Text",
+              "name": "Undo Toast Text",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "text": "Moved ‘Implement WebSocket’ to Building",
+                "fontSize": 13,
+                "color": "#d4d4d8",
+                "flex": 1
+              }
+            },
+            {
+              "id": "undo_btn",
+              "type": "Button",
+              "name": "Undo Button",
+              "layout": {},
+              "style": {
+                "color": "#14b8a6",
+                "fontWeight": "600"
+              },
+              "children": [],
+              "props": {
+                "label": "Undo",
+                "variant": "ghost",
+                "fontSize": 13
+              },
+              "metadata": {
+                "handlers": [
+                  {
+                    "event": "tap",
+                    "action": "undoLastMove()"
+                  }
+                ],
+                "accessibility": {
+                  "role": "button",
+                  "label": "Undo last card move"
+                }
+              }
+            },
+            {
+              "id": "undo_timer_bar",
+              "type": "Box",
+              "name": "Undo Timer Bar",
+              "layout": {},
+              "style": {
+                "position": "absolute",
+                "bottom": 0,
+                "left": 0,
+                "height": 2,
+                "width": "60%",
+                "background": "#0d9488",
+                "borderRadius": { "bottomLeft": 8 }
+              },
+              "children": []
+            }
+          ],
+          "metadata": {
+            "visibility": {
+              "when": "hasRecentMove",
+              "animation": "slideUp"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

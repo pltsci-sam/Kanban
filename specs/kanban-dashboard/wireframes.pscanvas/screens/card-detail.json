@@ -1,0 +1,1160 @@
+{
+  "id": "26c86a00",
+  "type": "Screen",
+  "name": "Card Detail",
+  "layout": {
+    "sizing": {
+      "width": {
+        "type": "fixed",
+        "value": 1280
+      },
+      "height": {
+        "type": "fixed",
+        "value": 800
+      }
+    }
+  },
+  "style": {},
+  "children": [
+    {
+      "id": "detail_root",
+      "type": "Row",
+      "name": "Detail Root",
+      "layout": {
+        "padding": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "gap": 0
+      },
+      "style": {
+        "background": "#080c0b",
+        "width": 1280,
+        "height": 800
+      },
+      "children": [
+        {
+          "id": "detail_board_bg",
+          "type": "Box",
+          "name": "Dimmed Board Background",
+          "layout": {},
+          "style": {
+            "flex": 1,
+            "height": 800,
+            "background": "rgba(8,12,11,0.7)"
+          },
+          "children": [
+            {
+              "id": "detail_bg_label",
+              "type": "Text",
+              "name": "Board Background Label",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "text": "Kanban Board (background)",
+                "fontSize": 13,
+                "color": "#3f3f46",
+                "padding": "32px"
+              }
+            }
+          ]
+        },
+        {
+          "id": "detail_panel",
+          "type": "Column",
+          "name": "Detail Panel",
+          "layout": {
+            "gap": 0
+          },
+          "style": {
+            "width": 520,
+            "height": 800,
+            "background": "#0a0e0d",
+            "borderLeft": "1px solid #1a2e2a",
+            "overflowY": "auto"
+          },
+          "children": [
+            {
+              "id": "detail_panel_header",
+              "type": "Row",
+              "name": "Panel Header",
+              "layout": {
+                "padding": [
+                  14,
+                  16,
+                  14,
+                  16
+                ],
+                "gap": 12,
+                "crossAxisAlignment": "center",
+                "mainAxisAlignment": "spaceBetween"
+              },
+              "style": {
+                "borderBottom": "1px solid #1a2e2a",
+                "background": "#111816"
+              },
+              "children": [
+                {
+                  "id": "detail_header_left",
+                  "type": "Row",
+                  "name": "Detail Header Left",
+                  "layout": {
+                    "gap": 8,
+                    "crossAxisAlignment": "center"
+                  },
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "detail_card_id_badge",
+                      "type": "Text",
+                      "name": "Card ID Badge",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "a1b2c3",
+                        "fontSize": 11,
+                        "color": "#52525b",
+                        "background": "#1a2e2a",
+                        "padding": "3px 8px",
+                        "borderRadius": 4,
+                        "fontFamily": "monospace"
+                      },
+                      "metadata": {
+                        "bindings": [
+                          {
+                            "field": "card.id",
+                            "direction": "read"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "detail_col_badge",
+                      "type": "Row",
+                      "name": "Column Badge",
+                      "layout": {
+                        "gap": 4,
+                        "crossAxisAlignment": "center",
+                        "padding": [
+                          3,
+                          8,
+                          3,
+                          8
+                        ]
+                      },
+                      "style": {
+                        "background": "#042f2e",
+                        "borderRadius": 4
+                      },
+                      "children": [
+                        {
+                          "id": "detail_col_badge_text",
+                          "type": "Text",
+                          "name": "Column Badge Text",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "Building",
+                            "fontSize": 11,
+                            "color": "#14b8a6"
+                          },
+                          "metadata": {
+                            "bindings": [
+                              {
+                                "field": "card.column",
+                                "direction": "read"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "detail_close_btn",
+                  "type": "Button",
+                  "name": "Close Panel Button",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "label": "",
+                    "icon": "close",
+                    "variant": "ghost",
+                    "size": 32
+                  },
+                  "metadata": {
+                    "handlers": [
+                      {
+                        "event": "tap",
+                        "action": "navigate(board-view)"
+                      }
+                    ],
+                    "accessibility": {
+                      "role": "button",
+                      "label": "Close card detail panel"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "detail_body",
+              "type": "Column",
+              "name": "Detail Body",
+              "layout": {
+                "gap": 0,
+                "padding": [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "style": {
+                "flex": 1,
+                "overflowY": "auto"
+              },
+              "children": [
+                {
+                  "id": "detail_title_section",
+                  "type": "Column",
+                  "name": "Title Section",
+                  "layout": {
+                    "padding": [
+                      16,
+                      16,
+                      16,
+                      16
+                    ],
+                    "gap": 12
+                  },
+                  "style": {
+                    "borderBottom": "1px solid #1a2e2a"
+                  },
+                  "children": [
+                    {
+                      "id": "detail_card_title",
+                      "type": "Text",
+                      "name": "Card Title",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Configure Slack webhook for blocker notifications",
+                        "fontSize": 16,
+                        "fontWeight": "600",
+                        "color": "#ffffff",
+                        "lineHeight": 1.4
+                      },
+                      "metadata": {
+                        "bindings": [
+                          {
+                            "field": "card.title",
+                            "direction": "read"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "detail_labels_row",
+                      "type": "Row",
+                      "name": "Labels Row",
+                      "layout": {
+                        "gap": 6
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "detail_label_feature",
+                          "type": "Row",
+                          "name": "Feature Label",
+                          "layout": {
+                            "gap": 3,
+                            "crossAxisAlignment": "center",
+                            "padding": [
+                              3,
+                              8,
+                              3,
+                              8
+                            ]
+                          },
+                          "style": {
+                            "background": "#1e3a5f",
+                            "borderRadius": 9999
+                          },
+                          "children": [
+                            {
+                              "id": "detail_label_feature_dot",
+                              "type": "Box",
+                              "name": "Feature Dot",
+                              "layout": {},
+                              "style": {
+                                "width": 5,
+                                "height": 5,
+                                "borderRadius": 9999,
+                                "background": "#3b82f6"
+                              },
+                              "children": []
+                            },
+                            {
+                              "id": "detail_label_feature_text",
+                              "type": "Text",
+                              "name": "Feature Label Text",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "feature",
+                                "fontSize": 10,
+                                "color": "#93c5fd"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "detail_meta_section",
+                  "type": "Column",
+                  "name": "Meta Section",
+                  "layout": {
+                    "padding": [
+                      16,
+                      16,
+                      16,
+                      16
+                    ],
+                    "gap": 10
+                  },
+                  "style": {
+                    "borderBottom": "1px solid #1a2e2a"
+                  },
+                  "children": [
+                    {
+                      "id": "detail_meta_row_priority",
+                      "type": "Row",
+                      "name": "Meta Priority Row",
+                      "layout": {
+                        "gap": 12,
+                        "crossAxisAlignment": "center"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "detail_meta_priority_label",
+                          "type": "Text",
+                          "name": "Priority Label",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "Priority",
+                            "fontSize": 11,
+                            "color": "#71717a",
+                            "width": 80
+                          }
+                        },
+                        {
+                          "id": "detail_meta_priority_val",
+                          "type": "Row",
+                          "name": "Priority Value",
+                          "layout": {
+                            "gap": 4,
+                            "crossAxisAlignment": "center"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "detail_priority_icon",
+                              "type": "Icon",
+                              "name": "Priority Icon",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "name": "arrow_forward",
+                                "size": 11,
+                                "color": "#f59e0b"
+                              }
+                            },
+                            {
+                              "id": "detail_priority_text",
+                              "type": "Text",
+                              "name": "Priority Text",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "medium",
+                                "fontSize": 12,
+                                "color": "#d4d4d8"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "detail_meta_row_source",
+                      "type": "Row",
+                      "name": "Meta Source Row",
+                      "layout": {
+                        "gap": 12,
+                        "crossAxisAlignment": "center"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "detail_meta_source_label",
+                          "type": "Text",
+                          "name": "Source Label",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "Source",
+                            "fontSize": 11,
+                            "color": "#71717a",
+                            "width": 80
+                          }
+                        },
+                        {
+                          "id": "detail_meta_source_val",
+                          "type": "Text",
+                          "name": "Source Value",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "manual",
+                            "fontSize": 12,
+                            "color": "#a1a1aa"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "detail_meta_row_assignee",
+                      "type": "Row",
+                      "name": "Meta Assignee Row",
+                      "layout": {
+                        "gap": 12,
+                        "crossAxisAlignment": "center"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "detail_meta_assignee_label",
+                          "type": "Text",
+                          "name": "Assignee Label",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "Assignee",
+                            "fontSize": 11,
+                            "color": "#71717a",
+                            "width": 80
+                          }
+                        },
+                        {
+                          "id": "detail_meta_assignee_val",
+                          "type": "Text",
+                          "name": "Assignee Value",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "specops-builder",
+                            "fontSize": 12,
+                            "color": "#a1a1aa"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "blocker_section",
+                  "type": "Column",
+                  "name": "Blocker Section",
+                  "layout": {
+                    "padding": [
+                      16,
+                      16,
+                      16,
+                      16
+                    ],
+                    "gap": 12
+                  },
+                  "style": {
+                    "background": "#1a1008",
+                    "borderBottom": "1px solid #b45309"
+                  },
+                  "children": [
+                    {
+                      "id": "blocker_section_header",
+                      "type": "Row",
+                      "name": "Blocker Header",
+                      "layout": {
+                        "gap": 8,
+                        "crossAxisAlignment": "center"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "blocker_header_icon",
+                          "type": "Icon",
+                          "name": "Blocker Header Icon",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "name": "warning",
+                            "size": 16,
+                            "color": "#f59e0b"
+                          }
+                        },
+                        {
+                          "id": "blocker_header_title",
+                          "type": "Text",
+                          "name": "Blocker Header Title",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "Blocker — Action Required",
+                            "fontSize": 13,
+                            "fontWeight": "600",
+                            "color": "#f59e0b"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "blocker_id_row",
+                      "type": "Row",
+                      "name": "Blocker ID Row",
+                      "layout": {
+                        "gap": 8,
+                        "crossAxisAlignment": "center"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "blocker_id_badge",
+                          "type": "Text",
+                          "name": "Blocker ID Badge",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "blk-x1y2",
+                            "fontSize": 10,
+                            "color": "#92400e",
+                            "background": "#451a03",
+                            "padding": "2px 6px",
+                            "borderRadius": 4,
+                            "fontFamily": "monospace"
+                          }
+                        },
+                        {
+                          "id": "blocker_author_text",
+                          "type": "Text",
+                          "name": "Blocker Author",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "by specops-builder • 2h ago",
+                            "fontSize": 10,
+                            "color": "#92400e"
+                          },
+                          "metadata": {
+                            "bindings": [
+                              {
+                                "field": "card.blockers[0].author",
+                                "direction": "read"
+                              },
+                              {
+                                "field": "card.blockers[0].created",
+                                "direction": "read"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "blocker_question_box",
+                      "type": "Column",
+                      "name": "Blocker Question Box",
+                      "layout": {
+                        "padding": [
+                          12,
+                          12,
+                          12,
+                          12
+                        ],
+                        "gap": 4
+                      },
+                      "style": {
+                        "background": "#451a03",
+                        "borderRadius": 8,
+                        "border": {"width": 1, "color": "#92400e"}
+                      },
+                      "children": [
+                        {
+                          "id": "blocker_question_label",
+                          "type": "Text",
+                          "name": "Question Label",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "QUESTION",
+                            "fontSize": 9,
+                            "fontWeight": "700",
+                            "color": "#92400e",
+                            "letterSpacing": "1px"
+                          }
+                        },
+                        {
+                          "id": "blocker_question_text",
+                          "type": "Text",
+                          "name": "Blocker Question Text",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "What Slack channel should receive blocker notifications? #ops or #dev?",
+                            "fontSize": 13,
+                            "color": "#fbbf24",
+                            "lineHeight": 1.5
+                          },
+                          "metadata": {
+                            "bindings": [
+                              {
+                                "field": "card.blockers[0].question",
+                                "direction": "read"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "blocker_response_label",
+                      "type": "Text",
+                      "name": "Response Label",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Your response",
+                        "fontSize": 11,
+                        "color": "#a1a1aa"
+                      }
+                    },
+                    {
+                      "id": "blocker_response_textarea",
+                      "type": "TextInput",
+                      "name": "Blocker Response Textarea",
+                      "layout": {},
+                      "style": {
+                        "background": "#0a0e0d",
+                        "border": {"width": 1, "color": "#1a2e2a"},
+                        "borderRadius": 8,
+                        "fontSize": 13,
+                        "color": "#d4d4d8",
+                        "width": 488,
+                        "resize": "vertical"
+                      },
+                      "children": [],
+                      "props": {
+                        "placeholder": "Enter your answer to unblock this card...",
+                        "multiline": true,
+                        "rows": 3
+                      },
+                      "metadata": {
+                        "bindings": [
+                          {
+                            "field": "unblockResponse",
+                            "direction": "two-way"
+                          }
+                        ],
+                        "handlers": [
+                          {
+                            "event": "change",
+                            "action": "updateUnblockResponse(value)"
+                          }
+                        ],
+                        "accessibility": {
+                          "role": "textbox",
+                          "label": "Enter your response to unblock this card"
+                        },
+                        "validation": {
+                          "required": true,
+                          "minLength": 1,
+                          "message": "Response is required to unblock"
+                        }
+                      }
+                    },
+                    {
+                      "id": "blocker_hint_text",
+                      "type": "Text",
+                      "name": "Blocker Hint Text",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Enter your response to unblock this card",
+                        "fontSize": 11,
+                        "color": "#92400e"
+                      },
+                      "metadata": {
+                        "visibility": {
+                          "when": "unblockResponse.length === 0"
+                        }
+                      }
+                    },
+                    {
+                      "id": "blocker_action_row",
+                      "type": "Row",
+                      "name": "Blocker Action Row",
+                      "layout": {
+                        "gap": 8,
+                        "mainAxisAlignment": "end"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "unblock_btn",
+                          "type": "Button",
+                          "name": "Unblock Button (Disabled)",
+                          "layout": {},
+                          "style": {
+                            "background": "#374151",
+                            "color": "#6b7280",
+                            "borderRadius": 8,
+                            "cursor": "not-allowed",
+                            "height": 36,
+                            "paddingLeft": 16,
+                            "paddingRight": 16
+                          },
+                          "children": [],
+                          "props": {
+                            "label": "Unblock",
+                            "variant": "filled",
+                            "disabled": true
+                          },
+                          "metadata": {
+                            "bindings": [
+                              {
+                                "field": "unblockResponse",
+                                "direction": "read"
+                              }
+                            ],
+                            "handlers": [
+                              {
+                                "event": "tap",
+                                "action": "submitUnblock(cardId, blockerId, unblockResponse)"
+                              }
+                            ],
+                            "accessibility": {
+                              "role": "button",
+                              "label": "Unblock card — disabled until response is entered"
+                            },
+                            "visibility": {
+                              "when": "true"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "metadata": {
+                    "bindings": [
+                      {
+                        "field": "card.blockers",
+                        "direction": "read"
+                      }
+                    ],
+                    "visibility": {
+                      "when": "card.blockers.length > 0"
+                    }
+                  }
+                },
+                {
+                  "id": "enrichment_section",
+                  "type": "Column",
+                  "name": "Enrichment Section",
+                  "layout": {
+                    "padding": [
+                      16,
+                      16,
+                      16,
+                      16
+                    ],
+                    "gap": 12
+                  },
+                  "style": {
+                    "borderBottom": "1px solid #1a2e2a"
+                  },
+                  "children": [
+                    {
+                      "id": "enrichment_header",
+                      "type": "Text",
+                      "name": "Enrichment Header",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Adapter Data",
+                        "fontSize": 11,
+                        "fontWeight": "600",
+                        "color": "#52525b",
+                        "textTransform": "uppercase",
+                        "letterSpacing": "1.5px"
+                      }
+                    },
+                    {
+                      "id": "enrichment_specops_row",
+                      "type": "Row",
+                      "name": "Specops Enrichment Row",
+                      "layout": {
+                        "gap": 8,
+                        "crossAxisAlignment": "center"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "enrichment_specops_label",
+                          "type": "Text",
+                          "name": "Specops Label",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "SPECOPS",
+                            "fontSize": 10,
+                            "color": "#52525b",
+                            "width": 80
+                          }
+                        },
+                        {
+                          "id": "enrichment_specops_val",
+                          "type": "Text",
+                          "name": "Specops Value",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "requirements • schemas",
+                            "fontSize": 11,
+                            "color": "#0d9488"
+                          },
+                          "metadata": {
+                            "bindings": [
+                              {
+                                "field": "card.enrichment.specops.completedPhases",
+                                "direction": "read"
+                              }
+                            ],
+                            "specRef": "requirements.md#AC-002"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "enrichment_ralph_row",
+                      "type": "Row",
+                      "name": "Ralph Enrichment Row",
+                      "layout": {
+                        "gap": 8,
+                        "crossAxisAlignment": "center"
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "enrichment_ralph_label",
+                          "type": "Text",
+                          "name": "Ralph Label",
+                          "layout": {},
+                          "style": {},
+                          "children": [],
+                          "props": {
+                            "text": "RALPH",
+                            "fontSize": 10,
+                            "color": "#52525b",
+                            "width": 80
+                          }
+                        },
+                        {
+                          "id": "enrichment_ralph_progress",
+                          "type": "Row",
+                          "name": "Ralph Progress",
+                          "layout": {
+                            "gap": 8,
+                            "crossAxisAlignment": "center"
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "enrichment_ralph_bar_bg",
+                              "type": "Box",
+                              "name": "Ralph Progress BG",
+                              "layout": {},
+                              "style": {
+                                "width": 120,
+                                "height": 4,
+                                "background": "#1a2e2a",
+                                "borderRadius": 9999
+                              },
+                              "children": [
+                                {
+                                  "id": "enrichment_ralph_bar_fill",
+                                  "type": "Box",
+                                  "name": "Ralph Progress Fill",
+                                  "layout": {},
+                                  "style": {
+                                    "width": "40%",
+                                    "height": 4,
+                                    "background": "#0d9488",
+                                    "borderRadius": 9999
+                                  },
+                                  "children": [],
+                                  "metadata": {
+                                    "bindings": [
+                                      {
+                                        "field": "card.enrichment.ralph.buildProgress",
+                                        "direction": "read"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "id": "enrichment_ralph_pct",
+                              "type": "Text",
+                              "name": "Ralph Percent",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "40%",
+                                "fontSize": 11,
+                                "color": "#0d9488"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "metadata": {
+                    "bindings": [
+                      {
+                        "field": "card.enrichment",
+                        "direction": "read"
+                      }
+                    ],
+                    "visibility": {
+                      "when": "card.enrichment != null"
+                    }
+                  }
+                },
+                {
+                  "id": "notes_section",
+                  "type": "Column",
+                  "name": "Notes Timeline",
+                  "layout": {
+                    "padding": [
+                      16,
+                      16,
+                      16,
+                      16
+                    ],
+                    "gap": 12
+                  },
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "notes_header",
+                      "type": "Text",
+                      "name": "Notes Header",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Notes",
+                        "fontSize": 11,
+                        "fontWeight": "600",
+                        "color": "#52525b",
+                        "textTransform": "uppercase",
+                        "letterSpacing": "1.5px"
+                      }
+                    },
+                    {
+                      "id": "note_1",
+                      "type": "Row",
+                      "name": "Note 1",
+                      "layout": {
+                        "gap": 10
+                      },
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "note_1_timeline_line",
+                          "type": "Column",
+                          "name": "Note 1 Timeline Line",
+                          "layout": {
+                            "crossAxisAlignment": "center",
+                            "gap": 2
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "note_1_dot",
+                              "type": "Box",
+                              "name": "Note 1 Dot",
+                              "layout": {},
+                              "style": {
+                                "width": 8,
+                                "height": 8,
+                                "borderRadius": 9999,
+                                "background": "#0d9488",
+                                "marginTop": 4
+                              },
+                              "children": []
+                            },
+                            {
+                              "id": "note_1_line",
+                              "type": "Box",
+                              "name": "Note 1 Line",
+                              "layout": {},
+                              "style": {
+                                "width": 1,
+                                "flex": 1,
+                                "background": "#1a2e2a"
+                              },
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": "note_1_content",
+                          "type": "Column",
+                          "name": "Note 1 Content",
+                          "layout": {
+                            "gap": 4,
+                            "padding": [
+                              0,
+                              0,
+                              12,
+                              0
+                            ]
+                          },
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "note_1_meta",
+                              "type": "Row",
+                              "name": "Note 1 Meta",
+                              "layout": {
+                                "gap": 6,
+                                "crossAxisAlignment": "center"
+                              },
+                              "style": {},
+                              "children": [
+                                {
+                                  "id": "note_1_author",
+                                  "type": "Text",
+                                  "name": "Note 1 Author",
+                                  "layout": {},
+                                  "style": {},
+                                  "children": [],
+                                  "props": {
+                                    "text": "specops-builder",
+                                    "fontSize": 11,
+                                    "fontWeight": "600",
+                                    "color": "#a1a1aa"
+                                  }
+                                },
+                                {
+                                  "id": "note_1_type_badge",
+                                  "type": "Text",
+                                  "name": "Note 1 Type",
+                                  "layout": {},
+                                  "style": {},
+                                  "children": [],
+                                  "props": {
+                                    "text": "milestone",
+                                    "fontSize": 9,
+                                    "color": "#0d9488",
+                                    "background": "#042f2e",
+                                    "padding": "1px 5px",
+                                    "borderRadius": 3
+                                  }
+                                },
+                                {
+                                  "id": "note_1_time",
+                                  "type": "Text",
+                                  "name": "Note 1 Timestamp",
+                                  "layout": {},
+                                  "style": {},
+                                  "children": [],
+                                  "props": {
+                                    "text": "2026-02-20 14:22",
+                                    "fontSize": 10,
+                                    "color": "#52525b"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "id": "note_1_text",
+                              "type": "Text",
+                              "name": "Note 1 Text",
+                              "layout": {},
+                              "style": {},
+                              "children": [],
+                              "props": {
+                                "text": "Phase: Building Started\nFiles: src/cms/websocket.ts, src/cms/reconnect.ts",
+                                "fontSize": 12,
+                                "color": "#d4d4d8",
+                                "lineHeight": 1.5
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "metadata": {
+                    "bindings": [
+                      {
+                        "field": "card.notes",
+                        "direction": "read"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

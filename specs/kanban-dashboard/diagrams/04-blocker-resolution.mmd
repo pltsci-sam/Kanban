@@ -1,0 +1,36 @@
+flowchart LR
+    subgraph Agent["AGENT DETECTS ISSUE"]
+        A1["Agent encounters<br/>ambiguity or decision"]
+        A2["Writes blocker to<br/>card frontmatter"]
+    end
+
+    subgraph Notify["NOTIFICATION CHANNELS"]
+        N1["VS Code Board<br/>Amber pulsing indicator"]
+        N2["Slack<br/>@mention with question"]
+        N3["Vivian<br/>Voice announcement"]
+    end
+
+    subgraph Resolve["HUMAN RESOLVES"]
+        R1["VS Code Card Detail<br/>Read question → type answer"]
+        R2["Click Unblock button"]
+    end
+
+    subgraph Resume["AGENT RESUMES"]
+        X1["Blocker removed<br/>from frontmatter"]
+        X2["Resolution note<br/>appended to card"]
+        X3["AgentDispatch heartbeat<br/>detects unblocked card"]
+        X4["Agent resumes work"]
+    end
+
+    A1 --> A2
+    A2 --> N1
+    A2 --> N2
+    A2 --> N3
+    N1 --> R1
+    N2 --> R1
+    N3 --> R1
+    R1 --> R2
+    R2 --> X1
+    R2 --> X2
+    X1 --> X3
+    X3 --> X4

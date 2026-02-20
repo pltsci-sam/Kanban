@@ -1,0 +1,64 @@
+{
+  "version": "1.0",
+  "viewport": {
+    "x": 0,
+    "y": 0,
+    "zoom": 0.25
+  },
+  "frames": {
+    "screen_6b1aa4c6": {
+      "x": 0,
+      "y": 0,
+      "width": 1280,
+      "height": 800
+    },
+    "screen_92e75df2": {
+      "x": 1380,
+      "y": 0,
+      "width": 1280,
+      "height": 800
+    },
+    "screen_26c86a00": {
+      "x": 2760,
+      "y": 0,
+      "width": 1280,
+      "height": 800
+    },
+    "screen_92e1c6fc": {
+      "x": 0,
+      "y": 900,
+      "width": 1280,
+      "height": 800
+    },
+    "screen_62793c12": {
+      "x": 1380,
+      "y": 900,
+      "width": 1280,
+      "height": 800
+    },
+    "screen_02c00217": {
+      "x": 2760,
+      "y": 900,
+      "width": 1280,
+      "height": 800
+    },
+    "screen_6cd848e9": {
+      "x": 0,
+      "y": 1800,
+      "width": 1440,
+      "height": 900
+    },
+    "screen_32ce2600": {
+      "x": 1540,
+      "y": 1800,
+      "width": 1440,
+      "height": 900
+    },
+    "screen_e78d9c60": {
+      "x": 3080,
+      "y": 1800,
+      "width": 1440,
+      "height": 900
+    }
+  }
+}

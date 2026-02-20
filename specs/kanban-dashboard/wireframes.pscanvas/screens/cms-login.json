@@ -1,0 +1,310 @@
+{
+  "id": "6cd848e9",
+  "type": "Screen",
+  "name": "CMS Login",
+  "layout": {
+    "sizing": {
+      "width": {
+        "type": "fixed",
+        "value": 1440
+      },
+      "height": {
+        "type": "fixed",
+        "value": 900
+      }
+    }
+  },
+  "style": {},
+  "children": [
+    {
+      "id": "login_root",
+      "type": "Column",
+      "name": "Login Root",
+      "layout": {
+        "crossAxisAlignment": "center",
+        "mainAxisAlignment": "center",
+        "gap": 0
+      },
+      "style": {
+        "background": "#080c0b",
+        "width": 1440,
+        "height": 900
+      },
+      "children": [
+        {
+          "id": "login_card",
+          "type": "Column",
+          "name": "Login Card",
+          "layout": {
+            "padding": [
+              40,
+              40,
+              40,
+              40
+            ],
+            "gap": 24
+          },
+          "style": {
+            "background": "#111816",
+            "borderRadius": 16,
+            "border": {"width": 1, "color": "#1a2e2a"},
+            "width": 400,
+            "boxShadow": "0 24px 64px rgba(0,0,0,0.6)"
+          },
+          "children": [
+            {
+              "id": "login_header",
+              "type": "Column",
+              "name": "Login Header",
+              "layout": {
+                "crossAxisAlignment": "center",
+                "gap": 8
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "login_logo_box",
+                  "type": "Box",
+                  "name": "Login Logo Box",
+                  "layout": {
+                    "crossAxisAlignment": "center",
+                    "mainAxisAlignment": "center"
+                  },
+                  "style": {
+                    "width": 64,
+                    "height": 64,
+                    "borderRadius": 16,
+                    "background": "#042f2e",
+                    "border": {"width": 1, "color": "#0d9488"}
+                  },
+                  "children": [
+                    {
+                      "id": "login_logo_icon",
+                      "type": "Icon",
+                      "name": "Login Logo Icon",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "name": "visibility",
+                        "size": 28,
+                        "color": "#0d9488"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "login_title",
+                  "type": "Text",
+                  "name": "Login Title",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "text": "AIFactory CMS",
+                    "fontSize": 22,
+                    "fontWeight": "700",
+                    "color": "#ffffff",
+                    "textAlign": "center"
+                  }
+                },
+                {
+                  "id": "login_subtitle",
+                  "type": "Text",
+                  "name": "Login Subtitle",
+                  "layout": {},
+                  "style": {},
+                  "children": [],
+                  "props": {
+                    "text": "Ops Dashboard — Authentication Required",
+                    "fontSize": 12,
+                    "color": "#71717a",
+                    "textAlign": "center"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "login_form",
+              "type": "Column",
+              "name": "Login Form",
+              "layout": {
+                "gap": 14
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "login_username_group",
+                  "type": "Column",
+                  "name": "Username Group",
+                  "layout": {
+                    "gap": 6
+                  },
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "login_username_label",
+                      "type": "Text",
+                      "name": "Username Label",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Username",
+                        "fontSize": 12,
+                        "fontWeight": "500",
+                        "color": "#d4d4d8"
+                      }
+                    },
+                    {
+                      "id": "login_username_input",
+                      "type": "TextInput",
+                      "name": "Username Input",
+                      "layout": {},
+                      "style": {
+                        "background": "#0a0e0d",
+                        "border": {"width": 1, "color": "#1a2e2a"},
+                        "borderRadius": 8,
+                        "height": 44,
+                        "fontSize": 14,
+                        "color": "#ffffff",
+                        "paddingLeft": 14
+                      },
+                      "children": [],
+                      "props": {
+                        "placeholder": "ops",
+                        "value": "ops",
+                        "width": 320
+                      },
+                      "metadata": {
+                        "bindings": [
+                          {
+                            "field": "auth.username",
+                            "direction": "two-way"
+                          }
+                        ],
+                        "accessibility": {
+                          "role": "textbox",
+                          "label": "Username for CMS dashboard access"
+                        },
+                        "validation": {
+                          "required": true
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "login_password_group",
+                  "type": "Column",
+                  "name": "Password Group",
+                  "layout": {
+                    "gap": 6
+                  },
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "login_password_label",
+                      "type": "Text",
+                      "name": "Password Label",
+                      "layout": {},
+                      "style": {},
+                      "children": [],
+                      "props": {
+                        "text": "Password",
+                        "fontSize": 12,
+                        "fontWeight": "500",
+                        "color": "#d4d4d8"
+                      }
+                    },
+                    {
+                      "id": "login_password_input",
+                      "type": "TextInput",
+                      "name": "Password Input",
+                      "layout": {},
+                      "style": {
+                        "background": "#0a0e0d",
+                        "border": {"width": 1, "color": "#1a2e2a"},
+                        "borderRadius": 8,
+                        "height": 44,
+                        "fontSize": 14
+                      },
+                      "children": [],
+                      "props": {
+                        "placeholder": "••••••••",
+                        "type": "password",
+                        "width": 320
+                      },
+                      "metadata": {
+                        "bindings": [
+                          {
+                            "field": "auth.password",
+                            "direction": "two-way"
+                          }
+                        ],
+                        "accessibility": {
+                          "role": "textbox",
+                          "label": "Password for CMS dashboard access"
+                        },
+                        "validation": {
+                          "required": true
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "login_submit_btn",
+              "type": "Button",
+              "name": "Login Submit Button",
+              "layout": {},
+              "style": {
+                "background": "#0d9488",
+                "color": "#ffffff",
+                "borderRadius": 8,
+                "fontSize": 15,
+                "fontWeight": "600"
+              },
+              "children": [],
+              "props": {
+                "label": "Sign In",
+                "variant": "filled",
+                "height": 48,
+                "width": 320
+              },
+              "metadata": {
+                "handlers": [
+                  {
+                    "event": "tap",
+                    "action": "submitBasicAuth(username, password)"
+                  }
+                ],
+                "accessibility": {
+                  "role": "button",
+                  "label": "Sign in to CMS dashboard"
+                },
+                "specRef": "requirements.md#KB-020"
+              }
+            },
+            {
+              "id": "login_hint_text",
+              "type": "Text",
+              "name": "Login Hint",
+              "layout": {},
+              "style": {},
+              "children": [],
+              "props": {
+                "text": "Set KANBAN_CMS_PASSWORD env var to configure auth",
+                "fontSize": 11,
+                "color": "#52525b",
+                "textAlign": "center"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

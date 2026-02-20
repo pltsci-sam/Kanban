@@ -1,0 +1,45 @@
+{
+  "screenId": "screen_cms-login",
+  "states": {
+    "idle": {
+      "on": {
+        "credentialsEntered": "ready"
+      }
+    },
+    "ready": {
+      "on": {
+        "signInTapped": "authenticating",
+        "credentialsCleared": "idle"
+      }
+    },
+    "authenticating": {
+      "on": {
+        "authSuccess": "navigating",
+        "authFailure": "failed"
+      },
+      "entry": [
+        "submitBasicAuth"
+      ]
+    },
+    "failed": {
+      "on": {
+        "credentialsChanged": "ready"
+      },
+      "entry": [
+        "showAuthError"
+      ]
+    },
+    "navigating": {
+      "on": {}
+    }
+  },
+  "api": [
+    {
+      "method": "GET",
+      "path": "/ops",
+      "auth": "basicAuth",
+      "description": "CMS dashboard entry point — 200 on success, 401 on invalid credentials"
+    }
+  ],
+  "onMount": []
+}
