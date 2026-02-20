@@ -16,3 +16,19 @@ export {
   BoardNotFoundError,
 } from './board-reader.js';
 export type { BoardState, CardError } from './board-reader.js';
+export {
+  createCard,
+  updateCard,
+  moveCard,
+  appendNote,
+  deleteCard,
+  archiveCard,
+  CardNotFoundError,
+  ColumnNotFoundError,
+  CardExistsError,
+} from './card-writer.js';
+export type {
+  CardCreateInput,
+  CardUpdateInput,
+  NoteInput,
+} from './card-writer.js';
