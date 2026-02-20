@@ -32,3 +32,4 @@ export type {
   CardUpdateInput,
   NoteInput,
 } from './card-writer.js';
+export { initializeBoard, BoardExistsError } from './board-initializer.js';
