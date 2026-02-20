@@ -33,3 +33,5 @@ export type {
   NoteInput,
 } from './card-writer.js';
 export { initializeBoard, BoardExistsError } from './board-initializer.js';
+export { validateBoard } from './board-validator.js';
+export type { ValidationIssue, ValidationSeverity } from './board-validator.js';
