@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
-import { readBoard } from '@kanban/core';
+import { readBoard, BoardNotFoundError, initializeBoard } from '@kanban/core';
 import type { Board, Card } from '@kanban/core';
 
 export interface BoardMessage {
-  type: 'update' | 'moveCard' | 'openCard' | 'addCard' | 'refresh';
+  type: 'update' | 'moveCard' | 'openCard' | 'addCard' | 'refresh' | 'initBoard' | 'openBoardYaml';
   payload?: unknown;
 }
 
@@ -56,15 +56,25 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
       };
       this.view.webview.postMessage({ type: 'update', payload: update });
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      this.view.webview.postMessage({ type: 'error', payload: message });
+      if (err instanceof BoardNotFoundError) {
+        this.view.webview.postMessage({ type: 'empty' });
+      } else {
+        const message = err instanceof Error ? err.message : String(err);
+        this.view.webview.postMessage({ type: 'error', payload: message });
+      }
     }
   }
 
-  private handleMessage(message: BoardMessage): void {
+  private async handleMessage(message: BoardMessage): Promise<void> {
     switch (message.type) {
       case 'refresh':
-        this.refresh();
+        await this.refresh();
+        break;
+      case 'initBoard':
+        await this.handleInitBoard();
+        break;
+      case 'openBoardYaml':
+        await this.handleOpenBoardYaml();
         break;
       case 'moveCard':
       case 'openCard':
@@ -72,6 +82,24 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
         // Handled by P5 features
         break;
     }
+  }
+
+  private async handleInitBoard(): Promise<void> {
+    if (!this.boardDir) return;
+    try {
+      await initializeBoard(this.boardDir);
+      await this.refresh();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.view?.webview.postMessage({ type: 'error', payload: message });
+    }
+  }
+
+  private async handleOpenBoardYaml(): Promise<void> {
+    if (!this.boardDir) return;
+    const { join } = await import('node:path');
+    const boardYamlUri = vscode.Uri.file(join(this.boardDir, '.kanban', 'board.yaml'));
+    await vscode.commands.executeCommand('vscode.open', boardYamlUri);
   }
 
   private getHtml(): string {
@@ -108,23 +136,46 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
     .enrichment-item { display: inline-flex; align-items: center; gap: 2px; }
     .empty { text-align: center; opacity: 0.4; padding: 16px; font-style: italic; }
     .error-bar { background: var(--vscode-inputValidation-errorBackground); padding: 4px 8px; margin-bottom: 8px; border-radius: 3px; font-size: 0.85em; }
+    .skeleton { display: flex; gap: 8px; min-height: 300px; }
+    .skeleton-col { flex: 0 0 200px; background: var(--vscode-sideBar-background); border-radius: 4px; padding: 8px; }
+    .skeleton-header { height: 16px; width: 80%; background: var(--vscode-panel-border); border-radius: 3px; margin-bottom: 12px; animation: shimmer 1.5s infinite; }
+    .skeleton-card { height: 48px; background: var(--vscode-panel-border); border-radius: 3px; margin-bottom: 6px; opacity: 0.5; animation: shimmer 1.5s infinite; }
+    @keyframes shimmer { 0%,100% { opacity: 0.5; } 50% { opacity: 0.3; } }
+    .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; gap: 12px; }
+    .empty-state-icon { font-size: 2.5em; opacity: 0.4; }
+    .empty-state-text { opacity: 0.6; font-size: 0.95em; }
+    .btn { padding: 6px 14px; border: none; border-radius: 3px; cursor: pointer; font-family: inherit; font-size: 0.85em; }
+    .btn-primary { background: var(--vscode-button-background); color: var(--vscode-button-foreground); }
+    .btn-primary:hover { background: var(--vscode-button-hoverBackground); }
+    .btn-secondary { background: var(--vscode-button-secondaryBackground); color: var(--vscode-button-secondaryForeground); }
+    .error-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px; gap: 8px; }
+    .error-state-icon { font-size: 2em; color: #e74c3c; }
+    .error-state-msg { opacity: 0.8; font-size: 0.9em; text-align: center; max-width: 300px; }
+    .warning-bar { background: rgba(230,126,34,0.15); color: #e67e22; padding: 4px 8px; margin-bottom: 8px; border-radius: 3px; font-size: 0.85em; display: flex; align-items: center; gap: 4px; }
   </style>
 </head>
 <body>
   <div id="errors"></div>
-  <div id="board" class="board"><div class="empty">Loading board...</div></div>
+  <div id="board" class="board">
+    <div class="skeleton">
+      <div class="skeleton-col"><div class="skeleton-header"></div><div class="skeleton-card"></div><div class="skeleton-card"></div></div>
+      <div class="skeleton-col"><div class="skeleton-header"></div><div class="skeleton-card"></div></div>
+      <div class="skeleton-col"><div class="skeleton-header"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div></div>
+    </div>
+  </div>
   <script>
     const vscode = acquireVsCodeApi();
     window.addEventListener('message', event => {
       const msg = event.data;
       if (msg.type === 'update') renderBoard(msg.payload);
       if (msg.type === 'error') showError(msg.payload);
+      if (msg.type === 'empty') showEmptyState();
     });
 
     function renderBoard(data) {
       const errEl = document.getElementById('errors');
       if (data.errors && data.errors.length > 0) {
-        errEl.innerHTML = '<div class="error-bar">' + data.errors.length + ' card(s) failed to parse</div>';
+        errEl.innerHTML = '<div class="warning-bar">\u26a0 ' + data.errors.length + ' card(s) skipped (malformed)</div>';
       } else {
         errEl.innerHTML = '';
       }
@@ -202,8 +253,24 @@ export class BoardWebviewProvider implements vscode.WebviewViewProvider {
       return '<div class="enrichment">' + parts.join('') + '</div>';
     }
 
+    function showEmptyState() {
+      document.getElementById('errors').innerHTML = '';
+      document.getElementById('board').innerHTML =
+        '<div class="empty-state">' +
+        '<div class="empty-state-icon">\u{1F4CB}</div>' +
+        '<div class="empty-state-text">No kanban board found in this workspace.</div>' +
+        '<button class="btn btn-primary" onclick="vscode.postMessage({type:\'initBoard\'})">Initialize Board</button>' +
+        '</div>';
+    }
+
     function showError(msg) {
-      document.getElementById('errors').innerHTML = '<div class="error-bar">' + escapeHtml(msg) + '</div>';
+      document.getElementById('errors').innerHTML = '';
+      document.getElementById('board').innerHTML =
+        '<div class="error-state">' +
+        '<div class="error-state-icon">\u26a0</div>' +
+        '<div class="error-state-msg">' + escapeHtml(msg) + '</div>' +
+        '<button class="btn btn-secondary" onclick="vscode.postMessage({type:\'openBoardYaml\'})">Open board.yaml in Editor</button>' +
+        '</div>';
     }
 
     function escapeHtml(s) {
