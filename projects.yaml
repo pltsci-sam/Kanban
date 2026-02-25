@@ -2,37 +2,37 @@ version: "1"
 
 projects:
   - name: AgentDispatch
-    path: /Users/sam/src/AgentDispatch
+    path: /home/sam/src/AgentDispatch
     adapters: [ralph, specops]
     enabled: true
     cmsUrl: null
 
   - name: Vivian
-    path: /Users/sam/src/Vivian
+    path: /home/sam/src/Vivian
     adapters: [ralph, specops, spec-artifact]
     enabled: true
     cmsUrl: null
 
   - name: SPECOPS
-    path: /Users/sam/src/Skills/SPECOPS
+    path: /home/sam/src/SPECOPS
     adapters: [ralph]
     enabled: true
     cmsUrl: null
 
   - name: ChartFlow
-    path: /Users/sam/src/ChartFlow
+    path: /home/sam/src/ChartFlow
     adapters: [ralph, specops]
     enabled: true
     cmsUrl: null
 
   - name: CMS
-    path: /Users/sam/src/Kanban/packages/kanban-cms
+    path: /home/sam/src/Kanban/packages/kanban-cms
     adapters: [ralph]
     enabled: true
     cmsUrl: http://localhost:4321
 
   - name: PSCanvas
-    path: /Users/sam/src/Skills/PSCanvas
+    path: /home/sam/src/Skills/PSCanvas
     adapters: [ralph]
     enabled: true
     cmsUrl: null

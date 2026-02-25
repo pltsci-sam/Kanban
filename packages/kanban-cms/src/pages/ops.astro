@@ -10,6 +10,24 @@ if (!validateBasicAuth(authHeader, config)) {
     headers: { 'WWW-Authenticate': 'Basic realm="Kanban Ops"' },
   });
 }
+
+// AgentDispatch connection config (server-side only)
+const AD_HOST = import.meta.env.AGENTDISPATCH_HOST || process.env.AGENTDISPATCH_HOST || '127.0.0.1';
+const AD_PORT = import.meta.env.AGENTDISPATCH_PORT || process.env.AGENTDISPATCH_PORT || '8082';
+const AD_API_KEY = import.meta.env.AGENTDISPATCH_API_KEY || process.env.AGENTDISPATCH_API_KEY || '';
+
+// Fetch initial health data server-side (avoids CORS)
+let initialHealth: Record<string, unknown> | null = null;
+try {
+  const res = await fetch(`http://${AD_HOST}:${AD_PORT}/health`, {
+    signal: AbortSignal.timeout(3000),
+  });
+  if (res.ok) {
+    initialHealth = await res.json();
+  }
+} catch {
+  // AgentDispatch not reachable at build time — client will retry
+}
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -19,25 +37,341 @@ if (!validateBasicAuth(authHeader, config)) {
   <title>Kanban Ops Dashboard</title>
   <style>
     body { font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 20px; background: #1a1a2e; color: #eee; }
-    h1 { font-size: 1.5em; }
-    .status { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px; }
-    .status-card { background: #16213e; border: 1px solid #0f3460; border-radius: 8px; padding: 16px; min-width: 200px; }
-    .status-card h3 { margin: 0 0 8px 0; font-size: 1em; }
-    .status-card .value { font-size: 2em; font-weight: bold; color: #e94560; }
-    #ws-status { font-size: 0.85em; opacity: 0.6; }
+    h1 { font-size: 1.5em; margin-bottom: 4px; }
+    .header { display: flex; align-items: center; gap: 12px; }
+    .header .ps-logo { height: 28px; }
+    .conn-status { font-size: 0.85em; opacity: 0.6; margin-bottom: 16px; }
+    .conn-status .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+    .conn-status .dot.ok { background: #2ecc71; }
+    .conn-status .dot.err { background: #e74c3c; }
+    .conn-status .dot.warn { background: #f39c12; }
+    .summary { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+    .summary-card { background: #16213e; border: 1px solid #0f3460; border-radius: 8px; padding: 16px; min-width: 160px; flex: 1; }
+    .summary-card h3 { margin: 0 0 8px; font-size: 0.9em; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.05em; }
+    .summary-card .value { font-size: 2em; font-weight: bold; color: #e94560; }
+    .summary-card .value.green { color: #2ecc71; }
+    .summary-card .value.blue { color: #3498db; }
+    .summary-card .value.yellow { color: #f1c40f; }
+    .section { margin-bottom: 24px; }
+    .section h2 { font-size: 1.1em; margin-bottom: 12px; border-bottom: 1px solid #0f3460; padding-bottom: 6px; }
+    .repo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+    .repo-card { background: #16213e; border: 1px solid #0f3460; border-radius: 6px; padding: 12px; }
+    .repo-card .name { font-weight: 600; margin-bottom: 4px; }
+    .repo-card .state { font-size: 0.85em; opacity: 0.7; }
+    .chart-container { background: #16213e; border: 1px solid #0f3460; border-radius: 8px; padding: 16px; position: relative; }
+    .chart-container svg { width: 100%; height: 280px; }
+    .chart-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px; font-size: 0.8em; }
+    .chart-legend .item { display: flex; align-items: center; gap: 4px; }
+    .chart-legend .swatch { width: 12px; height: 12px; border-radius: 2px; }
+    .chart-tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+    .chart-tabs button { background: #0f3460; border: 1px solid #0f3460; color: #8b949e; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8em; }
+    .chart-tabs button.active { background: #1a3a6e; color: #eee; border-color: #3498db; }
+    .event-log { max-height: 300px; overflow-y: auto; font-family: monospace; font-size: 0.8em; background: #0d1117; border-radius: 6px; padding: 12px; }
+    .event-log .entry { padding: 2px 0; border-bottom: 1px solid #161b22; }
+    .event-log .ts { color: #8b949e; margin-right: 8px; }
+    .event-log .type { color: #58a6ff; margin-right: 8px; }
   </style>
 </head>
 <body>
-  <h1>Kanban Ops Dashboard</h1>
-  <div id="ws-status">Connecting...</div>
-  <div class="status" id="status-container">
-    <div class="status-card"><h3>Pipeline</h3><div class="value" id="pipeline-count">--</div></div>
-    <div class="status-card"><h3>Blocked</h3><div class="value" id="blocked-count">--</div></div>
-    <div class="status-card"><h3>Agents</h3><div class="value" id="agent-count">--</div></div>
+  <div class="header">
+    <img src="https://cdn.prod.website-files.com/669bff820d74cda087664d6c/669bff820d74cda087664e00_PS%20Logo%20Header%20Dark.png" alt="PlatformScience" class="ps-logo">
+    <h1>Kanban Ops Dashboard</h1>
   </div>
+  <div class="conn-status" id="conn-status"><span class="dot warn"></span>Connecting...</div>
+
+  <div class="summary">
+    <div class="summary-card"><h3>In Progress</h3><div class="value blue" id="in-progress">--</div></div>
+    <div class="summary-card"><h3>Pending</h3><div class="value yellow" id="pending">--</div></div>
+    <div class="summary-card"><h3>Blocked</h3><div class="value" id="blocked">--</div></div>
+    <div class="summary-card"><h3>Completed Today</h3><div class="value green" id="completed">--</div></div>
+    <div class="summary-card"><h3>Uptime</h3><div class="value blue" id="uptime">--</div></div>
+  </div>
+
+  <div class="section">
+    <h2>Repositories</h2>
+    <div class="repo-grid" id="repo-grid"></div>
+  </div>
+
+  <div class="section">
+    <h2>Session Activity</h2>
+    <div class="chart-tabs">
+      <button class="active" data-metric="sessions" onclick="switchMetric('sessions')">Sessions</button>
+      <button data-metric="duration" onclick="switchMetric('duration')">Duration (min)</button>
+      <button data-metric="cost" onclick="switchMetric('cost')">Cost ($)</button>
+      <button data-metric="tokens" onclick="switchMetric('tokens')">Tokens (M)</button>
+    </div>
+    <div class="chart-container">
+      <svg id="activity-chart" viewBox="0 0 800 280" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+    <div class="chart-legend" id="chart-legend"></div>
+  </div>
+
+  <div class="section">
+    <h2>Live Events</h2>
+    <div class="event-log" id="event-log"><div class="entry" style="opacity:0.5">Waiting for events...</div></div>
+  </div>
+
+  <!-- Server-injected config (API key for WS auth, AD address for WS URL) -->
+  <script
+    id="ops-config"
+    type="application/json"
+    set:html={JSON.stringify({
+      adHost: AD_HOST,
+      adPort: AD_PORT,
+      adApiKey: AD_API_KEY,
+      initialHealth,
+    })}
+  />
+
   <script>
-    // WebSocket connection will be established by F036
-    document.getElementById('ws-status').textContent = 'Ready (WebSocket pending F036)';
+    // Read server-injected config
+    const _cfg = JSON.parse(document.getElementById('ops-config').textContent || '{}');
+    const AD_API_KEY = _cfg.adApiKey || '';
+    const AD_WS_PORT = _cfg.adPort || '8082';
+
+    // For the WS host: if the server-side config specifies a loopback address
+    // (127.0.0.1 / localhost), use the browser's hostname instead so that LAN
+    // clients can reach AgentDispatch at the same host they used for the CMS.
+    const _serverHost = _cfg.adHost || '';
+    const _isLoopback = _serverHost === '127.0.0.1' || _serverHost === 'localhost';
+    const AD_WS_HOST = _isLoopback ? window.location.hostname : _serverHost;
+
+    // WebSocket connects directly to AgentDispatch (WS upgrade skips CORS).
+    // The ?token= query param is how the WS handler authenticates.
+    const WS_URL = AD_API_KEY
+      ? `ws://${AD_WS_HOST}:${AD_WS_PORT}/api/v1/dashboard/ws?token=${encodeURIComponent(AD_API_KEY)}`
+      : '';
+
+    function formatUptime(seconds) {
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      if (h > 24) return `${Math.floor(h / 24)}d ${h % 24}h`;
+      return `${h}h ${m}m`;
+    }
+
+    function applyHealth(data) {
+      if (!data || data.status === 'unreachable') return;
+      document.getElementById('in-progress').textContent = data.tasks?.in_progress ?? '--';
+      document.getElementById('pending').textContent = data.tasks?.pending ?? '--';
+      document.getElementById('blocked').textContent = data.tasks?.blocked ?? '--';
+      document.getElementById('completed').textContent = data.tasks?.completed_today ?? '--';
+      document.getElementById('uptime').textContent = data.uptime_seconds ? formatUptime(data.uptime_seconds) : '--';
+
+      const grid = document.getElementById('repo-grid');
+      grid.innerHTML = '';
+      if (data.repos) {
+        for (const [name, state] of Object.entries(data.repos)) {
+          const card = document.createElement('div');
+          card.className = 'repo-card';
+          card.innerHTML = `<div class="name">${name}</div><div class="state">${state}</div>`;
+          grid.appendChild(card);
+        }
+      }
+    }
+
+    // Apply server-rendered initial health data immediately
+    if (_cfg.initialHealth) {
+      applyHealth(_cfg.initialHealth);
+    }
+
+    async function fetchHealth() {
+      // Use the server-side proxy at /api/health to avoid CORS issues.
+      // The proxy requires the same basic auth as the ops page, which
+      // the browser sends automatically since we're on the same origin.
+      try {
+        const res = await fetch('/api/health');
+        const data = await res.json();
+        applyHealth(data);
+      } catch (e) {
+        console.error('Health fetch failed:', e);
+      }
+    }
+
+    function addEvent(type, detail) {
+      const log = document.getElementById('event-log');
+      if (log.querySelector('.entry[style]')) log.innerHTML = '';
+      const entry = document.createElement('div');
+      entry.className = 'entry';
+      const ts = new Date().toLocaleTimeString();
+      entry.innerHTML = `<span class="ts">${ts}</span><span class="type">${type}</span>${detail || ''}`;
+      log.prepend(entry);
+      while (log.children.length > 200) log.lastChild.remove();
+    }
+
+    let ws;
+    let reconnectDelay = 1000;
+
+    function connectWS() {
+      if (!WS_URL) {
+        const status = document.getElementById('conn-status');
+        status.innerHTML = '<span class="dot err"></span>No AGENTDISPATCH_API_KEY configured — WebSocket disabled';
+        return;
+      }
+
+      const status = document.getElementById('conn-status');
+      status.innerHTML = '<span class="dot warn"></span>Connecting...';
+
+      ws = new WebSocket(WS_URL);
+
+      ws.onopen = () => {
+        status.innerHTML = '<span class="dot ok"></span>Connected to AgentDispatch';
+        reconnectDelay = 1000;
+        addEvent('ws.connected', 'WebSocket established');
+      };
+
+      ws.onmessage = (evt) => {
+        try {
+          const msg = JSON.parse(evt.data);
+
+          // Respond to server pings with a pong to keep the connection alive
+          if (msg.type === 'ping') {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+              ws.send(JSON.stringify({ type: 'pong' }));
+            }
+            return;
+          }
+
+          // "connected" is the initial handshake confirmation
+          if (msg.type === 'connected') {
+            addEvent('ws.authenticated', `session=${msg.session_id || ''}`);
+            return;
+          }
+
+          addEvent(msg.type, msg.payload ? ` ${JSON.stringify(msg.payload).slice(0, 120)}` : '');
+
+          // Refresh health stats when task/dispatch/CI events arrive
+          if (msg.type.startsWith('task.') || msg.type.startsWith('dispatcher.') || msg.type.startsWith('ci.')) {
+            fetchHealth();
+          }
+        } catch { /* ignore malformed messages */ }
+      };
+
+      ws.onclose = (evt) => {
+        if (evt.code === 1008) {
+          // 1008 = Policy Violation — authentication failure
+          status.innerHTML = '<span class="dot err"></span>WebSocket auth failed — check AGENTDISPATCH_API_KEY';
+          addEvent('ws.auth_failed', evt.reason || 'Authentication required');
+          // Don't reconnect on auth failure — key won't magically become valid
+          return;
+        }
+        status.innerHTML = '<span class="dot err"></span>Disconnected — reconnecting...';
+        addEvent('ws.disconnected', '');
+        setTimeout(connectWS, reconnectDelay);
+        reconnectDelay = Math.min(reconnectDelay * 2, 30000);
+      };
+
+      ws.onerror = () => {
+        status.innerHTML = '<span class="dot err"></span>Connection error';
+      };
+    }
+
+    // Initial health data was rendered server-side; start periodic refresh
+    fetchHealth();
+    setInterval(fetchHealth, 30000);
+    connectWS();
+
+    // --- Session Activity Chart ---
+    const COLORS = ['#3498db', '#e94560', '#2ecc71', '#f1c40f', '#9b59b6', '#e67e22', '#1abc9c'];
+    let chartData = null;
+    let currentMetric = 'sessions';
+
+    function switchMetric(metric) {
+      currentMetric = metric;
+      document.querySelectorAll('.chart-tabs button').forEach(b => {
+        b.classList.toggle('active', b.dataset.metric === metric);
+      });
+      if (chartData) renderChart(chartData);
+    }
+    window.switchMetric = switchMetric;
+
+    function renderChart(data) {
+      const svg = document.getElementById('activity-chart');
+      const legend = document.getElementById('chart-legend');
+      if (!data || !data.days || !data.days.length) {
+        svg.innerHTML = '<text x="400" y="140" text-anchor="middle" fill="#8b949e" font-size="14">No data</text>';
+        return;
+      }
+
+      const repos = Object.keys(data.series);
+      const days = data.days;
+      const pad = { top: 20, right: 20, bottom: 40, left: 50 };
+      const w = 800 - pad.left - pad.right;
+      const h = 280 - pad.top - pad.bottom;
+
+      // Compute stacked values
+      const stacked = days.map((_, i) => {
+        let acc = 0;
+        return repos.map((repo, ri) => {
+          const entry = data.series[repo][i];
+          let val;
+          if (currentMetric === 'sessions') val = entry.sessions;
+          else if (currentMetric === 'duration') val = Math.round(entry.duration / 60);
+          else if (currentMetric === 'tokens') val = ((entry.input_tokens || 0) + (entry.output_tokens || 0) + (entry.cache_read_tokens || 0) + (entry.cache_creation_tokens || 0)) / 1e6;
+          else val = entry.cost || 0;
+          const y0 = acc;
+          acc += val;
+          return { repo, y0, y1: acc, val };
+        });
+      });
+
+      const maxY = Math.max(1, ...stacked.map(s => s[s.length - 1]?.y1 || 0));
+      const barW = Math.min(40, (w / days.length) * 0.7);
+      const gap = w / days.length;
+
+      let html = '';
+      // Y gridlines
+      const yTicks = 5;
+      for (let i = 0; i <= yTicks; i++) {
+        const y = pad.top + h - (i / yTicks) * h;
+        const val = Math.round((i / yTicks) * maxY);
+        html += `<line x1="${pad.left}" y1="${y}" x2="${pad.left + w}" y2="${y}" stroke="#0f3460" stroke-width="1"/>`;
+        html += `<text x="${pad.left - 8}" y="${y + 4}" text-anchor="end" fill="#8b949e" font-size="10">${val}</text>`;
+      }
+
+      // Bars
+      stacked.forEach((col, di) => {
+        const cx = pad.left + di * gap + gap / 2;
+        col.forEach((seg, ri) => {
+          if (seg.val === 0) return;
+          const y1 = pad.top + h - (seg.y1 / maxY) * h;
+          const y0 = pad.top + h - (seg.y0 / maxY) * h;
+          const barH = y0 - y1;
+          html += `<rect x="${cx - barW / 2}" y="${y1}" width="${barW}" height="${barH}" fill="${COLORS[ri % COLORS.length]}" rx="2">`;
+          const label = currentMetric === 'sessions' ? `${seg.val} sessions`
+            : currentMetric === 'duration' ? `${seg.val} min`
+            : currentMetric === 'tokens' ? `${seg.val.toFixed(1)}M tokens`
+            : `$${seg.val.toFixed(2)}`;
+          html += `<title>${seg.repo}: ${label}</title></rect>`;
+        });
+        // X label
+        const label = days[di].slice(5); // MM-DD
+        html += `<text x="${cx}" y="${pad.top + h + 20}" text-anchor="middle" fill="#8b949e" font-size="10">${label}</text>`;
+      });
+
+      // Axes
+      html += `<line x1="${pad.left}" y1="${pad.top}" x2="${pad.left}" y2="${pad.top + h}" stroke="#0f3460" stroke-width="1"/>`;
+      html += `<line x1="${pad.left}" y1="${pad.top + h}" x2="${pad.left + w}" y2="${pad.top + h}" stroke="#0f3460" stroke-width="1"/>`;
+
+      svg.innerHTML = html;
+
+      // Legend (inline styles — Astro scoped CSS won't apply to JS-created elements)
+      legend.innerHTML = repos.map((repo, i) =>
+        `<div style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:12px;border-radius:2px;background:${COLORS[i % COLORS.length]}"></div>${repo}</div>`
+      ).join('');
+    }
+
+    async function fetchMetrics() {
+      try {
+        const res = await fetch('/api/metrics');
+        if (!res.ok) return;
+        chartData = await res.json();
+        renderChart(chartData);
+      } catch (e) {
+        console.error('Metrics fetch failed:', e);
+      }
+    }
+
+    fetchMetrics();
   </script>
 </body>
 </html>

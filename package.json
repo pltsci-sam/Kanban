@@ -4,6 +4,7 @@
   "private": true,
   "workspaces": [
     "packages/kanban-core",
+    "packages/kanban-cms",
     "packages/kanban-vscode"
   ],
   "scripts": {
